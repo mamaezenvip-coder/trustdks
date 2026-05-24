@@ -169,7 +169,7 @@ const PharmacyMap = () => {
  <div className="p-8 text-center space-y-6">
  <div className="flex justify-center">
  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg">
- <MapPin className="w-10 h-10 text-white"/>
+ <MapPin className="w-10 h-10 text-foreground"/>
  </div>
  </div>
  

@@ -101,7 +101,7 @@ const LicenseActivation = ({open, onOpenChange}: LicenseActivationProps) => {
 
  <Button
  asChild
- size="lg"className="w-full bg-gradient-to-r from-pink-500 to-fuchsia-600 hover:from-pink-500/90 hover:to-fuchsia-600/90 text-white font-bold shadow-[0_0_20px_hsl(330_100%_60%/0.5)]">
+ size="lg"className="w-full bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90 text-foreground font-bold shadow-[0_0_20px_hsl(330_100%_60%/0.5)]">
  <a
  href="https://pay.cakto.com.br/c88zju2_683076"target="_blank"rel="noopener noreferrer">
  <Key className="w-4 h-4 mr-2"/>

@@ -372,7 +372,7 @@ const Scene = ({week}: {week: number}) => {
 export const Baby3D = ({week}: Baby3DProps) => {
  return (
  <div 
- className="relative w-full h-80 rounded-2xl overflow-hidden border-2 border-pink-500/50 shadow-2xl"style={{
+ className="relative w-full h-80 rounded-2xl overflow-hidden border-2 border-primary/50 shadow-2xl"style={{
  background:'linear-gradient(135deg, #1e1b4b 0%, #581c87 30%, #831843 60%, #4c1d95 100%)',
  boxShadow:'0 25px 50px -12px rgba(168, 85, 247, 0.4), inset 0 0 80px rgba(236, 72, 153, 0.1)'}}
  >
@@ -393,11 +393,11 @@ export const Baby3D = ({week}: Baby3DProps) => {
  />
  
  {/* Brilho nas bordas */}
- <div className="absolute inset-0 pointer-events-none rounded-2xl ring-1 ring-inset ring-pink-400/30"/>
+ <div className="absolute inset-0 pointer-events-none rounded-2xl ring-1 ring-inset ring-primary/30"/>
  
  {/* Indicador de semana */}
  <div 
- className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white px-6 py-2 rounded-full text-sm font-bold"style={{
+ className="absolute bottom-4 left-1/2 -translate-x-1/2 text-foreground px-6 py-2 rounded-full text-sm font-bold"style={{
  background:'linear-gradient(90deg, #ec4899 0%, #a855f7 50%, #6366f1 100%)',
  boxShadow:'0 10px 30px -5px rgba(168, 85, 247, 0.5)'}}
  >
@@ -405,12 +405,12 @@ export const Baby3D = ({week}: Baby3DProps) => {
  </div>
  
  {/* Dica de interação */}
- <div className="absolute top-3 right-3 text-white/70 text-xs bg-purple-900/60 px-3 py-1.5 rounded-full backdrop-blur-sm">
+ <div className="absolute top-3 right-3 text-foreground/70 text-xs bg-secondary/60 px-3 py-1.5 rounded-full backdrop-blur-sm">
  Toque para girar
  </div>
  
  {/* Decoração */}
- <div className="absolute top-3 left-3 text-white/70 text-xs bg-pink-900/60 px-3 py-1.5 rounded-full backdrop-blur-sm">
+ <div className="absolute top-3 left-3 text-foreground/70 text-xs bg-primary/60 px-3 py-1.5 rounded-full backdrop-blur-sm">
  Bebê 3D
  </div>
  </div>

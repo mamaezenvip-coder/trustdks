@@ -50,11 +50,11 @@ const AdminDashboard = () => {
 }, []);
 
  const cards = [
- {label:'Total Usuários', value: stats.totalUsers, icon: Users, color:'text-blue-400'},
+ {label:'Total Usuários', value: stats.totalUsers, icon: Users, color:'text-accent-foreground'},
  {label:'Ativos Hoje', value: stats.activeToday, icon: UserCheck, color:'text-green-400'},
  {label:'Tickets Abertos', value: stats.openTickets, icon: MessageSquare, color:'text-yellow-400'},
- {label:'Total Tickets', value: stats.totalTickets, icon: Clock, color:'text-purple-400'},
- {label:'Chaves Criadas', value: stats.totalKeys, icon: Key, color:'text-pink-400'},
+ {label:'Total Tickets', value: stats.totalTickets, icon: Clock, color:'text-secondary'},
+ {label:'Chaves Criadas', value: stats.totalKeys, icon: Key, color:'text-primary'},
  {label:'Chaves Usadas', value: stats.usedKeys, icon: TrendingUp, color:'text-orange-400'},
 ];
 

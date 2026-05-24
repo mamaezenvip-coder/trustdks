@@ -153,34 +153,34 @@ export default function FeedingTracker() {
 : null;
 
  return (
- <Card className="border-pink-500/20 shadow-lg bg-gradient-to-br from-purple-900/40 to-pink-900/40">
- <CardHeader className="bg-gradient-to-r from-pink-500/20 to-rose-500/20 pb-3">
- <CardTitle className="text-lg flex items-center gap-2 text-white">
- <Milk className="w-5 h-5 text-pink-400"/>
+ <Card className="border-primary/20 shadow-lg bg-gradient-to-br from-secondary/40 to-primary/40">
+ <CardHeader className="bg-gradient-to-r from-primary/20 to-primary/20 pb-3">
+ <CardTitle className="text-lg flex items-center gap-2 text-foreground">
+ <Milk className="w-5 h-5 text-primary"/>
  {texts.title}
  </CardTitle>
- <CardDescription className="text-xs text-pink-200/70">
+ <CardDescription className="text-xs text-primary/70">
  {texts.description}
  </CardDescription>
  </CardHeader>
  <CardContent className="pt-4 space-y-4">
  {/* Stats */}
  <div className="grid grid-cols-2 gap-2">
- <div className="p-3 rounded-lg bg-[#1e1b4b] border border-purple-500/30">
- <div className="flex items-center gap-1.5 text-xs text-pink-200/70 mb-1">
+ <div className="p-3 rounded-lg bg-[#1e1b4b] border border-secondary/30">
+ <div className="flex items-center gap-1.5 text-xs text-primary/70 mb-1">
  <TrendingUp className="w-3 h-3"/>
  {texts.feedings}
  </div>
- <div className="text-lg font-bold text-white">
+ <div className="text-lg font-bold text-foreground">
  {totalFeedingsToday}
  </div>
  </div>
- <div className="p-3 rounded-lg bg-[#1e1b4b] border border-purple-500/30">
- <div className="flex items-center gap-1.5 text-xs text-pink-200/70 mb-1">
+ <div className="p-3 rounded-lg bg-[#1e1b4b] border border-secondary/30">
+ <div className="flex items-center gap-1.5 text-xs text-primary/70 mb-1">
  <Clock className="w-3 h-3"/>
  {texts.last}
  </div>
- <div className="text-lg font-bold text-white">
+ <div className="text-lg font-bold text-foreground">
  {timeSinceLastFeeding!== null?`${timeSinceLastFeeding}min`:'-'}
  </div>
  </div>
@@ -188,41 +188,41 @@ export default function FeedingTracker() {
 
  {/* Controls */}
  {currentFeeding? (
- <div className="p-3 rounded-lg bg-[#1e1b4b] border-2 border-pink-400/50 space-y-3">
+ <div className="p-3 rounded-lg bg-[#1e1b4b] border-2 border-primary/50 space-y-3">
  <div className="flex items-center justify-between">
  <div>
- <p className="font-semibold text-sm flex items-center gap-1.5 text-white">
+ <p className="font-semibold text-sm flex items-center gap-1.5 text-foreground">
  {getTypeIcon(currentFeeding.type)} {texts.nursing}
  </p>
- <p className="text-xs text-pink-200/70">
+ <p className="text-xs text-primary/70">
  {getTypeName(currentFeeding.type)} - {formatTime(currentFeeding.startTime)}
  </p>
  </div>
- <div className="w-2 h-2 bg-pink-400 rounded-full animate-pulse"/>
+ <div className="w-2 h-2 bg-primary rounded-full animate-pulse"/>
  </div>
- <Button onClick={endFeeding} className="w-full text-sm bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white"size="sm">
+ <Button onClick={endFeeding} className="w-full text-sm bg-gradient-to-r from-primary to-secondary hover:from-primary hover:to-secondary text-foreground"size="sm">
  {texts.finish}
  </Button>
  </div>
 ): (
  <div className="space-y-3">
  <div className="space-y-1.5">
- <label className="text-xs font-medium text-pink-200">{texts.feedingType}</label>
+ <label className="text-xs font-medium text-primary">{texts.feedingType}</label>
  <Select value={selectedType} onValueChange={setSelectedType}>
- <SelectTrigger className="text-xs bg-[#1e1b4b] border-purple-500/30 text-white">
+ <SelectTrigger className="text-xs bg-[#1e1b4b] border-secondary/30 text-foreground">
  <SelectValue />
  </SelectTrigger>
- <SelectContent className="bg-[#1e1b4b] border-purple-500/30">
- <SelectItem value="breast-left"className="text-xs text-white"> {typeNames['breast-left']}</SelectItem>
- <SelectItem value="breast-right"className="text-xs text-white"> {typeNames['breast-right']}</SelectItem>
- <SelectItem value="both-breasts"className="text-xs text-white"> {typeNames['both-breasts']}</SelectItem>
- <SelectItem value="bottle"className="text-xs text-white"> {typeNames['bottle']}</SelectItem>
+ <SelectContent className="bg-[#1e1b4b] border-secondary/30">
+ <SelectItem value="breast-left"className="text-xs text-foreground"> {typeNames['breast-left']}</SelectItem>
+ <SelectItem value="breast-right"className="text-xs text-foreground"> {typeNames['breast-right']}</SelectItem>
+ <SelectItem value="both-breasts"className="text-xs text-foreground"> {typeNames['both-breasts']}</SelectItem>
+ <SelectItem value="bottle"className="text-xs text-foreground"> {typeNames['bottle']}</SelectItem>
  </SelectContent>
  </Select>
  </div>
  <Button
  onClick={startFeeding}
- size="sm"className="w-full text-sm bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white">
+ size="sm"className="w-full text-sm bg-gradient-to-r from-primary to-secondary hover:from-primary hover:to-secondary text-foreground">
  <Milk className="w-4 h-4 mr-1.5"/>
  {texts.start}
  </Button>
@@ -232,27 +232,27 @@ export default function FeedingTracker() {
  {/* History */}
  {todayEntries.length > 0 && (
  <div className="space-y-2">
- <h3 className="text-sm font-semibold flex items-center gap-1.5 text-white">
+ <h3 className="text-sm font-semibold flex items-center gap-1.5 text-foreground">
  {texts.today}
  </h3>
  <div className="space-y-1.5 max-h-48 overflow-y-auto">
  {todayEntries.map((entry) => (
  <div
  key={entry.id}
- className="p-2 rounded-lg bg-[#1e1b4b] border border-purple-500/20 flex items-center justify-between text-xs">
+ className="p-2 rounded-lg bg-[#1e1b4b] border border-secondary/20 flex items-center justify-between text-xs">
  <div className="flex items-center gap-2">
  <span className="text-base">{getTypeIcon(entry.type)}</span>
  <div>
- <p className="font-medium text-xs text-white">
+ <p className="font-medium text-xs text-foreground">
  {getTypeName(entry.type)}
  </p>
- <p className="text-[10px] text-pink-200/60">
+ <p className="text-[10px] text-primary/60">
  {formatTime(entry.startTime)} {entry.endTime &&`- ${formatTime(entry.endTime)}`}
  </p>
  </div>
  </div>
  {entry.duration && (
- <div className="text-xs font-semibold text-pink-400">
+ <div className="text-xs font-semibold text-primary">
  {entry.duration}min
  </div>
 )}
@@ -262,8 +262,8 @@ export default function FeedingTracker() {
  </div>
 )}
 
- <div className="p-3 bg-[#1e1b4b] rounded-lg border border-blue-500/30">
- <p className="text-xs text-blue-300">
+ <div className="p-3 bg-[#1e1b4b] rounded-lg border border-accent/30">
+ <p className="text-xs text-accent-foreground">
  <strong>{texts.tip}</strong>
  </p>
  </div>
