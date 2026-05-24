@@ -17,10 +17,10 @@ const ThemeSelector = () => {
 };
 
  return (
- <Card className="p-4 bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-pink-500/20">
+ <Card className="p-4 bg-gradient-to-br from-secondary/50 to-primary/50 border-primary/20">
  <div className="flex items-center gap-2 mb-3">
- <Palette className="w-5 h-5 text-pink-400"/>
- <h3 className="font-bold text-sm text-pink-200">
+ <Palette className="w-5 h-5 text-primary"/>
+ <h3 className="font-bold text-sm text-primary">
  {isUSA?'Choose Theme':'Escolha o Tema'}
  </h3>
  </div>
@@ -30,7 +30,7 @@ const ThemeSelector = () => {
  onClick={() => handleThemeChange('pink')}
  variant={themeColor ==='pink'?'default':'outline'}
  className={`${
- themeColor ==='pink'?'bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white shadow-lg shadow-pink-500/30':'border-pink-500/30 bg-purple-900/30 text-pink-200 hover:bg-purple-800/50 hover:text-pink-100'}`}
+ themeColor ==='pink'?'bg-gradient-to-r from-primary to-secondary hover:from-primary hover:to-secondary text-foreground shadow-lg shadow-primary/30':'border-primary/30 bg-secondary/30 text-primary hover:bg-secondary/50 hover:text-primary'}`}
  size="sm">
  <span className="text-lg mr-2"></span>
  {isUSA?'Pink':'Rosa'}
@@ -40,7 +40,7 @@ const ThemeSelector = () => {
  onClick={() => handleThemeChange('blue')}
  variant={themeColor ==='blue'?'default':'outline'}
  className={`${
- themeColor ==='blue'?'bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white shadow-lg shadow-indigo-500/30':'border-purple-500/30 bg-purple-900/30 text-purple-200 hover:bg-purple-800/50 hover:text-purple-100'}`}
+ themeColor ==='blue'?'bg-gradient-to-r from-secondary to-secondary hover:from-secondary hover:to-secondary text-foreground shadow-lg shadow-secondary/30':'border-secondary/30 bg-secondary/30 text-secondary hover:bg-secondary/50 hover:text-secondary'}`}
  size="sm">
  <span className="text-lg mr-2"></span>
  {isUSA?'Blue':'Azul'}

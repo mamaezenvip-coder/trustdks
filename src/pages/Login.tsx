@@ -480,7 +480,7 @@ const Login = () => {
  </div>
 
  <a
- href="https://pay.cakto.com.br/c88zju2_683076"target="_blank"rel="noopener noreferrer"className="flex items-center justify-center gap-3 w-full h-14 rounded-xl font-bold text-base text-white bg-gradient-to-r from-pink-500 to-fuchsia-600 hover:from-pink-500/90 hover:to-fuchsia-600/90 shadow-[0_0_25px_hsl(330_100%_60%/0.55)] transition-all">
+ href="https://pay.cakto.com.br/c88zju2_683076"target="_blank"rel="noopener noreferrer"className="flex items-center justify-center gap-3 w-full h-14 rounded-xl font-bold text-base text-foreground bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90 shadow-[0_0_25px_hsl(330_100%_60%/0.55)] transition-all">
  <Key className="w-5 h-5"/>
  {isUSA?'Buy Premium License':'Comprar Licença Premium'}
  </a>

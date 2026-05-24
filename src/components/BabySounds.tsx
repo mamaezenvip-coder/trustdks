@@ -138,7 +138,7 @@ export default function BabySounds() {
  };
 
  return (
- <Card className="border-pink-500/20 shadow-lg bg-gradient-to-br from-purple-900/40 to-pink-900/40">
+ <Card className="border-primary/20 shadow-lg bg-gradient-to-br from-secondary/40 to-primary/40">
  {/* Container oculto para background */}
  <div
  ref={hiddenContainerRef}
@@ -154,12 +154,12 @@ export default function BabySounds() {
 }}
  />
 
- <CardHeader className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 pb-3">
- <CardTitle className="text-lg flex items-center gap-2 text-white">
- <Music className="w-5 h-5 text-pink-400"/>
+ <CardHeader className="bg-gradient-to-r from-secondary/20 to-primary/20 pb-3">
+ <CardTitle className="text-lg flex items-center gap-2 text-foreground">
+ <Music className="w-5 h-5 text-primary"/>
  {texts.title}
  </CardTitle>
- <CardDescription className="text-xs text-pink-200/70">
+ <CardDescription className="text-xs text-primary/70">
  {texts.description}
  </CardDescription>
  </CardHeader>
@@ -169,9 +169,9 @@ export default function BabySounds() {
  <div className="mb-4">
  <div 
  ref={containerRef} 
- className="rounded-xl overflow-hidden shadow-lg border border-white/10"/>
+ className="rounded-xl overflow-hidden shadow-lg border border-border"/>
  {isIOS && (
- <p className="text-center text-xs text-pink-300 mt-2 flex items-center justify-center gap-1">
+ <p className="text-center text-xs text-primary mt-2 flex items-center justify-center gap-1">
  <Info className="w-3 h-3"/>
  {texts.tapToPlay}
  </p>
@@ -192,7 +192,7 @@ export default function BabySounds() {
  disabled={isLoading}
  className={`h-auto flex-col gap-1 p-3 relative text-xs transition-all ${
  currentVideoId === sound.youtubeId 
-?'bg-gradient-to-br from-pink-500 to-purple-600 text-white border-0 shadow-lg shadow-pink-500/30':'border-purple-500/30 text-pink-200 hover:bg-purple-500/20 hover:text-white'}`}
+?'bg-gradient-to-br from-primary to-secondary text-foreground border-0 shadow-lg shadow-primary/30':'border-secondary/30 text-primary hover:bg-secondary/20 hover:text-foreground'}`}
  onClick={() => handleSoundSelect(sound)}
  >
  {isLoading && currentVideoId === sound.youtubeId? (
@@ -214,34 +214,34 @@ export default function BabySounds() {
  </div>
 
  {currentSound && (
- <div className="space-y-3 p-3 rounded-lg bg-[#1e1b4b] border border-purple-500/30">
+ <div className="space-y-3 p-3 rounded-lg bg-[#1e1b4b] border border-secondary/30">
  <div className="flex items-center justify-between">
  <div className="flex items-center gap-2">
  <span className="text-xl">{currentSound.icon}</span>
  <div>
- <p className="font-semibold text-sm text-white">{getSoundName(currentSound)}</p>
- <p className="text-xs text-pink-200/70">
+ <p className="font-semibold text-sm text-foreground">{getSoundName(currentSound)}</p>
+ <p className="text-xs text-primary/70">
  {isLoading? texts.loading: texts.playing} • {currentSound.quality}
  </p>
  </div>
  </div>
  <Button
  size="icon"variant="outline"onClick={handleStop}
- className="h-8 w-8 border-purple-500/30 text-pink-200 hover:bg-purple-500/20">
+ className="h-8 w-8 border-secondary/30 text-primary hover:bg-secondary/20">
  <Square className="w-3 h-3"/>
  </Button>
  </div>
 
  <div className="space-y-1.5">
  <div className="flex items-center gap-2">
- <Volume2 className="w-3 h-3 text-pink-200/70"/>
+ <Volume2 className="w-3 h-3 text-primary/70"/>
  <Slider
  value={volume}
   onValueChange={handleVolumeChange}
  max={100}
  step={1}
  className="flex-1"/>
- <span className="text-xs text-pink-200/70 w-10 text-right">
+ <span className="text-xs text-primary/70 w-10 text-right">
  {volume[0]}%
  </span>
  </div>

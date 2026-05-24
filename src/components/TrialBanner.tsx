@@ -38,7 +38,7 @@ const TrialBanner = () => {
  <div className="flex gap-2 mt-2">
  <Button
  asChild
- size="sm"className="h-8 px-3 text-xs bg-gradient-to-r from-pink-500 to-fuchsia-600 hover:from-pink-500/90 hover:to-fuchsia-600/90 text-white font-bold shadow-[0_0_15px_hsl(330_100%_60%/0.5)]">
+ size="sm"className="h-8 px-3 text-xs bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90 text-foreground font-bold shadow-[0_0_15px_hsl(330_100%_60%/0.5)]">
  <a href={PAYMENT_URL} target="_blank"rel="noopener noreferrer">
  Comprar Premium
  </a>
@@ -81,7 +81,7 @@ const TrialBanner = () => {
  <div className="flex gap-2 mt-2">
  <Button
  asChild
- size="sm"className="h-8 px-3 text-xs bg-gradient-to-r from-pink-500 to-fuchsia-600 hover:from-pink-500/90 hover:to-fuchsia-600/90 text-white font-bold shadow-[0_0_15px_hsl(330_100%_60%/0.5)]">
+ size="sm"className="h-8 px-3 text-xs bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90 text-foreground font-bold shadow-[0_0_15px_hsl(330_100%_60%/0.5)]">
  <a href={PAYMENT_URL} target="_blank"rel="noopener noreferrer">
  Comprar Premium
  </a>

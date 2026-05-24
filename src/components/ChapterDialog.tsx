@@ -225,13 +225,13 @@ const ChapterDialog = ({chapter, open, onOpenChange}: ChapterDialogProps) => {
 
  return (
  <Dialog open={open} onOpenChange={onOpenChange}>
- <DialogContent className="max-w-2xl max-h-[80vh] bg-[#1e1b4b] border-purple-500/30">
+ <DialogContent className="max-w-2xl max-h-[80vh] bg-[#1e1b4b] border-secondary/30">
  <DialogHeader>
- <DialogTitle className="flex items-center gap-3 text-2xl text-white">
+ <DialogTitle className="flex items-center gap-3 text-2xl text-foreground">
  <span className="text-3xl">{chapter.emoji}</span>
  <div>
  <div>Capítulo {chapter.id}: {chapter.title}</div>
- <DialogDescription className="text-base mt-1 text-purple-200">
+ <DialogDescription className="text-base mt-1 text-secondary">
  {chapter.subtitle}
  </DialogDescription>
  </div>
@@ -243,7 +243,7 @@ const ChapterDialog = ({chapter, open, onOpenChange}: ChapterDialogProps) => {
  {chapterContents[chapter.id]?.split('\n\n').map((paragraph, idx) => {
  if (paragraph.startsWith('**') && paragraph.endsWith('**')) {
  return (
- <h3 key={idx} className="font-bold text-lg mt-4 mb-2 text-pink-300">
+ <h3 key={idx} className="font-bold text-lg mt-4 mb-2 text-primary">
  {paragraph.replace(/\*\*/g,'')}
  </h3>
 );
@@ -253,9 +253,9 @@ const ChapterDialog = ({chapter, open, onOpenChange}: ChapterDialogProps) => {
  return (
  <ul key={idx} className="list-disc pl-6 space-y-2 my-3">
  {items.map((item, i) => (
- <li key={i} className="text-purple-200">
+ <li key={i} className="text-secondary">
  {item.split('**').map((part, j) => 
- j % 2 === 1? <strong key={j} className="text-white">{part}</strong>: part
+ j % 2 === 1? <strong key={j} className="text-foreground">{part}</strong>: part
 )}
  </li>
 ))}
@@ -263,9 +263,9 @@ const ChapterDialog = ({chapter, open, onOpenChange}: ChapterDialogProps) => {
 );
 }
  return (
- <p key={idx} className="text-purple-200 leading-relaxed mb-3">
+ <p key={idx} className="text-secondary leading-relaxed mb-3">
  {paragraph.split('**').map((part, i) => 
- i % 2 === 1? <strong key={i} className="text-white">{part}</strong>: part
+ i % 2 === 1? <strong key={i} className="text-foreground">{part}</strong>: part
 )}
  </p>
 );

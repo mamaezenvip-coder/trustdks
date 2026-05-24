@@ -69,16 +69,16 @@ const WelcomeGreeting = ({ userName = "Letícia", onMoodSelect }: WelcomeGreetin
       <div className="relative z-10 p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <GreetingIcon className="w-6 h-6 text-white drop-shadow-lg" />
-            <h1 className="text-lg font-bold text-white drop-shadow-lg">
+            <GreetingIcon className="w-6 h-6 text-foreground drop-shadow-lg" />
+            <h1 className="text-lg font-bold text-foreground drop-shadow-lg">
               {greeting.text}
             </h1>
           </div>
-          <Sparkles className="w-5 h-5 text-white/80 animate-pulse" />
+          <Sparkles className="w-5 h-5 text-foreground/80 animate-pulse" />
         </div>
         
-        <div className="bg-white/30 backdrop-blur-sm rounded-xl p-3 border border-white/40">
-          <p className="text-white text-xs font-medium mb-2">
+        <div className="bg-foreground/30 backdrop-blur-sm rounded-xl p-3 border border-border">
+          <p className="text-foreground text-xs font-medium mb-2">
             {isUSA ? 'How are you feeling?' : 'Como está se sentindo?'}
           </p>
           
@@ -89,7 +89,7 @@ const WelcomeGreeting = ({ userName = "Letícia", onMoodSelect }: WelcomeGreetin
                 <button
                   key={mood.value}
                   onClick={() => onMoodSelect?.(mood.value)}
-                  className="flex flex-col items-center gap-1 p-2 bg-white/60 hover:bg-white/80 backdrop-blur-sm rounded-lg transition-all active:scale-95 border border-white/50"
+                  className="flex flex-col items-center gap-1 p-2 bg-foreground/60 hover:bg-foreground/80 backdrop-blur-sm rounded-lg transition-all active:scale-95 border border-border"
                 >
                   <Icon className="w-5 h-5 text-foreground" />
                   <span className="text-[10px] font-medium text-foreground leading-tight">{mood.label}</span>
@@ -99,14 +99,14 @@ const WelcomeGreeting = ({ userName = "Letícia", onMoodSelect }: WelcomeGreetin
           </div>
         </div>
 
-        <p className="text-white/90 text-xs mt-2 text-center font-medium">
+        <p className="text-foreground/90 text-xs mt-2 text-center font-medium">
           {currentTime.toLocaleTimeString(isUSA ? 'en-US' : 'pt-BR', { hour: '2-digit', minute: '2-digit' })}
         </p>
       </div>
       
       {/* Decorative elements */}
-      <div className="absolute -top-10 -right-10 w-20 h-20 bg-white/20 rounded-full blur-2xl"></div>
-      <div className="absolute -bottom-10 -left-10 w-20 h-20 bg-white/20 rounded-full blur-2xl"></div>
+      <div className="absolute -top-10 -right-10 w-20 h-20 bg-foreground/20 rounded-full blur-2xl"></div>
+      <div className="absolute -bottom-10 -left-10 w-20 h-20 bg-foreground/20 rounded-full blur-2xl"></div>
     </Card>
   );
 };
