@@ -78,7 +78,7 @@ const GuideLibrary = () => {
  <Heart 
  className={`w-5 h-5 transition-colors ${
  favorites.includes(chapter.id) 
-?'fill-pink-500 text-primary':'text-secondary'}`} 
+?'fill-primary text-primary':'text-secondary'}`} 
  />
  </Button>
  </div>
