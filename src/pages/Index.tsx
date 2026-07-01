@@ -27,6 +27,7 @@ import TrialBanner from'@/components/TrialBanner';
 import {Tabs, TabsContent, TabsList, TabsTrigger} from'@/components/ui/tabs';
 import {Baby, Music, Calendar, BookOpen, Moon, Milk, Sparkles, Pill, Brain, MapPin, Instagram, ShoppingBag, Cross, Bell, Heart, Lock, Key, LogOut, Shield} from'lucide-react';
 import mamaeZenLogo from'@/assets/mamae-zen-logo.png';
+import mamaeZenWordmark from'@/assets/mamae-zen-wordmark.png';
 import {toast} from'sonner';
 import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} from'@/components/ui/dialog';
 import {Input} from'@/components/ui/input';
@@ -193,13 +194,17 @@ const Index = () => {
  <div className="w-full max-w-md mx-auto p-4 space-y-6">
  {/* Header */}
  <div className="text-center space-y-2 animate-fade-in pt-2">
-  <div className="flex items-center justify-center gap-3 mb-1">
-  <img src={mamaeZenLogo} alt="Mamãe Zen" width={40} height={40} className="w-10 h-10 rounded-xl shadow-[0_0_15px_hsl(330_100%_60%/0.4)]" />
-  <h1 className="text-3xl font-bold bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">
-  Mamãe Zen
-  </h1>
-  </div>
- <p className="text-muted-foreground text-sm font-medium px-4">
+   <div className="flex items-center justify-center mb-1">
+     <img
+       src={mamaeZenWordmark}
+       alt="Mamãe Zen"
+       width={1536}
+       height={512}
+       loading="lazy"
+       className="w-auto h-16 md:h-20 object-contain drop-shadow-[0_0_25px_hsl(330_100%_60%/0.45)]"
+     />
+   </div>
+  <p className="text-muted-foreground text-sm font-medium px-4">
  {isUSA?'Premium motherhood app':'App premium de maternidade'}
  </p>
  <a
