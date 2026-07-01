@@ -11,25 +11,25 @@ const config: CapacitorConfig = {
   plugins: {
     SplashScreen: {
       launchShowDuration: 2000,
-      backgroundColor: '#1e1b4b',
+      backgroundColor: '#000000',
       showSpinner: false
     },
-    BackgroundRunner: {
-      label: 'app.mamae.zen.background',
-      src: 'background.js',
-      event: 'checkAudio',
-      repeat: true,
-      interval: 1,
-      autoStart: true
+    CapacitorMediaSession: {
+      // Habilita controles de mídia no lockscreen e reprodução em background
+      playIcon: 'media_play',
+      pauseIcon: 'media_pause',
+      stopIcon: 'media_stop'
     }
   },
   android: {
     allowMixedContent: true,
-    backgroundColor: '#1e1b4b'
+    backgroundColor: '#000000'
   },
   ios: {
     contentInset: 'automatic',
-    backgroundColor: '#1e1b4b'
+    backgroundColor: '#000000',
+    // Permite que o áudio continue tocando com a tela bloqueada / app em background
+    limitsNavigationsToAppBoundDomains: false
   }
 };
 
