@@ -17,6 +17,7 @@ import {toast} from'sonner';
 import CountrySelector from'@/components/CountrySelector';
 import {checkRateLimit} from'@/utils/rateLimiter';
 import HumanCheck from'@/components/HumanCheck';
+import {lovable} from'@/integrations/lovable';
 
 const features = [
  {image: previewGuias, labelPt:'Guias do Bebê', labelEn:'Baby Guides'},
@@ -197,6 +198,22 @@ const Login = () => {
  toast.error(isUSA?'Error resending email.':'Erro ao reenviar e-mail.');
 }
 };
+
+  const handleGoogleLogin = async () => {
+    setIsSubmitting(true);
+    try {
+      const result = await lovable.auth.signInWithOAuth('google', {
+        redirect_uri: window.location.origin,
+      });
+      if (result.error) {
+        toast.error(isUSA ? 'Google sign-in failed.' : 'Falha ao entrar com Google.');
+        setIsSubmitting(false);
+      }
+    } catch {
+      toast.error(isUSA ? 'Google sign-in failed.' : 'Falha ao entrar com Google.');
+      setIsSubmitting(false);
+    }
+  };
 
  if (loading) {
  return (
