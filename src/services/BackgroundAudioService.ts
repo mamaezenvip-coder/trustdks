@@ -1,263 +1,311 @@
-import {Capacitor} from'@capacitor/core';
-import {MediaSession} from'@capgo/capacitor-media-session';
+import { Capacitor } from '@capacitor/core';
+import { MediaSession } from '@capgo/capacitor-media-session';
 
 /**
- * Background Audio Service for Capacitor Native Apps
- * Enables audio playback when the app is in the background or screen is off
+ * Background Audio Service — 2026 update
+ * Estratégia em camadas para manter a música tocando com a tela bloqueada:
+ * 1. Capacitor Media Session (nativo iOS/Android) — controles do lockscreen
+ * 2. Web Audio API silent oscillator — impede que o Safari/Chrome pausem a aba
+ * 3. navigator.mediaSession (Web) — controles de mídia no navegador
+ * 4. Screen Wake Lock — evita que o dispositivo entre em deep sleep
+ * 5. Watchdog: reenvia playVideo enquanto a aba está oculta
  */
 
 interface AudioState {
- isPlaying: boolean;
- currentVideoId: string | null;
- volume: number;
- title?: string;
- artist?: string;
+  isPlaying: boolean;
+  currentVideoId: string | null;
+  volume: number;
+  title?: string;
+  artist?: string;
+  artwork?: string;
 }
 
 interface AudioMetadata {
- title?: string;
- artist?: string;
- artwork?: string;
+  title?: string;
+  artist?: string;
+  artwork?: string;
 }
 
 interface AudioControlHandlers {
- play?: () => void;
- pause?: () => void;
- stop?: () => void;
+  play?: () => void;
+  pause?: () => void;
+  stop?: () => void;
 }
 
 class BackgroundAudioService {
- private static instance: BackgroundAudioService;
- private audioState: AudioState = {
- isPlaying: false,
- currentVideoId: null,
- volume: 70,
-};
- private wakeLock: WakeLockSentinel | null = null;
- private keepAliveTimer: number | null = null;
- private controlHandlers: AudioControlHandlers = {};
- private silentAudio: HTMLAudioElement | null = null;
+  private static instance: BackgroundAudioService;
+  private audioState: AudioState = {
+    isPlaying: false,
+    currentVideoId: null,
+    volume: 70,
+  };
+  private wakeLock: WakeLockSentinel | null = null;
+  private keepAliveTimer: number | null = null;
+  private controlHandlers: AudioControlHandlers = {};
 
- private constructor() {
- this.setupVisibilityHandler();
-}
+  // Web Audio silent context (mais confiável que <audio> data-URI no iOS 17+)
+  private audioCtx: AudioContext | null = null;
+  private silentGain: GainNode | null = null;
+  private silentOsc: OscillatorNode | null = null;
 
- /**
-  * Silent looping audio element. Mantém a aba "audível" para o navegador,
-  * evitando que iOS Safari/Android Chrome suspendam o iframe do YouTube
-  * quando a tela bloqueia ou o app vai para segundo plano.
-  */
- private ensureSilentAudio(): void {
-  if (typeof window ==='undefined') return;
-  if (this.silentAudio) return;
-  try {
-   const audio = document.createElement('audio');
-   audio.setAttribute('playsinline','true');
-   audio.setAttribute('webkit-playsinline','true');
-   audio.loop = true;
-   audio.preload ='auto';
-   audio.volume = 0.001; // praticamente inaudível mas não-zero (iOS exige > 0)
-   // 1s de silêncio WAV inline
-   audio.src ='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
-   audio.style.cssText ='position:absolute;width:0;height:0;opacity:0;pointer-events:none;';
-   document.body.appendChild(audio);
-   this.silentAudio = audio;
-  } catch (e) {
-   if (import.meta.env.DEV) console.warn('silent audio init failed', e);
+  private constructor() {
+    this.setupVisibilityHandler();
+    this.setupWebMediaSession();
   }
- }
 
- private playSilentAudio(): void {
-  this.ensureSilentAudio();
-  this.silentAudio?.play().catch(() => {/* gesture required */});
- }
+  public static getInstance(): BackgroundAudioService {
+    if (!BackgroundAudioService.instance) {
+      BackgroundAudioService.instance = new BackgroundAudioService();
+    }
+    return BackgroundAudioService.instance;
+  }
 
- private stopSilentAudio(): void {
-  try {
-   this.silentAudio?.pause();
-  } catch {/* noop */}
- }
+  // ============ SILENT WEB AUDIO (keep-tab-alive) ============
+  private ensureSilentAudio(): void {
+    if (typeof window === 'undefined') return;
+    if (this.audioCtx) return;
+    try {
+      const Ctor = (window.AudioContext || (window as any).webkitAudioContext) as typeof AudioContext;
+      if (!Ctor) return;
+      this.audioCtx = new Ctor();
+      this.silentGain = this.audioCtx.createGain();
+      this.silentGain.gain.value = 0.0001; // inaudível mas > 0 (iOS exige)
+      this.silentOsc = this.audioCtx.createOscillator();
+      this.silentOsc.frequency.value = 1;
+      this.silentOsc.connect(this.silentGain);
+      this.silentGain.connect(this.audioCtx.destination);
+      this.silentOsc.start();
+    } catch (e) {
+      if (import.meta.env.DEV) console.warn('silent audio ctx failed', e);
+    }
+  }
 
- public static getInstance(): BackgroundAudioService {
- if (!BackgroundAudioService.instance) {
- BackgroundAudioService.instance = new BackgroundAudioService();
-}
- return BackgroundAudioService.instance;
-}
+  private async resumeSilentAudio(): Promise<void> {
+    this.ensureSilentAudio();
+    try {
+      if (this.audioCtx && this.audioCtx.state !== 'running') {
+        await this.audioCtx.resume();
+      }
+    } catch {
+      /* gesture required */
+    }
+  }
 
- /**
- * Setup visibility change handler to maintain audio during background
- */
- private setupVisibilityHandler(): void {
- if (typeof document!=='undefined') {
- document.addEventListener('visibilitychange', () => {
- if (document.visibilityState ==='hidden'&& this.audioState.isPlaying) {
- this.requestWakeLock();
-  this.setMediaPlaybackState('playing');
-}
-});
-}
-}
+  private async suspendSilentAudio(): Promise<void> {
+    try {
+      if (this.audioCtx && this.audioCtx.state === 'running') {
+        await this.audioCtx.suspend();
+      }
+    } catch {
+      /* noop */
+    }
+  }
 
- /**
- * Request a wake lock to prevent the device from sleeping
- */
- private async requestWakeLock(): Promise<void> {
- if ('wakeLock'in navigator) {
- try {
- this.wakeLock = await (navigator as any).wakeLock.request('screen');
- console.log('Wake Lock acquired for background audio');
-} catch (err) {
- console.log('Wake Lock not available:', err);
-}
-}
-}
+  // ============ VISIBILITY ============
+  private setupVisibilityHandler(): void {
+    if (typeof document === 'undefined') return;
+    document.addEventListener('visibilitychange', () => {
+      if (this.audioState.isPlaying) {
+        if (document.visibilityState === 'hidden') {
+          this.requestWakeLock();
+          this.resumeSilentAudio();
+          this.setMediaPlaybackState('playing');
+        } else {
+          // volta ao foreground — mantém tudo ativo
+          this.resumeSilentAudio();
+        }
+      }
+    });
+  }
 
- /**
- * Release the wake lock when audio stops
- */
- private async releaseWakeLock(): Promise<void> {
- if (this.wakeLock) {
- try {
- await this.wakeLock.release();
- this.wakeLock = null;
- console.log('Wake Lock released');
-} catch (err) {
- console.log('Error releasing wake lock:', err);
-}
-}
-}
+  // ============ WEB MEDIA SESSION ============
+  private setupWebMediaSession(): void {
+    if (typeof navigator === 'undefined' || !('mediaSession' in navigator)) return;
+    try {
+      navigator.mediaSession.setActionHandler('play', () => {
+        this.controlHandlers.play?.();
+        navigator.mediaSession.playbackState = 'playing';
+      });
+      navigator.mediaSession.setActionHandler('pause', () => {
+        this.controlHandlers.pause?.();
+        navigator.mediaSession.playbackState = 'paused';
+      });
+      navigator.mediaSession.setActionHandler('stop', () => {
+        this.controlHandlers.stop?.();
+        this.stopAudio();
+      });
+    } catch {
+      /* handler não suportado */
+    }
+  }
 
- private async setMediaPlaybackState(playbackState: 'none'|'paused'|'playing'): Promise<void> {
- try {
-  await MediaSession.setPlaybackState({playbackState});
- } catch (err) {
-  if (import.meta.env.DEV) console.log('Media session state unavailable:', err);
- }
-}
+  private updateWebMediaSessionMetadata(metadata?: AudioMetadata): void {
+    if (typeof navigator === 'undefined' || !('mediaSession' in navigator)) return;
+    try {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: metadata?.title || 'Mamãe Zen Music',
+        artist: metadata?.artist || 'Mamãe Zen',
+        album: 'Mamãe Zen',
+        artwork: metadata?.artwork
+          ? [
+              { src: metadata.artwork, sizes: '96x96', type: 'image/png' },
+              { src: metadata.artwork, sizes: '512x512', type: 'image/png' },
+            ]
+          : [],
+      });
+      navigator.mediaSession.playbackState = 'playing';
+    } catch {
+      /* metadata não suportada */
+    }
+  }
 
- private async updateMediaSession(metadata?: AudioMetadata): Promise<void> {
- try {
-  await MediaSession.setMetadata({
-  title: metadata?.title ||'Mamãe Zen Music',
-  artist: metadata?.artist ||'Mamãe Zen',
-  album:'Mamãe Zen',
-  artwork: metadata?.artwork ? [{src: metadata.artwork, sizes:'512x512', type:'image/png'}] : undefined,
- });
-  await MediaSession.setActionHandler({action:'play'}, () => {
-  this.controlHandlers.play?.();
-  this.setMediaPlaybackState('playing');
- });
-  await MediaSession.setActionHandler({action:'pause'}, () => {
-  this.controlHandlers.pause?.();
-  this.setMediaPlaybackState('paused');
- });
-  await MediaSession.setActionHandler({action:'stop'}, () => {
-  this.controlHandlers.stop?.();
-  this.stopAudio();
- });
-  await this.setMediaPlaybackState('playing');
- } catch (err) {
-  if (import.meta.env.DEV) console.log('Media session unavailable:', err);
- }
-}
+  // ============ WAKE LOCK ============
+  private async requestWakeLock(): Promise<void> {
+    if ('wakeLock' in navigator) {
+      try {
+        this.wakeLock = await (navigator as any).wakeLock.request('screen');
+      } catch {
+        /* não disponível */
+      }
+    }
+  }
 
- private startKeepAlive(): void {
- if (this.keepAliveTimer || typeof window ==='undefined') return;
- this.keepAliveTimer = window.setInterval(() => {
-  if (this.audioState.isPlaying && document.visibilityState ==='hidden') {
-  this.setMediaPlaybackState('playing');
- }
- }, 20000);
-}
+  private async releaseWakeLock(): Promise<void> {
+    if (this.wakeLock) {
+      try {
+        await this.wakeLock.release();
+      } catch {
+        /* noop */
+      }
+      this.wakeLock = null;
+    }
+  }
 
- private stopKeepAlive(): void {
- if (this.keepAliveTimer) {
-  window.clearInterval(this.keepAliveTimer);
-  this.keepAliveTimer = null;
- }
-}
+  // ============ CAPACITOR NATIVE MEDIA SESSION ============
+  private async setMediaPlaybackState(playbackState: 'none' | 'paused' | 'playing'): Promise<void> {
+    if (typeof navigator !== 'undefined' && 'mediaSession' in navigator) {
+      try {
+        navigator.mediaSession.playbackState = playbackState;
+      } catch {
+        /* noop */
+      }
+    }
+    if (!Capacitor.isNativePlatform()) return;
+    try {
+      await MediaSession.setPlaybackState({ playbackState });
+    } catch {
+      /* plugin ausente */
+    }
+  }
 
- /**
- * Check if running on native platform (iOS/Android via Capacitor)
- */
- public isNativePlatform(): boolean {
- return Capacitor.isNativePlatform();
-}
+  private async updateNativeMediaSession(metadata?: AudioMetadata): Promise<void> {
+    if (!Capacitor.isNativePlatform()) return;
+    try {
+      await MediaSession.setMetadata({
+        title: metadata?.title || 'Mamãe Zen Music',
+        artist: metadata?.artist || 'Mamãe Zen',
+        album: 'Mamãe Zen',
+        artwork: metadata?.artwork
+          ? [{ src: metadata.artwork, sizes: '512x512', type: 'image/png' }]
+          : undefined,
+      });
+      await MediaSession.setActionHandler({ action: 'play' }, () => {
+        this.controlHandlers.play?.();
+        this.setMediaPlaybackState('playing');
+      });
+      await MediaSession.setActionHandler({ action: 'pause' }, () => {
+        this.controlHandlers.pause?.();
+        this.setMediaPlaybackState('paused');
+      });
+      await MediaSession.setActionHandler({ action: 'stop' }, () => {
+        this.controlHandlers.stop?.();
+        this.stopAudio();
+      });
+      await this.setMediaPlaybackState('playing');
+    } catch {
+      /* plugin ausente */
+    }
+  }
 
- /**
- * Get the current platform
- */
- public getPlatform(): string {
- return Capacitor.getPlatform();
-}
+  // ============ KEEP-ALIVE WATCHDOG ============
+  private startKeepAlive(): void {
+    if (this.keepAliveTimer || typeof window === 'undefined') return;
+    this.keepAliveTimer = window.setInterval(() => {
+      if (this.audioState.isPlaying && document.visibilityState === 'hidden') {
+        this.setMediaPlaybackState('playing');
+        this.resumeSilentAudio();
+        // reenvia comando play para o iframe do YouTube
+        this.controlHandlers.play?.();
+      }
+    }, 10000);
+  }
 
- /**
- * Start audio playback
- */
- public startAudio(videoId: string, metadata?: AudioMetadata): void {
- this.audioState = {
-...this.audioState,
- isPlaying: true,
- currentVideoId: videoId,
- title: metadata?.title,
- artist: metadata?.artist,
-};
- this.requestWakeLock();
- this.updateMediaSession(metadata);
- this.startKeepAlive();
- this.playSilentAudio();
-}
+  private stopKeepAlive(): void {
+    if (this.keepAliveTimer) {
+      window.clearInterval(this.keepAliveTimer);
+      this.keepAliveTimer = null;
+    }
+  }
 
- /**
- * Stop audio playback
- */
- public stopAudio(): void {
- this.audioState = {
-...this.audioState,
- isPlaying: false,
- currentVideoId: null,
-};
- this.releaseWakeLock();
- this.stopKeepAlive();
- this.stopSilentAudio();
- this.setMediaPlaybackState('none');
-}
+  // ============ PUBLIC API ============
+  public isNativePlatform(): boolean {
+    return Capacitor.isNativePlatform();
+  }
 
- public pauseAudio(): void {
- this.audioState = {
-...this.audioState,
- isPlaying: false,
-};
- this.releaseWakeLock();
- this.stopKeepAlive();
- this.setMediaPlaybackState('paused');
-}
+  public getPlatform(): string {
+    return Capacitor.getPlatform();
+  }
 
- public setControlHandlers(handlers: AudioControlHandlers): void {
- this.controlHandlers = handlers;
-}
+  public startAudio(videoId: string, metadata?: AudioMetadata): void {
+    this.audioState = {
+      ...this.audioState,
+      isPlaying: true,
+      currentVideoId: videoId,
+      title: metadata?.title,
+      artist: metadata?.artist,
+      artwork: metadata?.artwork,
+    };
+    this.requestWakeLock();
+    this.resumeSilentAudio();
+    this.updateWebMediaSessionMetadata(metadata);
+    this.updateNativeMediaSession(metadata);
+    this.startKeepAlive();
+  }
 
- /**
- * Set volume
- */
- public setVolume(volume: number): void {
- this.audioState.volume = Math.max(0, Math.min(100, volume));
-}
+  public stopAudio(): void {
+    this.audioState = {
+      ...this.audioState,
+      isPlaying: false,
+      currentVideoId: null,
+    };
+    this.releaseWakeLock();
+    this.stopKeepAlive();
+    this.suspendSilentAudio();
+    this.setMediaPlaybackState('none');
+  }
 
- /**
- * Get current audio state
- */
- public getState(): AudioState {
- return {...this.audioState};
-}
+  public pauseAudio(): void {
+    this.audioState = { ...this.audioState, isPlaying: false };
+    this.releaseWakeLock();
+    this.stopKeepAlive();
+    this.setMediaPlaybackState('paused');
+  }
 
- /**
- * Check if audio is currently playing
- */
- public isPlaying(): boolean {
- return this.audioState.isPlaying;
-}
+  public setControlHandlers(handlers: AudioControlHandlers): void {
+    this.controlHandlers = handlers;
+  }
+
+  public setVolume(volume: number): void {
+    this.audioState.volume = Math.max(0, Math.min(100, volume));
+  }
+
+  public getState(): AudioState {
+    return { ...this.audioState };
+  }
+
+  public isPlaying(): boolean {
+    return this.audioState.isPlaying;
+  }
 }
 
 export const backgroundAudioService = BackgroundAudioService.getInstance();
