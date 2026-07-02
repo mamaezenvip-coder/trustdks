@@ -196,12 +196,10 @@ const Index = () => {
  <div className="text-center space-y-2 animate-fade-in pt-2">
    <div className="flex items-center justify-center mb-1">
      <img
-       src={mamaeZenWordmark}
+       src={mamaeZenBrand.url}
        alt="Mamãe Zen"
-       width={1536}
-       height={512}
-       loading="lazy"
-       className="w-auto h-16 md:h-20 object-contain drop-shadow-[0_0_25px_hsl(330_100%_60%/0.45)]"
+       loading="eager"
+       className="w-40 h-40 md:w-48 md:h-48 object-contain rounded-full drop-shadow-[0_0_35px_hsl(330_100%_60%/0.55)]"
      />
    </div>
   <p className="text-muted-foreground text-sm font-medium px-4">
