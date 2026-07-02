@@ -20,7 +20,7 @@ const generateKey = () => {
  const segments = Array.from({length: 4}, () =>
  Array.from({length: 5}, () => chars[Math.floor(Math.random() * chars.length)]).join('')
 );
- return segments.join('-');
+ return`MZ-${segments.join('-')}`;
 };
 
 const AdminLicenseKeys = () => {

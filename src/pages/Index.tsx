@@ -27,7 +27,7 @@ import TrialBanner from'@/components/TrialBanner';
 import {Tabs, TabsContent, TabsList, TabsTrigger} from'@/components/ui/tabs';
 import {Baby, Music, Calendar, BookOpen, Moon, Milk, Sparkles, Pill, Brain, MapPin, Instagram, ShoppingBag, Cross, Bell, Heart, Lock, Key, LogOut, Shield} from'lucide-react';
 import mamaeZenLogo from'@/assets/mamae-zen-logo.png';
-import mamaeZenBrand from'@/assets/mamae-zen-brand.png.asset.json';
+import mamaeZenBrand from'@/assets/mamae-zen-banner.png.asset.json';
 import {toast} from'sonner';
 import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} from'@/components/ui/dialog';
 import {Input} from'@/components/ui/input';
@@ -194,12 +194,12 @@ const Index = () => {
  <div className="w-full max-w-md mx-auto p-4 space-y-6">
  {/* Header */}
  <div className="text-center space-y-2 animate-fade-in pt-2">
-   <div className="flex items-center justify-center mb-1">
+   <div className="flex items-center justify-center mb-1 -mx-4">
      <img
        src={mamaeZenBrand.url}
        alt="Mamãe Zen"
        loading="eager"
-       className="w-40 h-40 md:w-48 md:h-48 object-contain rounded-full drop-shadow-[0_0_35px_hsl(330_100%_60%/0.55)]"
+       className="w-full max-w-sm h-auto object-contain drop-shadow-[0_0_25px_hsl(330_100%_60%/0.5)]"
      />
    </div>
   <p className="text-muted-foreground text-sm font-medium px-4">
