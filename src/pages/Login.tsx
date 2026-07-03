@@ -28,6 +28,9 @@ const features = [
  {image: previewPlayer, labelPt:'Player', labelEn:'Player'},
 ];
 
+const normalizeLicenseKey = (key: string) =>
+ key.trim().replace(/["'“”‘’`´\s]/g,'').replace(/[^a-zA-Z0-9-]/g,'').toUpperCase().slice(0, 50);
+
 type AuthMode ='login'|'signup'|'license';
 
 const Login = () => {
@@ -214,6 +217,16 @@ const Login = () => {
       setIsSubmitting(false);
     }
   };
+
+ const saveLicenseKeyForLogin = () => {
+  const normalizedKey = normalizeLicenseKey(licenseKey);
+  if (!normalizedKey) return;
+  sessionStorage.setItem('pending_license_key', normalizedKey);
+  setLicenseKey(normalizedKey);
+  toast.info(isUSA 
+  ?'Key saved! Login or create account to activate.':'Chave salva! Faça login ou crie uma conta para ativar.');
+  setMode('login');
+ };
 
  if (loading) {
  return (
@@ -486,26 +499,20 @@ const Login = () => {
  {/* License key form */}
  {mode ==='license'&& (
  <div className="space-y-3">
- <p className="text-xs text-muted-foreground text-center">
+  <p className="text-xs text-muted-foreground text-center">
  {isUSA 
-?'First create an account or login, then activate your key in the app.':'Primeiro crie uma conta ou faça login, depois ative sua chave no app.'}
+  ?'Paste your key here. It will be activated automatically after login.':'Cole sua chave aqui. Ela será ativada automaticamente depois do login.'}
  </p>
  <div className="relative">
  <Key className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"/>
  <Input
- placeholder="MZ-XXXXX-XXXXX-XXXXX"value={licenseKey}
- onChange={e => setLicenseKey(e.target.value.toUpperCase())}
+  placeholder="MZ-AB3C-D7F8-H2J9-K1LM"value={licenseKey}
+  onChange={e => setLicenseKey(normalizeLicenseKey(e.target.value))}
  maxLength={50}
  className="h-13 rounded-xl bg-muted/20 border-border/40 pl-12 font-mono tracking-wider text-sm focus:border-primary/50"/>
  </div>
  <Button
- onClick={() => {
- if (!licenseKey.trim()) return;
- sessionStorage.setItem('pending_license_key', licenseKey.trim());
- toast.info(isUSA 
-?'Key saved! Login or create account to activate.':'Chave salva! Faça login ou crie uma conta para ativar.');
- setMode('login');
-}}
+  onClick={saveLicenseKeyForLogin}
  disabled={!licenseKey.trim()}
  className="w-full h-14 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl gap-3 text-base">
  <Key className="w-5 h-5"/>
