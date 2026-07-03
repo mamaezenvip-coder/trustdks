@@ -55,18 +55,21 @@ export type Database = {
       license_keys: {
         Row: {
           created_at: string
+          duration_days: number
           id: string
           is_used: boolean
           key: string
         }
         Insert: {
           created_at?: string
+          duration_days?: number
           id?: string
           is_used?: boolean
           key: string
         }
         Update: {
           created_at?: string
+          duration_days?: number
           id?: string
           is_used?: boolean
           key?: string
@@ -197,6 +200,8 @@ export type Database = {
         }
         Returns: boolean
       }
+      normalize_license_key: { Args: { p_key: string }; Returns: string }
+      sync_current_user_profile: { Args: never; Returns: Json }
     }
     Enums: {
       app_role: "admin" | "user"
