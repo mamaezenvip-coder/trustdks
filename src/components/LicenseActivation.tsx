@@ -13,6 +13,9 @@ interface LicenseActivationProps {
  onOpenChange: (open: boolean) => void;
 }
 
+const normalizeLicenseKey = (key: string) =>
+ key.trim().replace(/["'“”‘’`´\s]/g,'').replace(/[^a-zA-Z0-9-]/g,'').toUpperCase().slice(0, 50);
+
 const LicenseActivation = ({open, onOpenChange}: LicenseActivationProps) => {
  const {activateKey, license} = useAuth();
  const {isUSA} = useCountry();
@@ -20,9 +23,10 @@ const LicenseActivation = ({open, onOpenChange}: LicenseActivationProps) => {
  const [isLoading, setIsLoading] = useState(false);
 
  const handleActivate = async () => {
- if (!keyInput.trim()) return;
+ const normalizedKey = normalizeLicenseKey(keyInput);
+ if (!normalizedKey) return;
  setIsLoading(true);
- const result = await activateKey(keyInput.trim().toUpperCase());
+ const result = await activateKey(normalizedKey);
  setIsLoading(false);
 
  if (result.success) {
@@ -73,8 +77,8 @@ const LicenseActivation = ({open, onOpenChange}: LicenseActivationProps) => {
 ?'Enter your license key to unlock all premium features for 360 days.':'Digite sua chave de licença para liberar todas as funções premium por 360 dias.'}
  </p>
  <Input
- placeholder="MZ-XXXXX-XXXXX-XXXXX-XXXXX"value={keyInput}
- onChange={(e) => setKeyInput(e.target.value.toUpperCase())}
+ placeholder="MZ-AB3C-D7F8-H2J9-K1LM"value={keyInput}
+ onChange={(e) => setKeyInput(normalizeLicenseKey(e.target.value))}
  onKeyDown={(e) => e.key ==='Enter'&& handleActivate()}
  className="text-center font-mono text-base tracking-wider bg-muted border-border text-foreground"maxLength={26}
  />
