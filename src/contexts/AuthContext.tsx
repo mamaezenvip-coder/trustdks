@@ -23,6 +23,9 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const normalizeLicenseKey = (key: string) =>
+ key.trim().replace(/["'“”‘’`´\s]/g,'').replace(/[^a-zA-Z0-9-]/g,'').toUpperCase().slice(0, 50);
+
 export const AuthProvider = ({children}: {children: ReactNode}) => {
  const [user, setUser] = useState<User | null>(null);
  const [session, setSession] = useState<Session | null>(null);
@@ -43,6 +46,8 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
 .from('key_activations')
 .select('expires_at, source')
 .eq('user_id', userId)
+.order('expires_at', {ascending: false})
+.limit(1)
 .maybeSingle();
 
  if (error) {
@@ -77,7 +82,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
  return {success: false, message:`Too many attempts. Wait ${seconds}s.`};
 }
 
- const sanitizedKey = key.trim().replace(/[^a-zA-Z0-9\-_]/g,'').slice(0, 50);
+ const sanitizedKey = normalizeLicenseKey(key);
  if (!sanitizedKey) return {success: false, message:'Invalid key format'};
 
  try {
@@ -111,13 +116,18 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
 };
 
  useEffect(() => {
+ const syncUser = async (currentUser: User) => {
+  await supabase.rpc('sync_current_user_profile');
+  await checkLicense(currentUser.id);
+ };
+
  const {data: {subscription}} = supabase.auth.onAuthStateChange((_event, session) => {
  setSession(session);
  setUser(session?.user?? null);
  setLoading(false);
  if (session?.user) {
  setTimeout(async () => {
- await checkLicense(session.user.id);
+ await syncUser(session.user);
  // Auto-activate pending license key from login flow
  const pendingKey = sessionStorage.getItem('pending_license_key');
  if (pendingKey) {
@@ -139,7 +149,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
  setUser(session?.user?? null);
  setLoading(false);
  if (session?.user) {
- checkLicense(session.user.id);
+ syncUser(session.user);
 } else {
  setLicenseLoading(false);
 }

@@ -13,6 +13,7 @@ interface LicenseKey {
  key: string;
  is_used: boolean;
  created_at: string;
+ duration_days?: number;
 }
 
 const generateKey = () => {
@@ -28,6 +29,7 @@ const AdminLicenseKeys = () => {
  const [search, setSearch] = useState('');
  const [generating, setGenerating] = useState(false);
  const [batchCount, setBatchCount] = useState(1);
+ const [durationDays, setDurationDays] = useState(360);
 
  const load = async () => {
  const {data} = await supabase
@@ -44,9 +46,10 @@ const AdminLicenseKeys = () => {
  const count = Math.min(Math.max(1, batchCount), 50);
  const newKeys = Array.from({length: count}, () => ({
  key: generateKey(),
+ duration_days: durationDays,
 }));
 
- const {error} = await supabase.from('license_keys').insert(newKeys);
+  const {error} = await supabase.from('license_keys').insert(newKeys);
  if (error) {
  toast.error('Erro ao gerar chaves');
 } else {
@@ -87,7 +90,23 @@ const AdminLicenseKeys = () => {
  </div>
 
  {/* Generate */}
- <Card className="bg-card/80 border-border p-3">
+ <Card className="bg-card/80 border-border p-3 space-y-3">
+ <div className="grid grid-cols-2 gap-2">
+ <Button
+ type="button"
+ variant={durationDays === 30?'default':'outline'}
+ onClick={() => setDurationDays(30)}
+ className="h-10 text-xs font-bold">
+ 30 dias
+ </Button>
+ <Button
+ type="button"
+ variant={durationDays === 360?'default':'outline'}
+ onClick={() => setDurationDays(360)}
+ className="h-10 text-xs font-bold">
+ Anual
+ </Button>
+ </div>
  <div className="flex gap-2 items-center">
  <Input
  type="number"min={1}
@@ -97,7 +116,7 @@ const AdminLicenseKeys = () => {
  className="w-20 bg-muted border-border"/>
  <Button onClick={generateKeys} disabled={generating} className="flex-1">
  <Plus className="w-4 h-4 mr-1"/>
- {generating?'Gerando...':`Gerar ${batchCount} chave(s)`}
+ {generating?'Gerando...':`Gerar ${batchCount} chave(s) ${durationDays === 30?'30 dias':'anual'}`}
  </Button>
  </div>
  </Card>
@@ -122,7 +141,7 @@ const AdminLicenseKeys = () => {
  {k.key}
  </code>
  <Badge variant={k.is_used?'secondary':'default'} className="text-[10px] shrink-0">
- {k.is_used?'Usada':'Livre'}
+ {k.is_used?'Usada':`${k.duration_days === 30?'30d':'Anual'}`}
  </Badge>
  <Button variant="ghost"size="icon"className="h-7 w-7 shrink-0"onClick={() => copyKey(k.key)}>
  <Copy className="w-3 h-3"/>
