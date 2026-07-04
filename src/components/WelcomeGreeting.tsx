@@ -62,26 +62,23 @@ const WelcomeGreeting = ({ userName = "Letícia", onMoodSelect }: WelcomeGreetin
   const GreetingIcon = greeting.icon;
 
   return (
-    <Card 
-      className="relative overflow-hidden border-0 shadow-lg"
-      style={{ background: greeting.gradient }}
-    >
+    <Card className="relative overflow-hidden bg-background border border-primary/60 shadow-[0_0_20px_hsl(var(--primary)/0.25)]">
       <div className="relative z-10 p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <GreetingIcon className="w-6 h-6 text-foreground drop-shadow-lg" />
-            <h1 className="text-lg font-bold text-foreground drop-shadow-lg">
+            <GreetingIcon className="w-6 h-6 text-primary" />
+            <h1 className="text-lg font-bold text-foreground">
               {greeting.text}
             </h1>
           </div>
-          <Sparkles className="w-5 h-5 text-foreground/80 animate-pulse" />
+          <Sparkles className="w-5 h-5 text-primary animate-pulse" />
         </div>
-        
-        <div className="bg-foreground/30 backdrop-blur-sm rounded-xl p-3 border border-border">
+
+        <div className="bg-background/60 rounded-xl p-3 border border-primary/40">
           <p className="text-foreground text-xs font-medium mb-2">
             {isUSA ? 'How are you feeling?' : 'Como está se sentindo?'}
           </p>
-          
+
           <div className="grid grid-cols-5 gap-1.5">
             {moods.map((mood) => {
               const Icon = mood.icon;
@@ -89,9 +86,9 @@ const WelcomeGreeting = ({ userName = "Letícia", onMoodSelect }: WelcomeGreetin
                 <button
                   key={mood.value}
                   onClick={() => onMoodSelect?.(mood.value)}
-                  className="flex flex-col items-center gap-1 p-2 bg-foreground/60 hover:bg-foreground/80 backdrop-blur-sm rounded-lg transition-all active:scale-95 border border-border"
+                  className="flex flex-col items-center gap-1 p-2 bg-background hover:bg-primary/10 rounded-lg transition-all active:scale-95 border border-primary/40 hover:border-primary"
                 >
-                  <Icon className="w-5 h-5 text-foreground" />
+                  <Icon className="w-5 h-5 text-primary" />
                   <span className="text-[10px] font-medium text-foreground leading-tight">{mood.label}</span>
                 </button>
               );
@@ -99,14 +96,10 @@ const WelcomeGreeting = ({ userName = "Letícia", onMoodSelect }: WelcomeGreetin
           </div>
         </div>
 
-        <p className="text-foreground/90 text-xs mt-2 text-center font-medium">
+        <p className="text-muted-foreground text-xs mt-2 text-center font-medium">
           {currentTime.toLocaleTimeString(isUSA ? 'en-US' : 'pt-BR', { hour: '2-digit', minute: '2-digit' })}
         </p>
       </div>
-      
-      {/* Decorative elements */}
-      <div className="absolute -top-10 -right-10 w-20 h-20 bg-foreground/20 rounded-full blur-2xl"></div>
-      <div className="absolute -bottom-10 -left-10 w-20 h-20 bg-foreground/20 rounded-full blur-2xl"></div>
     </Card>
   );
 };
