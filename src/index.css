@@ -25,7 +25,7 @@ All colors MUST be HSL.
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 328 100% 54%;
+    --border: 328 100% 22%;
     --input: 0 0% 10%;
     --ring: 328 100% 54%;
     --radius: 0.75rem;
@@ -111,14 +111,33 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, hsl(328 100% 54% / 0.18), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 100% 100%, hsl(328 100% 54% / 0.10), transparent 60%);
+    background-attachment: fixed;
   }
 
-  /* Padronização global dos ícones Lucide:
-     - Cor: herda do contexto (currentColor) — respeita text-* dos pais
-     - Stroke uniforme em 2px
-     Tamanho continua controlado por classes Tailwind (w-*, h-*, size-*). */
   svg.lucide {
     stroke-width: 2;
   }
 }
+
+@layer utilities {
+  .neon-border {
+    @apply border border-primary/50;
+    box-shadow: 0 0 0 1px hsl(328 100% 54% / 0.15), 0 0 22px -6px hsl(328 100% 54% / 0.55);
+  }
+  .neon-glow {
+    box-shadow: 0 0 24px -4px hsl(328 100% 54% / 0.55);
+  }
+  .neon-text {
+    text-shadow: 0 0 12px hsl(328 100% 54% / 0.55);
+  }
+  .surface-card {
+    background:
+      linear-gradient(180deg, hsl(0 0% 5% / 0.9), hsl(0 0% 2% / 0.9));
+    @apply border border-primary/25 rounded-xl backdrop-blur-sm;
+  }
+}
+

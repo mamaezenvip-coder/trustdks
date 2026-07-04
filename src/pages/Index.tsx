@@ -96,10 +96,10 @@ const Index = () => {
  return (
  <TabsTrigger
  value={value}
- className="flex-col gap-1 py-2 px-1 text-xs text-muted-foreground data-[state=active]:bg-gradient-to-br data-[state=active]:from-primary data-[state=active]:to-secondary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg rounded-lg transition-all relative">
+ className="flex-col gap-1 py-2 px-1 text-[11px] font-medium text-muted-foreground border border-transparent data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-primary data-[state=active]:shadow-[0_0_18px_-4px_hsl(var(--primary)/0.8)] hover:text-primary hover:border-primary/40 rounded-lg transition-all relative">
  <div className="relative">
  {icon}
- {isLocked && <Lock className="w-3 h-3 text-yellow-400 absolute -top-1 -right-2"/>}
+ {isLocked && <Lock className="w-3 h-3 text-primary absolute -top-1 -right-2 drop-shadow-[0_0_4px_hsl(var(--primary))]"/>}
  </div>
  <span>{label}</span>
  </TabsTrigger>
@@ -210,13 +210,13 @@ const Index = () => {
  <Instagram className="w-5 h-5"/>
  <span>@app_mamae_zen</span>
  </a>
- <div className="flex items-center justify-center gap-2 text-xs">
-  {license.isActive? (
-  <span className="px-3 py-1 rounded-full bg-green-500/20 text-green-400 font-semibold text-xs border border-green-500/30">PREMIUM</span>
+  <div className="flex items-center justify-center gap-2 text-xs">
+   {license.isActive? (
+    <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-300 font-semibold text-[11px] tracking-wide border border-emerald-400/40 shadow-[0_0_14px_-4px_hsl(160_80%_50%/0.6)]">● PREMIUM</span>
 ): (
  <Button
  variant="ghost"size="sm"onClick={() => setShowLicenseDialog(true)}
- className="px-3 py-1 h-auto rounded-full bg-primary/20 text-primary font-semibold text-xs border border-primary/30 hover:bg-primary/30">
+ className="px-3 py-1 h-auto rounded-full bg-primary/10 text-primary font-semibold text-[11px] border border-primary/50 hover:bg-primary/20 shadow-[0_0_14px_-4px_hsl(var(--primary)/0.6)]">
  <Key className="w-3 h-3 mr-1"/>
  {isUSA?'Activate Key':'Ativar Chave'}
  </Button>
@@ -224,17 +224,17 @@ const Index = () => {
  </div>
 
  {/* User info & logout */}
- <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
+ <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground pt-1">
  {isAdmin && (
  <Link to="/admin">
- <Button variant="ghost"size="sm"className="h-6 px-2 text-xs text-primary hover:text-primary/80">
+ <Button variant="ghost"size="sm"className="h-7 px-2 text-[11px] rounded-full border border-primary/40 text-primary hover:bg-primary/10">
  <Shield className="w-3 h-3 mr-1"/> Admin
  </Button>
  </Link>
 )}
- <span>{user?.email}</span>
- <Button variant="ghost"size="sm"onClick={signOut} className="h-6 px-2 text-xs text-muted-foreground hover:text-destructive">
- <LogOut className="w-3 h-3"/>
+ <span className="truncate max-w-[180px]">{user?.email}</span>
+ <Button variant="ghost"size="icon"onClick={signOut} className="h-7 w-7 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full">
+ <LogOut className="w-3.5 h-3.5"/>
  </Button>
  </div>
  </div>
@@ -253,14 +253,14 @@ const Index = () => {
 
  {/* Tabs */}
  <Tabs defaultValue="guides"className="animate-fade-in">
- <TabsList className="grid w-full grid-cols-4 gap-1 h-auto p-1.5 bg-card/80 border border-border rounded-xl">
+ <TabsList className="grid w-full grid-cols-4 gap-1 h-auto p-1.5 bg-card/60 border border-primary/25 rounded-xl backdrop-blur-sm shadow-[0_0_20px_-8px_hsl(var(--primary)/0.5)]">
  {renderTabTrigger('guides', <Baby className="w-4 h-4"/>, isUSA?'Guides':'Guias')}
  {renderTabTrigger('sounds', <Music className="w-4 h-4"/>, isUSA?'Music':'Músicas')}
  {renderTabTrigger('medicine', <Pill className="w-4 h-4"/>, isUSA?'Medicine':'Remédios')}
  {renderTabTrigger('emergency', <MapPin className="w-4 h-4"/>, isUSA?'Emergency':'Emergência')}
  </TabsList>
 
- <TabsList className="grid w-full grid-cols-4 gap-1 h-auto p-1.5 mt-2 bg-card/80 border border-border rounded-xl">
+ <TabsList className="grid w-full grid-cols-4 gap-1 h-auto p-1.5 mt-2 bg-card/60 border border-primary/25 rounded-xl backdrop-blur-sm shadow-[0_0_20px_-8px_hsl(var(--primary)/0.5)]">
  {renderTabTrigger('notifications', <Bell className="w-4 h-4"/>, isUSA?'Reminders':'Lembretes')}
  {renderTabTrigger('pharmacy', <Cross className="w-4 h-4"/>, isUSA?'Pharmacy':'Farmácia')}
  {renderTabTrigger('pregnancy', <Heart className="w-4 h-4"/>, isUSA?'Pregnancy':'Gravidez')}
@@ -281,19 +281,19 @@ const Index = () => {
  </div>
 
  {/* Secondary Tabs */}
- <div className="mt-4 p-3 rounded-xl bg-card/60 border border-border shadow-lg">
+ <div className="mt-4 p-3 rounded-xl bg-card/60 border border-primary/25 backdrop-blur-sm shadow-[0_0_20px_-8px_hsl(var(--primary)/0.5)]">
  <details className="group">
  <summary className="cursor-pointer list-none flex items-center justify-between font-semibold text-sm text-foreground">
  <span>{isUSA?'More Premium Features':'Mais Recursos Premium'}</span>
  <span className="transition group-open:rotate-180 text-primary">▼</span>
  </summary>
  <div className="mt-3 space-y-2">
- <TabsList className="grid w-full grid-cols-2 gap-1 h-auto p-1.5 bg-muted/50 rounded-lg">
+ <TabsList className="grid w-full grid-cols-2 gap-1 h-auto p-1.5 bg-background/60 border border-primary/20 rounded-lg">
  {renderTabTrigger('sleep', <Moon className="w-4 h-4"/>, isUSA?'Sleep':'Sono')}
  {renderTabTrigger('feeding', <Milk className="w-4 h-4"/>, isUSA?'Feed':'Mamar')}
  {renderTabTrigger('autism', <Brain className="w-4 h-4"/>, isUSA?'Autism':'Autismo')}
  {renderTabTrigger('routine', <Calendar className="w-4 h-4"/>, isUSA?'Routine':'Rotina')}
- <TabsTrigger value="ebook"className="flex-col gap-1 py-2 text-xs text-muted-foreground data-[state=active]:bg-gradient-to-br data-[state=active]:from-primary data-[state=active]:to-secondary data-[state=active]:text-primary-foreground rounded-lg col-span-2">
+ <TabsTrigger value="ebook"className="flex-col gap-1 py-2 text-[11px] text-muted-foreground border border-transparent data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-primary data-[state=active]:shadow-[0_0_18px_-4px_hsl(var(--primary)/0.8)] hover:text-primary hover:border-primary/40 rounded-lg col-span-2 transition-all">
  <BookOpen className="w-4 h-4"/>
  <span>E-book</span>
  </TabsTrigger>
