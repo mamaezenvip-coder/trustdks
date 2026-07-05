@@ -134,8 +134,8 @@ const AdminSupport = () => {
 
  if (selectedTicket) {
  return (
- <Card className="bg-card/80 border-border">
- <div className="p-3 border-b border-border flex items-center gap-2">
+ <Card className="bg-card/80 border border-primary/30 shadow-[0_0_18px_-8px_hsl(var(--primary)/0.55)]">
+ <div className="p-3 border-b border-primary/25 flex items-center gap-2">
  <Button variant="ghost"size="icon"onClick={() => setSelectedTicket(null)}>
  <ArrowLeft className="w-4 h-4"/>
  </Button>
@@ -171,13 +171,13 @@ const AdminSupport = () => {
  </div>
  </ScrollArea>
 
- <div className="p-3 border-t border-border flex gap-2">
+ <div className="p-3 border-t border-primary/25 flex gap-2">
  <Input
  placeholder="Responder..."value={newMessage}
  onChange={e => setNewMessage(e.target.value)}
  onKeyDown={e => e.key ==='Enter'&&!e.shiftKey && sendMessage()}
  maxLength={2000}
- className="bg-muted border-border"/>
+ className="bg-background/60 border border-primary/25"/>
  <Button onClick={sendMessage} disabled={sending ||!newMessage.trim()} size="icon">
  <Send className="w-4 h-4"/>
  </Button>
@@ -187,8 +187,8 @@ const AdminSupport = () => {
 }
 
  return (
- <Card className="bg-card/80 border-border">
- <div className="p-3 border-b border-border flex gap-2">
+ <Card className="bg-card/80 border border-primary/30 shadow-[0_0_18px_-8px_hsl(var(--primary)/0.55)]">
+ <div className="p-3 border-b border-primary/25 flex gap-2">
  {(['all','open','closed'] as const).map(f => (
  <Button
  key={f}
@@ -210,7 +210,7 @@ const AdminSupport = () => {
  <button
  key={t.id}
  onClick={() => setSelectedTicket(t)}
- className="w-full text-left p-3 rounded-lg bg-muted/50 border border-border/50 hover:bg-muted transition-colors">
+ className="w-full text-left p-3 rounded-lg bg-muted/50 border border-primary/20 hover:bg-muted transition-colors">
  <div className="flex items-center gap-2">
  {t.status ==='open'? <Clock className="w-3.5 h-3.5 text-yellow-500"/>: <CheckCircle className="w-3.5 h-3.5 text-green-500"/>}
  <span className="text-sm font-medium text-foreground flex-1 truncate">{t.subject}</span>

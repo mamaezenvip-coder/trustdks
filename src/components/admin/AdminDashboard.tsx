@@ -62,7 +62,7 @@ const AdminDashboard = () => {
  return (
  <div className="grid grid-cols-2 gap-3">
  {Array.from({length: 6}).map((_, i) => (
- <Card key={i} className="bg-card/80 border-border animate-pulse">
+ <Card key={i} className="bg-card/80 border border-primary/30 shadow-[0_0_18px_-8px_hsl(var(--primary)/0.55)] animate-pulse">
  <CardContent className="p-4 h-20"/>
  </Card>
 ))}
@@ -73,7 +73,7 @@ const AdminDashboard = () => {
  return (
  <div className="grid grid-cols-2 gap-3">
  {cards.map(c => (
- <Card key={c.label} className="bg-card/80 border-border">
+ <Card key={c.label} className="bg-card/80 border border-primary/30 shadow-[0_0_18px_-8px_hsl(var(--primary)/0.55)]">
  <CardContent className="p-4 flex items-center gap-3">
  <div className={`p-2 rounded-lg bg-muted ${c.color}`}>
  <c.icon className="w-5 h-5"/>

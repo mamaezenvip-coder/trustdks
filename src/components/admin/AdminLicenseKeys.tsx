@@ -75,22 +75,22 @@ const AdminLicenseKeys = () => {
  <div className="space-y-3">
  {/* Stats */}
  <div className="grid grid-cols-3 gap-2">
- <Card className="bg-card/80 border-border p-3 text-center">
+ <Card className="bg-card/80 border border-primary/30 shadow-[0_0_18px_-8px_hsl(var(--primary)/0.55)] p-3 text-center">
  <p className="text-lg font-bold text-foreground">{keys.length}</p>
  <p className="text-[10px] text-muted-foreground">Total</p>
  </Card>
- <Card className="bg-card/80 border-border p-3 text-center">
+ <Card className="bg-card/80 border border-primary/30 shadow-[0_0_18px_-8px_hsl(var(--primary)/0.55)] p-3 text-center">
  <p className="text-lg font-bold text-green-400">{unused}</p>
  <p className="text-[10px] text-muted-foreground">Disponíveis</p>
  </Card>
- <Card className="bg-card/80 border-border p-3 text-center">
+ <Card className="bg-card/80 border border-primary/30 shadow-[0_0_18px_-8px_hsl(var(--primary)/0.55)] p-3 text-center">
  <p className="text-lg font-bold text-orange-400">{used}</p>
  <p className="text-[10px] text-muted-foreground">Usadas</p>
  </Card>
  </div>
 
  {/* Generate */}
- <Card className="bg-card/80 border-border p-3 space-y-3">
+ <Card className="bg-card/80 border border-primary/30 shadow-[0_0_18px_-8px_hsl(var(--primary)/0.55)] p-3 space-y-3">
  <div className="grid grid-cols-2 gap-2">
  <Button
  type="button"
@@ -113,7 +113,7 @@ const AdminLicenseKeys = () => {
  max={50}
  value={batchCount}
  onChange={e => setBatchCount(Number(e.target.value))}
- className="w-20 bg-muted border-border"/>
+ className="w-20 bg-background/60 border border-primary/25"/>
  <Button onClick={generateKeys} disabled={generating} className="flex-1">
  <Plus className="w-4 h-4 mr-1"/>
  {generating?'Gerando...':`Gerar ${batchCount} chave(s) ${durationDays === 30?'30 dias':'anual'}`}
@@ -127,15 +127,15 @@ const AdminLicenseKeys = () => {
  <Input
  placeholder="Buscar chave..."value={search}
  onChange={e => setSearch(e.target.value)}
- className="pl-9 bg-muted border-border"/>
+ className="pl-9 bg-background/60 border border-primary/25"/>
  </div>
 
  {/* Keys list */}
- <Card className="bg-card/80 border-border">
+ <Card className="bg-card/80 border border-primary/30 shadow-[0_0_18px_-8px_hsl(var(--primary)/0.55)]">
  <ScrollArea className="h-[45vh]">
  <div className="p-3 space-y-2">
  {filtered.map(k => (
- <div key={k.id} className="flex items-center gap-2 p-2.5 rounded-lg bg-muted/50 border border-border/50">
+ <div key={k.id} className="flex items-center gap-2 p-2.5 rounded-lg bg-muted/50 border border-primary/20">
  <Key className={`w-4 h-4 shrink-0 ${k.is_used?'text-muted-foreground':'text-primary'}`} />
  <code className={`text-xs flex-1 font-mono truncate ${k.is_used?'text-muted-foreground line-through':'text-foreground'}`}>
  {k.key}
