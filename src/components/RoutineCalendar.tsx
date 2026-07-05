@@ -33,11 +33,11 @@ const RoutineCalendar = () => {
 };
 
  const categories = {
- morning: {label:'Manhã', color:'from-primary/30 to-accent/30'},
- afternoon: {label:'Tarde', color:'from-secondary/40 to-primary/30'},
- evening: {label:'Noitinha', color:'from-accent/40 to-primary/30'},
- night: {label:'Noite', color:'from-primary/40 to-secondary/40'},
-};
+ morning: {label:'Manhã', color:'from-primary/25 to-primary/10'},
+ afternoon: {label:'Tarde', color:'from-primary/30 to-primary/10'},
+ evening: {label:'Noitinha', color:'from-primary/35 to-primary/10'},
+ night: {label:'Noite', color:'from-primary/40 to-primary/10'},
+ };
 
  const completedCount = routines.filter(r => r.completed).length;
  const progress = (completedCount / routines.length) * 100;
