@@ -230,6 +230,21 @@ export const useYouTubeEmbed = () => {
 });
 }, [removeIframe, state.volume]);
 
+ const pause = useCallback(() => {
+  sendCommand('pauseVideo');
+  backgroundAudioService.pauseAudio();
+  setState(prev => ({...prev, isPlaying: false, isLoading: false}));
+ }, [sendCommand]);
+
+ const resume = useCallback(() => {
+  if (!state.currentVideoId) return;
+
+  sendCommand('unMute');
+  sendCommand('playVideo');
+  backgroundAudioService.resumeAudio();
+  setState(prev => ({...prev, isPlaying: true, isLoading: false}));
+ }, [sendCommand, state.currentVideoId]);
+
  const setVolume = useCallback((volume: number) => {
  setState(prev => ({...prev, volume}));
  sendCommand('setVolume', [volume]);
@@ -245,6 +260,8 @@ export const useYouTubeEmbed = () => {
  containerRef,
  hiddenContainerRef,
  play,
+  pause,
+  resume,
  stop,
  setVolume,
 };
