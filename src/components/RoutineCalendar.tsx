@@ -82,9 +82,9 @@ const RoutineCalendar = () => {
  <button
  key={routine.id}
  onClick={() => toggleComplete(routine.id)}
- className={cn("w-full p-4 rounded-xl text-left transition-all duration-300 border-2",
+  className={cn("w-full p-4 rounded-xl text-left transition-all duration-300 border",
  routine.completed
-?"bg-primary/10 border-primary/30":"bg-card/60 dark:bg-card/40 border-border/40 hover:bg-card/80")}
+?"bg-primary/15 border-primary/50 shadow-[0_0_18px_-6px_hsl(var(--primary)/0.7)]":"bg-card border-primary/20 hover:border-primary/40 hover:bg-primary/5")}
  >
  <div className="flex items-center gap-4">
  {routine.completed? (
