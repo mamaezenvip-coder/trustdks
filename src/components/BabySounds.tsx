@@ -2,7 +2,7 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from"@/compon
 import {Button} from"@/components/ui/button";
 import {Slider} from"@/components/ui/slider";
 import {useState} from"react";
-import {Play, Volume2, Music, Square, Loader2, Info} from"lucide-react";
+import {Play, Pause, Volume2, Music, Loader2, Info} from"lucide-react";
 import {toast} from"@/hooks/use-toast";
 import {useCountry} from"@/contexts/CountryContext";
 import {useYouTubeEmbed} from"@/hooks/useYouTubeEmbed";
@@ -85,7 +85,8 @@ export default function BabySounds() {
  containerRef,
  hiddenContainerRef,
  play, 
- stop, 
+  pause,
+  resume,
   setVolume: setPlayerVolume,
 } = useYouTubeEmbed();
 
@@ -97,7 +98,8 @@ export default function BabySounds() {
  description: isUSA 
 ?'Premium high-quality audio to calm and help baby sleep':'Áudios premium em alta qualidade para acalmar e fazer o bebê dormir',
  playing: isUSA?'Playing...':'Tocando...',
- stopped: isUSA?'⏹ Stopped':'⏹ Parado',
+  paused: isUSA?'Paused':'Pausado',
+  resumed: isUSA?'Playing again':'Tocando novamente',
  loading: isUSA?'Loading...':'Carregando...',
  tapToPlay: isUSA?'Tap ▶ on video to start':'Toque ▶ no vídeo para iniciar',
  premium: isUSA 
@@ -106,11 +108,19 @@ export default function BabySounds() {
 
  const handleSoundSelect = (sound: Sound) => {
  if (currentVideoId === sound.youtubeId) {
- stop();
+  if (isPlaying) {
+  pause();
  toast({
- title: texts.stopped,
- description: isUSA?"Playback ended":"Reprodução encerrada",
+  title: texts.paused,
+  description: isUSA?"Playback paused":"Reprodução pausada",
 });
+ } else {
+  resume();
+  toast({
+  title: texts.resumed,
+  description: isUSA?"Playback resumed":"Reprodução retomada",
+  });
+ }
 } else {
  const name = isUSA? sound.nameEN: sound.name;
  const desc = isUSA? sound.descriptionEN: sound.description;
@@ -122,12 +132,20 @@ export default function BabySounds() {
 }
 };
 
- const handleStop = () => {
- stop();
+ const handlePauseResume = () => {
+  if (isPlaying) {
+  pause();
  toast({
- title: texts.stopped,
- description: isUSA?"Playback ended":"Reprodução encerrada",
+  title: texts.paused,
+  description: isUSA?"Playback paused":"Reprodução pausada",
 });
+ } else {
+  resume();
+  toast({
+  title: texts.resumed,
+  description: isUSA?"Playback resumed":"Reprodução retomada",
+  });
+ }
 };
 
  const getSoundName = (sound: Sound) => isUSA? sound.nameEN: sound.name;
@@ -226,9 +244,9 @@ export default function BabySounds() {
  </div>
  </div>
  <Button
- size="icon"variant="outline"onClick={handleStop}
+  size="icon"variant="outline"onClick={handlePauseResume}
  className="h-8 w-8 border-secondary/30 text-primary hover:bg-secondary/20">
- <Square className="w-3 h-3"/>
+  {isPlaying? <Pause className="w-3 h-3"/>: <Play className="w-3 h-3"/>}
  </Button>
  </div>
 
