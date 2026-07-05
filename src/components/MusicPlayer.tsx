@@ -128,6 +128,8 @@ const MusicPlayer = () => {
     containerRef,
     hiddenContainerRef,
     play,
+    pause,
+    resume,
     stop,
     setVolume: setPlayerVolume,
   } = useYouTubeEmbed();
@@ -139,6 +141,8 @@ const MusicPlayer = () => {
     resultsFor: isUSA ? 'Results for' : 'Resultados para',
     playing: isUSA ? 'Playing' : 'Tocando',
     stopped: isUSA ? 'Playback stopped' : 'Reprodução parada',
+    paused: isUSA ? 'Paused' : 'Pausado',
+    resumed: isUSA ? 'Playing again' : 'Tocando novamente',
     premium: isUSA
       ? 'Search and play any YouTube music.'
       : 'Pesquise e toque qualquer música do YouTube.',
@@ -197,7 +201,13 @@ const MusicPlayer = () => {
 
   const handleTrackSelect = (track: Track) => {
     if (currentVideoId === track.id) {
-      handleStop();
+      if (isPlaying) {
+        pause();
+        toast.success(`${texts.paused}: ${track.title}`);
+      } else {
+        resume();
+        toast.success(`${texts.resumed}: ${track.title}`);
+      }
     } else {
       playTrack(track);
     }
@@ -215,6 +225,18 @@ const MusicPlayer = () => {
     stop();
     setCurrentTrack(null);
     toast.success(texts.stopped);
+  };
+
+  const handlePauseResume = () => {
+    if (!currentTrack) return;
+
+    if (isPlaying) {
+      pause();
+      toast.success(`${texts.paused}: ${currentTrack.title}`);
+    } else {
+      resume();
+      toast.success(`${texts.resumed}: ${currentTrack.title}`);
+    }
   };
 
   const handleDownload = async (format: 'audio' | 'video') => {
@@ -429,8 +451,8 @@ const MusicPlayer = () => {
                   <p className="text-xs text-muted-foreground truncate">{currentTrack.artist}</p>
                 </div>
               </div>
-              <Button size="icon" variant="ghost" onClick={handleStop} className="h-10 w-10">
-                <Square className="w-4 h-4" />
+              <Button size="icon" variant="ghost" onClick={handlePauseResume} className="h-10 w-10">
+                {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
               </Button>
             </div>
 
