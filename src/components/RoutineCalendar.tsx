@@ -114,7 +114,7 @@ const RoutineCalendar = () => {
 
  {/* Motivational Message */}
  {progress === 100 && (
- <div className="mt-6 p-4 bg-gradient-to-r from-primary/20 to-accent/20 rounded-xl text-center border-2 border-primary/30">
+ <div className="mt-6 p-4 bg-primary/10 rounded-xl text-center border border-primary/50 shadow-[0_0_20px_-6px_hsl(var(--primary)/0.7)]">
  <p className="text-lg font-bold text-primary">
  Parabéns! Você completou todas as atividades de hoje! 
  </p>
