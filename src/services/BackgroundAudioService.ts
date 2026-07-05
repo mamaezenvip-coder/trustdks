@@ -1,4 +1,6 @@
 import { Capacitor } from '@capacitor/core';
+import { App } from '@capacitor/app';
+import { BackgroundTask, type CallbackID } from '@capawesome/capacitor-background-task';
 import { MediaSession } from '@capgo/capacitor-media-session';
 
 /**
@@ -41,6 +43,7 @@ class BackgroundAudioService {
   };
   private wakeLock: WakeLockSentinel | null = null;
   private keepAliveTimer: number | null = null;
+  private nativeBackgroundTaskId: CallbackID | null = null;
   private controlHandlers: AudioControlHandlers = {};
 
   // Web Audio silent context (mais confiável que <audio> data-URI no iOS 17+)
@@ -50,6 +53,8 @@ class BackgroundAudioService {
 
   private constructor() {
     this.setupVisibilityHandler();
+    this.setupPageLifecycleHandlers();
+    this.setupNativeAppStateHandler();
     this.setupWebMediaSession();
   }
 
@@ -107,14 +112,55 @@ class BackgroundAudioService {
     document.addEventListener('visibilitychange', () => {
       if (this.audioState.isPlaying) {
         if (document.visibilityState === 'hidden') {
-          this.requestWakeLock();
-          this.resumeSilentAudio();
-          this.setMediaPlaybackState('playing');
+          this.keepAliveNow();
+          this.startNativeBackgroundTask();
         } else {
           // volta ao foreground — mantém tudo ativo
-          this.resumeSilentAudio();
+          this.keepAliveNow();
+          this.finishNativeBackgroundTask();
         }
       }
+    });
+  }
+
+  private setupPageLifecycleHandlers(): void {
+    if (typeof window === 'undefined') return;
+
+    const keepAlive = () => {
+      if (this.audioState.isPlaying) {
+        this.keepAliveNow();
+        this.startNativeBackgroundTask();
+      }
+    };
+
+    window.addEventListener('pagehide', keepAlive);
+    window.addEventListener('blur', keepAlive);
+    window.addEventListener('freeze', keepAlive as EventListener);
+    window.addEventListener('pageshow', () => {
+      if (this.audioState.isPlaying) this.keepAliveNow();
+      this.finishNativeBackgroundTask();
+    });
+    window.addEventListener('focus', () => {
+      if (this.audioState.isPlaying) this.keepAliveNow();
+      this.finishNativeBackgroundTask();
+    });
+  }
+
+  private setupNativeAppStateHandler(): void {
+    if (!Capacitor.isNativePlatform()) return;
+    App.addListener('appStateChange', ({ isActive }) => {
+      if (!this.audioState.isPlaying) return;
+
+      if (isActive) {
+        this.keepAliveNow();
+        this.finishNativeBackgroundTask();
+        return;
+      }
+
+      this.keepAliveNow();
+      this.startNativeBackgroundTask();
+    }).catch(() => {
+      /* plugin ausente */
     });
   }
 
@@ -123,12 +169,11 @@ class BackgroundAudioService {
     if (typeof navigator === 'undefined' || !('mediaSession' in navigator)) return;
     try {
       navigator.mediaSession.setActionHandler('play', () => {
-        this.controlHandlers.play?.();
-        navigator.mediaSession.playbackState = 'playing';
+        this.resumeAudio();
       });
       navigator.mediaSession.setActionHandler('pause', () => {
         this.controlHandlers.pause?.();
-        navigator.mediaSession.playbackState = 'paused';
+        this.pauseAudio();
       });
       navigator.mediaSession.setActionHandler('stop', () => {
         this.controlHandlers.stop?.();
@@ -181,6 +226,13 @@ class BackgroundAudioService {
     }
   }
 
+  private keepAliveNow(): void {
+    this.requestWakeLock();
+    this.resumeSilentAudio();
+    this.setMediaPlaybackState('playing');
+    this.controlHandlers.play?.();
+  }
+
   // ============ CAPACITOR NATIVE MEDIA SESSION ============
   private async setMediaPlaybackState(playbackState: 'none' | 'paused' | 'playing'): Promise<void> {
     if (typeof navigator !== 'undefined' && 'mediaSession' in navigator) {
@@ -210,12 +262,11 @@ class BackgroundAudioService {
           : undefined,
       });
       await MediaSession.setActionHandler({ action: 'play' }, () => {
-        this.controlHandlers.play?.();
-        this.setMediaPlaybackState('playing');
+        this.resumeAudio();
       });
       await MediaSession.setActionHandler({ action: 'pause' }, () => {
         this.controlHandlers.pause?.();
-        this.setMediaPlaybackState('paused');
+        this.pauseAudio();
       });
       await MediaSession.setActionHandler({ action: 'stop' }, () => {
         this.controlHandlers.stop?.();
@@ -231,19 +282,54 @@ class BackgroundAudioService {
   private startKeepAlive(): void {
     if (this.keepAliveTimer || typeof window === 'undefined') return;
     this.keepAliveTimer = window.setInterval(() => {
-      if (this.audioState.isPlaying && document.visibilityState === 'hidden') {
-        this.setMediaPlaybackState('playing');
-        this.resumeSilentAudio();
-        // reenvia comando play para o iframe do YouTube
-        this.controlHandlers.play?.();
-      }
-    }, 10000);
+      if (this.audioState.isPlaying) this.keepAliveNow();
+    }, 4000);
   }
 
   private stopKeepAlive(): void {
     if (this.keepAliveTimer) {
       window.clearInterval(this.keepAliveTimer);
       this.keepAliveTimer = null;
+    }
+  }
+
+  private async startNativeBackgroundTask(): Promise<void> {
+    if (!Capacitor.isNativePlatform() || this.nativeBackgroundTaskId) return;
+
+    try {
+      let taskId: CallbackID = '';
+      taskId = await BackgroundTask.beforeExit(() => {
+        if (!this.audioState.isPlaying) {
+          BackgroundTask.finish({ taskId });
+          this.nativeBackgroundTaskId = null;
+          return;
+        }
+
+        this.keepAliveNow();
+
+        window.setTimeout(() => {
+          try {
+            BackgroundTask.finish({ taskId });
+          } finally {
+            this.nativeBackgroundTaskId = null;
+          }
+        }, 25000);
+      });
+      this.nativeBackgroundTaskId = taskId;
+    } catch {
+      this.nativeBackgroundTaskId = null;
+    }
+  }
+
+  private finishNativeBackgroundTask(): void {
+    if (!this.nativeBackgroundTaskId) return;
+
+    try {
+      BackgroundTask.finish({ taskId: this.nativeBackgroundTaskId });
+    } catch {
+      /* noop */
+    } finally {
+      this.nativeBackgroundTaskId = null;
     }
   }
 
@@ -280,6 +366,7 @@ class BackgroundAudioService {
     };
     this.releaseWakeLock();
     this.stopKeepAlive();
+    this.finishNativeBackgroundTask();
     this.suspendSilentAudio();
     this.setMediaPlaybackState('none');
   }
@@ -288,7 +375,16 @@ class BackgroundAudioService {
     this.audioState = { ...this.audioState, isPlaying: false };
     this.releaseWakeLock();
     this.stopKeepAlive();
+    this.finishNativeBackgroundTask();
     this.setMediaPlaybackState('paused');
+  }
+
+  public resumeAudio(): void {
+    if (!this.audioState.currentVideoId) return;
+
+    this.audioState = { ...this.audioState, isPlaying: true };
+    this.keepAliveNow();
+    this.startKeepAlive();
   }
 
   public setControlHandlers(handlers: AudioControlHandlers): void {
