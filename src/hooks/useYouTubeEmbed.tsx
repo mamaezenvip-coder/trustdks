@@ -15,10 +15,11 @@ interface YouTubeState {
 }
 
 export const useYouTubeEmbed = () => {
+ const persistedAudioState = backgroundAudioService.getState();
  const [state, setState] = useState<YouTubeState>({
- isPlaying: false,
- currentVideoId: null,
- volume: 70,
+ isPlaying: persistedAudioState.isPlaying,
+ currentVideoId: persistedAudioState.currentVideoId,
+ volume: persistedAudioState.volume,
  isLoading: false,
 });
 
@@ -29,17 +30,49 @@ export const useYouTubeEmbed = () => {
  // Detecta se é iOS
  const isIOS = typeof navigator!=='undefined'&& /iPad|iPhone|iPod/.test(navigator.userAgent);
 
+ const getPersistentHost = useCallback(() => {
+  if (typeof document === 'undefined') return null;
+
+  let host = document.getElementById('mamae-zen-persistent-audio-host') as HTMLDivElement | null;
+  if (!host) {
+   host = document.createElement('div');
+   host.id = 'mamae-zen-persistent-audio-host';
+   host.setAttribute('aria-hidden', 'true');
+   host.style.cssText = 'position:fixed;left:0;bottom:0;width:1px;height:1px;opacity:0.01;pointer-events:none;z-index:-1;overflow:hidden;';
+   document.body.appendChild(host);
+  }
+
+  return host;
+ }, []);
+
+ const persistIframe = useCallback(() => {
+  if (!iframeRef.current || !backgroundAudioService.isPlaying()) return;
+
+  const host = getPersistentHost();
+  if (!host) return;
+
+  iframeRef.current.style.cssText = 'width:1px;height:1px;position:absolute;opacity:0.01;pointer-events:none;';
+  host.appendChild(iframeRef.current);
+ }, [getPersistentHost]);
+
  // Cleanup ao desmontar
  useEffect(() => {
+  if (!iframeRef.current) {
+   const persistedIframe = document.getElementById('mamae-zen-youtube-player') as HTMLIFrameElement | null;
+   if (persistedIframe) {
+    iframeRef.current = persistedIframe;
+   }
+  }
+
+  if (iframeRef.current && containerRef.current && state.currentVideoId) {
+   iframeRef.current.style.cssText ='width:100%;height:200px;border-radius:12px;background:#000;';
+   containerRef.current.appendChild(iframeRef.current);
+  }
+
  return () => {
- if (iframeRef.current) {
- iframeRef.current.src ='';
- iframeRef.current.remove();
- iframeRef.current = null;
-}
- backgroundAudioService.stopAudio();
+  persistIframe();
 };
-}, []);
+}, [persistIframe, state.currentVideoId]);
 
  const sendCommand = useCallback((func: string, args: unknown[] = []) => {
  try {
@@ -60,6 +93,8 @@ export const useYouTubeEmbed = () => {
  }
  if (containerRef.current) containerRef.current.innerHTML ='';
  if (hiddenContainerRef.current) hiddenContainerRef.current.innerHTML ='';
+  const host = document.getElementById('mamae-zen-persistent-audio-host');
+  if (host) host.innerHTML ='';
 }, []);
 
  // Manter áudio em segundo plano
@@ -68,13 +103,14 @@ export const useYouTubeEmbed = () => {
  if (document.visibilityState ==='hidden'&& state.isPlaying) {
  // Mantém o serviço de áudio em segundo plano ativo
  backgroundAudioService.startAudio(state.currentVideoId ||'');
+  persistIframe();
   sendCommand('playVideo');
 }
 };
 
  document.addEventListener('visibilitychange', handleVisibilityChange);
  return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-}, [state.isPlaying, state.currentVideoId, sendCommand]);
+}, [state.isPlaying, state.currentVideoId, sendCommand, persistIframe]);
 
  const createIframe = useCallback((videoId: string, showVisible: boolean = true, metadata?: YouTubeMetadata) => {
  // Atualiza estado primeiro para garantir que o container seja renderizado
@@ -106,7 +142,7 @@ export const useYouTubeEmbed = () => {
 
  // Cria novo iframe
  const iframe = document.createElement('iframe');
- iframe.id =`yt-embed-${Date.now()}`;
+  iframe.id ='mamae-zen-youtube-player';
  iframe.allow ='autoplay; encrypted-media; picture-in-picture; fullscreen';
  iframe.setAttribute('allowfullscreen','true');
  iframe.setAttribute('playsinline','true');
@@ -154,8 +190,15 @@ export const useYouTubeEmbed = () => {
  
  // Atualiza o serviço de áudio em segundo plano
  backgroundAudioService.setControlHandlers({
-  play: () => sendCommand('playVideo'),
-  pause: () => sendCommand('pauseVideo'),
+   play: () => {
+    sendCommand('unMute');
+    sendCommand('playVideo');
+   },
+   pause: () => {
+    sendCommand('pauseVideo');
+    backgroundAudioService.pauseAudio();
+    setState(prev => ({...prev, isPlaying: false}));
+   },
   stop: () => {
   removeIframe();
   setState(prev => ({...prev, isPlaying: false, currentVideoId: null, isLoading: false}));
