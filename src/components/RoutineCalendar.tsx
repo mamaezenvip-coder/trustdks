@@ -33,22 +33,22 @@ const RoutineCalendar = () => {
 };
 
  const categories = {
- morning: {label:'Manhã', color:'from-primary/30 to-accent/30'},
- afternoon: {label:'Tarde', color:'from-secondary/40 to-primary/30'},
- evening: {label:'Noitinha', color:'from-accent/40 to-primary/30'},
- night: {label:'Noite', color:'from-primary/40 to-secondary/40'},
-};
+ morning: {label:'Manhã', color:'from-primary/25 to-primary/10'},
+ afternoon: {label:'Tarde', color:'from-primary/30 to-primary/10'},
+ evening: {label:'Noitinha', color:'from-primary/35 to-primary/10'},
+ night: {label:'Noite', color:'from-primary/40 to-primary/10'},
+ };
 
  const completedCount = routines.filter(r => r.completed).length;
  const progress = (completedCount / routines.length) * 100;
 
  return (
- <Card className="border-0 shadow-[var(--shadow-soft)] bg-gradient-to-br from-card to-muted/20">
+ <Card className="bg-card border border-primary/30 shadow-[0_0_24px_-8px_hsl(var(--primary)/0.6)]">
  <div className="p-6">
  <div className="flex items-center justify-between mb-6">
  <div className="flex items-center gap-3">
  <Calendar className="w-6 h-6 text-primary"/>
- <h2 className="text-2xl font-bold text-foreground">Rotina Diária</h2>
+ <h2 className="text-2xl font-bold text-foreground neon-text">Rotina Diária</h2>
  </div>
  <div className="text-right">
  <p className="text-sm text-muted-foreground">Progresso de Hoje</p>
@@ -57,9 +57,9 @@ const RoutineCalendar = () => {
  </div>
 
  {/* Progress Bar */}
- <div className="mb-6 bg-muted/50 rounded-full h-3 overflow-hidden">
- <div 
- className="h-full bg-gradient-to-r from-primary via-secondary to-accent transition-all duration-500 rounded-full"style={{width:`${progress}%`}}
+ <div className="mb-6 bg-muted/50 rounded-full h-3 overflow-hidden border border-primary/20">
+ <div
+ className="h-full bg-primary transition-all duration-500 rounded-full shadow-[0_0_12px_hsl(var(--primary)/0.7)]" style={{width:`${progress}%`}}
  />
  </div>
 
@@ -82,9 +82,9 @@ const RoutineCalendar = () => {
  <button
  key={routine.id}
  onClick={() => toggleComplete(routine.id)}
- className={cn("w-full p-4 rounded-xl text-left transition-all duration-300 border-2",
+  className={cn("w-full p-4 rounded-xl text-left transition-all duration-300 border",
  routine.completed
-?"bg-primary/10 border-primary/30":"bg-card/60 dark:bg-card/40 border-border/40 hover:bg-card/80")}
+?"bg-primary/15 border-primary/50 shadow-[0_0_18px_-6px_hsl(var(--primary)/0.7)]":"bg-card border-primary/20 hover:border-primary/40 hover:bg-primary/5")}
  >
  <div className="flex items-center gap-4">
  {routine.completed? (
@@ -114,7 +114,7 @@ const RoutineCalendar = () => {
 
  {/* Motivational Message */}
  {progress === 100 && (
- <div className="mt-6 p-4 bg-gradient-to-r from-primary/20 to-accent/20 rounded-xl text-center border-2 border-primary/30">
+ <div className="mt-6 p-4 bg-primary/10 rounded-xl text-center border border-primary/50 shadow-[0_0_20px_-6px_hsl(var(--primary)/0.7)]">
  <p className="text-lg font-bold text-primary">
  Parabéns! Você completou todas as atividades de hoje! 
  </p>

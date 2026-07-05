@@ -49,20 +49,20 @@ const AdminUsers = () => {
 );
 
  return (
- <Card className="bg-card/80 border-border">
- <div className="p-3 border-b border-border">
+ <Card className="bg-card/80 border border-primary/30 shadow-[0_0_18px_-8px_hsl(var(--primary)/0.55)]">
+ <div className="p-3 border-b border-primary/25">
  <div className="relative">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"/>
  <Input
  placeholder="Buscar usuários..."value={search}
  onChange={e => setSearch(e.target.value)}
- className="pl-9 bg-muted border-border"/>
+ className="pl-9 bg-background/60 border border-primary/25"/>
  </div>
  </div>
  <ScrollArea className="h-[60vh]">
  <div className="p-3 space-y-2">
  {filtered.map(p => (
- <div key={p.id} className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 border border-border/50">
+ <div key={p.id} className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 border border-primary/20">
  <div className="relative">
  {p.avatar_url? (
  <img src={p.avatar_url} alt=""className="w-10 h-10 rounded-full object-cover"/>
