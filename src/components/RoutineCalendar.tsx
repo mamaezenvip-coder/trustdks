@@ -43,12 +43,12 @@ const RoutineCalendar = () => {
  const progress = (completedCount / routines.length) * 100;
 
  return (
- <Card className="border-0 shadow-[var(--shadow-soft)] bg-gradient-to-br from-card to-muted/20">
+ <Card className="bg-card border border-primary/30 shadow-[0_0_24px_-8px_hsl(var(--primary)/0.6)]">
  <div className="p-6">
  <div className="flex items-center justify-between mb-6">
  <div className="flex items-center gap-3">
  <Calendar className="w-6 h-6 text-primary"/>
- <h2 className="text-2xl font-bold text-foreground">Rotina Diária</h2>
+ <h2 className="text-2xl font-bold text-foreground neon-text">Rotina Diária</h2>
  </div>
  <div className="text-right">
  <p className="text-sm text-muted-foreground">Progresso de Hoje</p>
@@ -57,9 +57,9 @@ const RoutineCalendar = () => {
  </div>
 
  {/* Progress Bar */}
- <div className="mb-6 bg-muted/50 rounded-full h-3 overflow-hidden">
- <div 
- className="h-full bg-gradient-to-r from-primary via-secondary to-accent transition-all duration-500 rounded-full"style={{width:`${progress}%`}}
+ <div className="mb-6 bg-muted/50 rounded-full h-3 overflow-hidden border border-primary/20">
+ <div
+ className="h-full bg-primary transition-all duration-500 rounded-full shadow-[0_0_12px_hsl(var(--primary)/0.7)]" style={{width:`${progress}%`}}
  />
  </div>
 
