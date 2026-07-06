@@ -76,6 +76,51 @@ export type Database = {
         }
         Relationships: []
       }
+      media_tracks: {
+        Row: {
+          audio_path: string
+          category: string
+          cover_path: string | null
+          created_at: string
+          created_by: string | null
+          duration_label: string | null
+          id: string
+          is_active: boolean
+          sort_order: number
+          subtitle: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          audio_path: string
+          category?: string
+          cover_path?: string | null
+          created_at?: string
+          created_by?: string | null
+          duration_label?: string | null
+          id?: string
+          is_active?: boolean
+          sort_order?: number
+          subtitle?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          audio_path?: string
+          category?: string
+          cover_path?: string | null
+          created_at?: string
+          created_by?: string | null
+          duration_label?: string | null
+          id?: string
+          is_active?: boolean
+          sort_order?: number
+          subtitle?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null

@@ -5,11 +5,13 @@ import {useAdmin} from'@/hooks/useAdmin';
 import {Button} from'@/components/ui/button';
 import {Badge} from'@/components/ui/badge';
 import {Tabs, TabsContent, TabsList, TabsTrigger} from'@/components/ui/tabs';
-import {Users, MessageSquare, ArrowLeft, Key, LayoutDashboard, RefreshCw} from'lucide-react';
+import {Users, MessageSquare, ArrowLeft, Key, LayoutDashboard, RefreshCw, Music} from'lucide-react';
 import AdminDashboard from'@/components/admin/AdminDashboard';
 import AdminUsers from'@/components/admin/AdminUsers';
 import AdminSupport from'@/components/admin/AdminSupport';
 import AdminLicenseKeys from'@/components/admin/AdminLicenseKeys';
+import AdminMedia from'@/components/admin/AdminMedia';
+
 
 const Admin = () => {
  const {user, loading: authLoading} = useAuth();
@@ -48,12 +50,13 @@ const Admin = () => {
  </div>
 
  <Tabs defaultValue="dashboard">
- <TabsList className="grid w-full grid-cols-4 bg-card/60 border border-primary/30 rounded-xl backdrop-blur-sm shadow-[0_0_20px_-8px_hsl(var(--primary)/0.55)]">
+ <TabsList className="grid w-full grid-cols-5 bg-card/60 border border-primary/30 rounded-xl backdrop-blur-sm shadow-[0_0_20px_-8px_hsl(var(--primary)/0.55)]">
  {[
   {v:'dashboard', Icon: LayoutDashboard, label:'Painel'},
   {v:'users', Icon: Users, label:'Usuários'},
   {v:'support', Icon: MessageSquare, label:'Suporte'},
   {v:'keys', Icon: Key, label:'Chaves'},
+  {v:'media', Icon: Music, label:'Mídia'},
  ].map(({v, Icon, label}) => (
  <TabsTrigger
  key={v}
@@ -80,7 +83,12 @@ const Admin = () => {
  <TabsContent value="keys"className="mt-4">
  <AdminLicenseKeys />
  </TabsContent>
+
+ <TabsContent value="media"className="mt-4">
+ <AdminMedia />
+ </TabsContent>
  </Tabs>
+
  </div>
  </div>
 );
