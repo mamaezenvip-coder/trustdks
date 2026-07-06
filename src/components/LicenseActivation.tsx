@@ -41,10 +41,10 @@ const LicenseActivation = ({open, onOpenChange}: LicenseActivationProps) => {
  if (license.isActive) {
  return (
  <Dialog open={open} onOpenChange={onOpenChange}>
- <DialogContent className="sm:max-w-md bg-card border-border">
+ <DialogContent className="sm:max-w-md bg-card/95 border-primary/40 rounded-2xl backdrop-blur-xl shadow-[0_0_40px_-8px_hsl(var(--primary)/0.7)]">
  <DialogHeader>
  <DialogTitle className="flex items-center gap-2 text-foreground">
- <ShieldCheck className="w-5 h-5 text-green-400"/>
+ <ShieldCheck className="w-5 h-5 text-primary drop-shadow-[0_0_8px_hsl(var(--primary)/0.8)]"/>
  {isUSA?'Premium Active':'Premium Ativo'}
  </DialogTitle>
  </DialogHeader>
@@ -53,7 +53,7 @@ const LicenseActivation = ({open, onOpenChange}: LicenseActivationProps) => {
  {isUSA 
 ?`Your premium license is active until ${new Date(license.expiresAt!).toLocaleDateString()}`:`Sua licença premium está ativa até ${new Date(license.expiresAt!).toLocaleDateString('pt-BR')}`}
  </p>
- <span className="inline-block px-4 py-2 rounded-full bg-green-500/20 text-green-400 font-semibold text-sm border border-green-500/30">
+ <span className="inline-block px-4 py-2 rounded-full bg-primary/15 text-primary font-semibold text-sm border border-primary/50 shadow-[0_0_18px_-4px_hsl(var(--primary)/0.8)]">
  PREMIUM
  </span>
  </div>
@@ -64,10 +64,10 @@ const LicenseActivation = ({open, onOpenChange}: LicenseActivationProps) => {
 
  return (
  <Dialog open={open} onOpenChange={onOpenChange}>
- <DialogContent className="sm:max-w-md bg-card border-border">
+ <DialogContent className="sm:max-w-md bg-card/95 border-primary/40 rounded-2xl backdrop-blur-xl shadow-[0_0_40px_-8px_hsl(var(--primary)/0.7)]">
  <DialogHeader>
  <DialogTitle className="flex items-center gap-2 text-foreground">
- <Key className="w-5 h-5 text-primary"/>
+ <Key className="w-5 h-5 text-primary drop-shadow-[0_0_8px_hsl(var(--primary)/0.8)]"/>
  {isUSA?'Activate Premium':'Ativar Premium'}
  </DialogTitle>
  </DialogHeader>
@@ -80,12 +80,12 @@ const LicenseActivation = ({open, onOpenChange}: LicenseActivationProps) => {
  placeholder="MZ-AB3C-D7F8-H2J9-K1LM"value={keyInput}
  onChange={(e) => setKeyInput(normalizeLicenseKey(e.target.value))}
  onKeyDown={(e) => e.key ==='Enter'&& handleActivate()}
- className="text-center font-mono text-base tracking-wider bg-muted border-border text-foreground"maxLength={26}
+ className="text-center font-mono text-base tracking-wider bg-background/60 border-primary/30 text-foreground focus-visible:ring-primary/60 focus-visible:border-primary"maxLength={26}
  />
  <Button
  onClick={handleActivate}
  disabled={!keyInput.trim() || isLoading}
- className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-primary-foreground font-semibold"size="lg">
+ className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-[0_0_22px_-4px_hsl(var(--primary)/0.9)]"size="lg">
  <Unlock className="w-4 h-4 mr-2"/>
  {isLoading
 ? (isUSA?'Activating...':'Ativando...')
@@ -94,9 +94,9 @@ const LicenseActivation = ({open, onOpenChange}: LicenseActivationProps) => {
 
  <div className="relative py-1">
  <div className="absolute inset-0 flex items-center">
- <span className="w-full border-t border-border"/>
+ <span className="w-full border-t border-primary/25"/>
  </div>
- <div className="relative flex justify-center text-[10px] uppercase">
+ <div className="relative flex justify-center text-[10px] uppercase tracking-wider">
  <span className="bg-card px-2 text-muted-foreground">
  {isUSA?'Don\'t have a key?':'Não tem chave?'}
  </span>
@@ -105,7 +105,7 @@ const LicenseActivation = ({open, onOpenChange}: LicenseActivationProps) => {
 
  <Button
  asChild
- size="lg"className="w-full bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90 text-foreground font-bold shadow-[0_0_20px_hsl(330_100%_60%/0.5)]">
+ size="lg"className="w-full bg-background/40 border border-primary/50 hover:bg-primary/10 text-primary font-bold shadow-[0_0_22px_-6px_hsl(var(--primary)/0.8)]">
  <a
  href="https://pay.cakto.com.br/c88zju2_683076"target="_blank"rel="noopener noreferrer">
  <Key className="w-4 h-4 mr-2"/>
@@ -117,5 +117,6 @@ const LicenseActivation = ({open, onOpenChange}: LicenseActivationProps) => {
  </Dialog>
 );
 };
+
 
 export default LicenseActivation;
