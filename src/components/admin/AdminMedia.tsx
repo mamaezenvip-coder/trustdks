@@ -8,6 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Loader2, Upload, Trash2, Music, RefreshCw, Image as ImageIcon } from 'lucide-react';
 import { toast } from 'sonner';
+import AdminMusicSession from '@/components/admin/AdminMusicSession';
+
 
 interface MediaTrack {
   id: string;
@@ -149,6 +151,8 @@ const AdminMedia = () => {
 
   return (
     <div className="space-y-4">
+      <AdminMusicSession />
+
       <Card className="p-4 bg-card/80 border-primary/30 backdrop-blur-sm shadow-[0_0_22px_-8px_hsl(var(--primary)/0.55)] rounded-2xl">
         <div className="flex items-center gap-2 mb-4">
           <Upload className="w-4 h-4 text-primary" />
