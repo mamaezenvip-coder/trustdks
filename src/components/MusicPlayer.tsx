@@ -28,6 +28,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { useCountry } from '@/contexts/CountryContext';
 import { useYouTubeEmbed } from '@/hooks/useYouTubeEmbed';
+import { useMusicSession } from '@/hooks/useMusicSession';
+
 import type { LucideIcon } from 'lucide-react';
 
 interface Track {
@@ -133,6 +135,19 @@ const MusicPlayer = () => {
     stop,
     setVolume: setPlayerVolume,
   } = useYouTubeEmbed();
+
+  // Admin aperta "Atualizar Cookies" no painel -> limpa cache e religa o player
+  useMusicSession(() => {
+    if (!currentTrack) return;
+    play(currentTrack.id, true, {
+      title: currentTrack.title,
+      artist: currentTrack.artist,
+      artwork: currentTrack.thumbnail,
+    });
+    toast.success(isUSA ? 'Player session refreshed' : 'Sessão do player atualizada');
+  });
+
+
 
   const texts = {
     title: 'Mamãe Zen Music',
