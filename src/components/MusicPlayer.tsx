@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,14 +12,6 @@ import {
   Loader2,
   Square,
   Info,
-  FileAudio,
-  FileVideo,
-  Library,
-  Waves,
-  CloudRain,
-  Heart,
-  Moon,
-  Wind,
 } from 'lucide-react';
 import { Slider } from '@/components/ui/slider';
 import { toast } from 'sonner';
@@ -27,180 +19,93 @@ import { supabase } from '@/integrations/supabase/client';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { useCountry } from '@/contexts/CountryContext';
-import { useYouTubeEmbed } from '@/hooks/useYouTubeEmbed';
-import type { LucideIcon } from 'lucide-react';
+import { useNativeMediaPlayer, type PlayableTrack } from '@/hooks/useNativeMediaPlayer';
 
-interface Track {
-  id: string;
-  title: string;
-  artist: string;
-  thumbnail?: string;
+interface DbTrack extends PlayableTrack {
+  category: string;
+  duration_label: string | null;
 }
 
-interface PinnedSound {
-  id: string;
-  youtubeId: string;
-  name: string;
-  nameEN: string;
-  description: string;
-  descriptionEN: string;
-  icon: LucideIcon;
-  quality: string;
-}
+const client = supabase as any;
 
-const pinnedTracks: PinnedSound[] = [
-  {
-    id: 'white-noise',
-    youtubeId: 'nMfPqeZjc2c',
-    name: 'Ruído Branco',
-    nameEN: 'White Noise',
-    description: 'Som contínuo que acalma o bebê',
-    descriptionEN: 'Continuous sound that calms baby',
-    icon: Waves,
-    quality: '10h 4K',
-  },
-  {
-    id: 'rain',
-    youtubeId: 'mPZkdNFkNps',
-    name: 'Chuva Suave',
-    nameEN: 'Gentle Rain',
-    description: 'Som relaxante de chuva caindo',
-    descriptionEN: 'Relaxing rain falling sound',
-    icon: CloudRain,
-    quality: '10h 4K',
-  },
-  {
-    id: 'heartbeat',
-    youtubeId: 'P9nd2GbmLWU',
-    name: 'Para você mamãe',
-    nameEN: 'For you mom',
-    description: 'Melodia especial para o coração',
-    descriptionEN: 'Special melody for the heart',
-    icon: Heart,
-    quality: 'Premium HD',
-  },
-  {
-    id: 'lullaby',
-    youtubeId: 'sgfMb2WycDo',
-    name: 'Canção de Ninar',
-    nameEN: 'Lullaby',
-    description: 'Melodia suave para dormir',
-    descriptionEN: 'Soft melody for sleeping',
-    icon: Moon,
-    quality: 'HD',
-  },
-  {
-    id: 'ocean',
-    youtubeId: 'WHPEKLQID4U',
-    name: 'Ondas do Mar',
-    nameEN: 'Ocean Waves',
-    description: 'Som tranquilo do oceano',
-    descriptionEN: 'Peaceful ocean sound',
-    icon: Waves,
-    quality: '12h 4K',
-  },
-  {
-    id: 'wind',
-    youtubeId: 'wzjWIxXBs_s',
-    name: 'Vento Suave',
-    nameEN: 'Gentle Wind',
-    description: 'Brisa relaxante',
-    descriptionEN: 'Relaxing breeze',
-    icon: Wind,
-    quality: '10h 4K',
-  },
-];
+const CATEGORIES = ['all', 'music', 'ambient', 'meditation'] as const;
+type Category = (typeof CATEGORIES)[number];
 
 const MusicPlayer = () => {
   const { isUSA } = useCountry();
-  const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
-  const [volume, setVolume] = useState([70]);
+  const [tracks, setTracks] = useState<DbTrack[]>([]);
+  const [loadingList, setLoadingList] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<Track[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
-  const [view, setView] = useState<'library' | 'search'>('library');
+  const [category, setCategory] = useState<Category>('all');
 
   const {
+    currentTrackId,
     isPlaying,
-    currentVideoId,
     isLoading,
-    isIOS,
-    containerRef,
-    hiddenContainerRef,
+    volume,
     play,
     pause,
     resume,
     stop,
-    setVolume: setPlayerVolume,
-  } = useYouTubeEmbed();
+    setVolume,
+  } = useNativeMediaPlayer();
 
   const texts = {
     title: 'Mamãe Zen Music',
-    subtitle: isUSA ? 'Premium Player' : 'Player Premium',
-    search: isUSA ? 'Search music or artist...' : 'Buscar música ou artista...',
-    resultsFor: isUSA ? 'Results for' : 'Resultados para',
+    subtitle: isUSA ? 'Native Player' : 'Player Nativo',
+    search: isUSA ? 'Search in library...' : 'Buscar na biblioteca...',
     playing: isUSA ? 'Playing' : 'Tocando',
     stopped: isUSA ? 'Playback stopped' : 'Reprodução parada',
     paused: isUSA ? 'Paused' : 'Pausado',
     resumed: isUSA ? 'Playing again' : 'Tocando novamente',
-    premium: isUSA
-      ? 'Search and play any YouTube music.'
-      : 'Pesquise e toque qualquer música do YouTube.',
-    searchError: isUSA ? 'Error searching music' : 'Erro ao buscar músicas',
+    loading: isUSA ? 'Loading...' : 'Carregando...',
     noResults: isUSA ? 'No music found' : 'Nenhuma música encontrada',
-    typeToSearch: isUSA ? 'Type something to search' : 'Digite algo para pesquisar',
-    found: isUSA ? 'Found' : 'Encontradas',
-    musics: isUSA ? 'songs' : 'músicas',
-    tapToPlay: isUSA ? 'Tap play on video to start' : 'Toque play no vídeo para iniciar',
-    downloadAudio: isUSA ? 'Download MP3' : 'Baixar MP3',
-    downloadVideo: isUSA ? 'Download Video' : 'Baixar Vídeo',
-    downloading: isUSA ? 'Opening download...' : 'Abrindo download...',
-    library: isUSA ? 'Library' : 'Biblioteca',
-    results: isUSA ? 'Results' : 'Resultados',
-    relaxingSounds: isUSA ? 'Relaxing sounds' : 'Sons relaxantes',
+    empty: isUSA
+      ? 'No tracks published yet. The admin can upload MP3 files from the admin panel.'
+      : 'Nenhuma faixa publicada ainda. O admin pode enviar MP3 pelo painel /admin.',
+    lockscreen: isUSA
+      ? 'Native player: keeps playing with the app closed or the screen locked.'
+      : 'Player nativo: continua tocando com o app fechado ou a tela bloqueada.',
+    labels: {
+      all: isUSA ? 'All' : 'Todas',
+      music: isUSA ? 'Music' : 'Músicas',
+      ambient: isUSA ? 'Ambient' : 'Ambiente',
+      meditation: isUSA ? 'Meditation' : 'Meditação',
+    } as Record<Category, string>,
   };
 
-  const handleSearch = async () => {
-    if (!searchQuery.trim()) {
-      toast.error(texts.typeToSearch);
-      return;
-    }
-    setIsSearching(true);
-    try {
-      const { data, error } = await supabase.functions.invoke('youtube-search', {
-        body: { query: searchQuery },
-      });
-      if (error) throw error;
-      if (data?.results && data.results.length > 0) {
-        setSearchResults(data.results);
-        setView('search');
-        toast.success(`${texts.found} ${data.results.length} ${texts.musics}`);
+  useEffect(() => {
+    (async () => {
+      const { data, error } = await client
+        .from('media_tracks')
+        .select('id,title,subtitle,audio_path,cover_path,category,duration_label')
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true });
+      if (error) {
+        console.error('media_tracks load error', error);
       } else {
-        setSearchResults([]);
-        toast.error(texts.noResults);
+        setTracks((data as DbTrack[]) || []);
       }
-    } catch (error) {
-      console.error('Search error:', error);
-      toast.error(texts.searchError);
-      setSearchResults([]);
-    } finally {
-      setIsSearching(false);
-    }
-  };
+      setLoadingList(false);
+    })();
+  }, []);
 
-  const playTrack = (track: Track) => {
-    setCurrentTrack(track);
-    play(track.id, true, { title: track.title, artist: track.artist, artwork: track.thumbnail });
-    toast.success(`${texts.playing}: ${track.title}`);
-  };
+  const filtered = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    return tracks.filter((t) => {
+      const matchesCategory = category === 'all' || t.category === category;
+      const matchesQuery =
+        !q ||
+        t.title.toLowerCase().includes(q) ||
+        (t.subtitle || '').toLowerCase().includes(q);
+      return matchesCategory && matchesQuery;
+    });
+  }, [tracks, category, searchQuery]);
 
-  const handleVolumeChange = (nextVolume: number[]) => {
-    setVolume(nextVolume);
-    setPlayerVolume(nextVolume[0]);
-  };
+  const currentTrack = tracks.find((t) => t.id === currentTrackId);
 
-  const handleTrackSelect = (track: Track) => {
-    if (currentVideoId === track.id) {
+  const handleTrackSelect = (track: DbTrack) => {
+    if (currentTrackId === track.id) {
       if (isPlaying) {
         pause();
         toast.success(`${texts.paused}: ${track.title}`);
@@ -208,66 +113,19 @@ const MusicPlayer = () => {
         resume();
         toast.success(`${texts.resumed}: ${track.title}`);
       }
-    } else {
-      playTrack(track);
+      return;
     }
-  };
-
-  const handlePinnedSelect = (sound: PinnedSound) => {
-    handleTrackSelect({
-      id: sound.youtubeId,
-      title: isUSA ? sound.nameEN : sound.name,
-      artist: isUSA ? sound.descriptionEN : sound.description,
-    });
+    play(track);
+    toast.success(`${texts.playing}: ${track.title}`);
   };
 
   const handleStop = () => {
     stop();
-    setCurrentTrack(null);
     toast.success(texts.stopped);
   };
 
-  const handlePauseResume = () => {
-    if (!currentTrack) return;
-
-    if (isPlaying) {
-      pause();
-      toast.success(`${texts.paused}: ${currentTrack.title}`);
-    } else {
-      resume();
-      toast.success(`${texts.resumed}: ${currentTrack.title}`);
-    }
-  };
-
-  const handleDownload = async (format: 'audio' | 'video') => {
-    if (!currentTrack) return;
-    const formatLabel = format === 'audio' ? 'MP3' : 'MP4';
-    toast.info(`${texts.downloading} ${formatLabel}...`);
-    try {
-      const { data, error } = await supabase.functions.invoke('youtube-download', {
-        body: { videoId: currentTrack.id, format },
-      });
-      if (error || !data?.success) throw new Error('Download failed');
-      if (data.url) {
-        window.open(data.url, '_blank', 'noopener,noreferrer');
-        toast.success(
-          isUSA
-            ? `Opening ${formatLabel} download for "${currentTrack.title}"`
-            : `Abrindo download ${formatLabel} de "${currentTrack.title}"`
-        );
-      }
-    } catch (err) {
-      console.error('Download error:', err);
-      const fallbackUrl =
-        format === 'audio'
-          ? `https://cnvmp3.com/download.php?url=${encodeURIComponent(`https://www.youtube.com/watch?v=${currentTrack.id}`)}`
-          : `https://ssyoutube.com/watch?v=${currentTrack.id}`;
-      window.open(fallbackUrl, '_blank', 'noopener,noreferrer');
-    }
-  };
-
   return (
-    <Card className="overflow-hidden border border-border bg-card shadow-xl">
+    <Card className="overflow-hidden border border-primary/30 bg-card shadow-[0_0_28px_-12px_hsl(var(--primary)/0.7)]">
       {/* Header */}
       <div className="bg-gradient-to-b from-primary/10 to-transparent p-6 pb-4">
         <div className="flex items-center gap-3 mb-4">
@@ -280,147 +138,92 @@ const MusicPlayer = () => {
           </div>
         </div>
 
-        {/* Search Bar */}
-        <div className="flex gap-2">
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input
-              placeholder={texts.search}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-              className="pl-10 pr-10"
-            />
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-muted hover:bg-accent flex items-center justify-center transition-colors"
-              >
-                <X className="w-3 h-3 text-muted-foreground" />
-              </button>
-            )}
-          </div>
-          <Button onClick={handleSearch} disabled={isSearching} className="px-6">
-            {isSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
-          </Button>
-        </div>
-
-        {/* View Toggle */}
-        <div className="flex gap-2 mt-3">
-          <Button
-            variant={view === 'library' ? 'secondary' : 'ghost'}
-            size="sm"
-            onClick={() => setView('library')}
-            className="text-xs"
-          >
-            <Library className="w-3 h-3 mr-1" />
-            {texts.library}
-          </Button>
-          {searchResults.length > 0 && (
-            <Button
-              variant={view === 'search' ? 'secondary' : 'ghost'}
-              size="sm"
-              onClick={() => setView('search')}
-              className="text-xs"
+        {/* Search Bar (local library filter) */}
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input
+            placeholder={texts.search}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10 pr-10 bg-background/60 border-primary/30"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-muted hover:bg-accent flex items-center justify-center transition-colors"
             >
-              <Search className="w-3 h-3 mr-1" />
-              {texts.results} ({searchResults.length})
-            </Button>
+              <X className="w-3 h-3 text-muted-foreground" />
+            </button>
           )}
         </div>
-      </div>
 
-      {/* YouTube Player */}
-      <div className={currentVideoId ? 'px-4 mb-2' : 'h-0 overflow-hidden'}>
-        <div
-          ref={containerRef}
-          className="rounded-xl overflow-hidden shadow-lg border border-border min-h-[200px] bg-background"
-        />
-        {currentVideoId && isIOS && (
-          <p className="text-center text-xs text-primary mt-2 flex items-center justify-center gap-1">
-            <Info className="w-3 h-3" />
-            {texts.tapToPlay}
-          </p>
-        )}
+        {/* Category Toggle */}
+        <div className="flex gap-2 mt-3 flex-wrap">
+          {CATEGORIES.map((cat) => (
+            <Button
+              key={cat}
+              variant={category === cat ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setCategory(cat)}
+              className={`text-xs ${
+                category === cat
+                  ? 'bg-primary text-primary-foreground shadow-[0_0_16px_-4px_hsl(var(--primary)/0.9)]'
+                  : 'border border-primary/25 text-foreground'
+              }`}
+            >
+              {texts.labels[cat]}
+            </Button>
+          ))}
+        </div>
       </div>
-
-      <div ref={hiddenContainerRef} className="fixed bottom-0 left-0 w-px h-px opacity-[0.01] pointer-events-none -z-10" />
 
       {/* Content Area */}
       <div className="p-4 pt-2">
-        <ScrollArea className="h-[280px] pr-2">
-          {view === 'library' ? (
-            <div className="space-y-3">
-              <h3 className="text-sm font-semibold text-foreground/80 mb-2">{texts.relaxingSounds}</h3>
-              <div className="grid grid-cols-2 gap-2">
-                {pinnedTracks.map((sound) => {
-                  const Icon = sound.icon;
-                  const active = currentVideoId === sound.youtubeId;
-                  return (
-                    <button
-                      key={sound.id}
-                      onClick={() => handlePinnedSelect(sound)}
-                      disabled={isLoading}
-                      className={`relative p-4 rounded-xl transition-all duration-300 text-left border ${
-                        active
-                          ? 'bg-primary/15 border-primary/50 shadow-[var(--shadow-glow-pink)]'
-                          : 'bg-muted/40 border-border hover:bg-muted/70'
-                      }`}
-                    >
-                      <div className="flex flex-col gap-2">
-                        {isLoading && active ? (
-                          <Loader2 className="w-7 h-7 text-primary animate-spin" />
-                        ) : (
-                          <Icon className={`w-7 h-7 ${active ? 'text-primary' : 'text-foreground/80'}`} />
-                        )}
-                        <div>
-                          <p className="font-semibold text-foreground text-sm leading-tight">
-                            {isUSA ? sound.nameEN : sound.name}
-                          </p>
-                          <p className="text-[11px] text-muted-foreground mt-0.5">{sound.quality}</p>
-                        </div>
-                      </div>
-                      {active && isPlaying && (
-                        <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-primary animate-pulse" />
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
+        <ScrollArea className="h-[300px] pr-2">
+          {loadingList ? (
+            <div className="flex justify-center py-12">
+              <Loader2 className="w-6 h-6 animate-spin text-primary" />
             </div>
-          ) : searchResults.length > 0 ? (
+          ) : tracks.length === 0 ? (
+            <div className="h-full min-h-[260px] flex flex-col items-center justify-center text-center rounded-xl border border-primary/20 bg-muted/30 px-6">
+              <Music className="w-10 h-10 text-muted-foreground mb-3" />
+              <p className="text-sm font-semibold text-foreground">{texts.title}</p>
+              <p className="text-xs text-muted-foreground mt-1">{texts.empty}</p>
+            </div>
+          ) : filtered.length === 0 ? (
+            <div className="h-full min-h-[260px] flex items-center justify-center">
+              <p className="text-sm text-muted-foreground">{texts.noResults}</p>
+            </div>
+          ) : (
             <div className="space-y-2">
-              <h3 className="text-sm font-semibold text-foreground/80 mb-2">
-                {texts.resultsFor} "{searchQuery}"
-              </h3>
-              {searchResults.map((track) => {
-                const active = currentVideoId === track.id;
+              {filtered.map((track) => {
+                const active = currentTrackId === track.id;
                 return (
                   <button
                     key={track.id}
                     onClick={() => handleTrackSelect(track)}
-                    disabled={isLoading}
                     className={`w-full p-3 rounded-lg transition-all duration-200 flex items-center gap-3 text-left border ${
                       active
-                        ? 'bg-primary/15 border-primary/50'
-                        : 'bg-muted/40 border-border hover:bg-muted/70'
+                        ? 'bg-primary/15 border-primary/50 shadow-[0_0_18px_-8px_hsl(var(--primary)/0.8)]'
+                        : 'bg-muted/40 border-primary/20 hover:bg-muted/70'
                     }`}
                   >
-                    {track.thumbnail ? (
-                      <img src={track.thumbnail} alt={track.title} className="w-10 h-10 rounded object-cover" />
-                    ) : (
-                      <div className="w-10 h-10 rounded bg-primary flex items-center justify-center flex-shrink-0">
-                        {active && isPlaying ? (
-                          <Pause className="w-4 h-4 text-primary-foreground" />
-                        ) : (
-                          <Play className="w-4 h-4 text-primary-foreground" />
-                        )}
-                      </div>
-                    )}
+                    <div className="w-10 h-10 rounded bg-primary flex items-center justify-center flex-shrink-0">
+                      {isLoading && active ? (
+                        <Loader2 className="w-4 h-4 text-primary-foreground animate-spin" />
+                      ) : active && isPlaying ? (
+                        <Pause className="w-4 h-4 text-primary-foreground" />
+                      ) : (
+                        <Play className="w-4 h-4 text-primary-foreground" />
+                      )}
+                    </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold text-foreground text-sm truncate">{track.title}</p>
-                      <p className="text-xs text-muted-foreground truncate">{track.artist}</p>
+                      <p className="text-xs text-muted-foreground truncate">
+                        {track.subtitle || texts.labels[(track.category as Category) || 'music']}
+                        {track.duration_label ? ` • ${track.duration_label}` : ''}
+                      </p>
                     </div>
                     {active && isPlaying && (
                       <Badge className="bg-primary/20 text-primary text-xs border-0">{texts.playing}</Badge>
@@ -428,12 +231,6 @@ const MusicPlayer = () => {
                   </button>
                 );
               })}
-            </div>
-          ) : (
-            <div className="h-full min-h-[260px] flex flex-col items-center justify-center text-center rounded-xl border border-border bg-muted/30 px-6">
-              <Music className="w-10 h-10 text-muted-foreground mb-3" />
-              <p className="text-sm font-semibold text-foreground">{texts.title}</p>
-              <p className="text-xs text-muted-foreground mt-1">{texts.premium}</p>
             </div>
           )}
         </ScrollArea>
@@ -448,47 +245,43 @@ const MusicPlayer = () => {
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="font-semibold text-foreground text-sm truncate">{currentTrack.title}</p>
-                  <p className="text-xs text-muted-foreground truncate">{currentTrack.artist}</p>
+                  <p className="text-xs text-muted-foreground truncate">
+                    {isLoading ? texts.loading : isPlaying ? texts.playing : texts.paused}
+                  </p>
                 </div>
               </div>
-              <Button size="icon" variant="ghost" onClick={handlePauseResume} className="h-10 w-10">
-                {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-              </Button>
+              <div className="flex items-center gap-1">
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => (isPlaying ? pause() : resume())}
+                  className="h-10 w-10 text-primary"
+                >
+                  {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                </Button>
+                <Button size="icon" variant="ghost" onClick={handleStop} className="h-10 w-10 text-primary">
+                  <Square className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
 
-            <div className="flex gap-2 mb-3">
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => handleDownload('audio')}
-                className="flex-1 h-8 text-xs"
-              >
-                <FileAudio className="w-3.5 h-3.5 mr-1.5" />
-                {texts.downloadAudio}
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => handleDownload('video')}
-                className="flex-1 h-8 text-xs"
-              >
-                <FileVideo className="w-3.5 h-3.5 mr-1.5" />
-                {texts.downloadVideo}
-              </Button>
-            </div>
             <div className="flex items-center gap-3">
               <Volume2 className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-              <Slider value={volume} onValueChange={handleVolumeChange} max={100} step={1} className="flex-1" />
-              <span className="text-xs text-muted-foreground w-10 text-right flex-shrink-0">{volume[0]}%</span>
+              <Slider
+                value={[volume]}
+                onValueChange={(v) => setVolume(v[0])}
+                max={100}
+                step={1}
+                className="flex-1"
+              />
+              <span className="text-xs text-muted-foreground w-10 text-right">{volume}%</span>
             </div>
           </div>
         )}
 
-        {/* Premium Badge */}
-        <div className="mt-4 p-3 rounded-lg bg-primary/5 border border-primary/20">
-          <p className="text-xs text-foreground/80">
-            <strong className="text-primary">Premium:</strong> {texts.premium}
-          </p>
+        <div className="mt-4 p-3 bg-primary/5 rounded-lg border border-primary/20 flex items-start gap-2">
+          <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+          <p className="text-xs text-muted-foreground">{texts.lockscreen}</p>
         </div>
       </div>
     </Card>
