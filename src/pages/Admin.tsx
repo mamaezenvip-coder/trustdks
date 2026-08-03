@@ -74,6 +74,11 @@ const Admin = () => {
  <AdminDashboard />
  </TabsContent>
 
+ <TabsContent value="clients"className="mt-4">
+ <AdminClients />
+ </TabsContent>
+
+
  <TabsContent value="users"className="mt-4">
  <AdminUsers />
  </TabsContent>
