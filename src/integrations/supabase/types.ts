@@ -45,7 +45,10 @@ export type Database = {
           expires_at: string
           id: string
           license_key_id: string | null
+          paused_at: string | null
+          paused_days_left: number | null
           source: string
+          status: string
           user_id: string
         }
         Insert: {
@@ -54,7 +57,10 @@ export type Database = {
           expires_at: string
           id?: string
           license_key_id?: string | null
+          paused_at?: string | null
+          paused_days_left?: number | null
           source?: string
+          status?: string
           user_id: string
         }
         Update: {
@@ -63,7 +69,10 @@ export type Database = {
           expires_at?: string
           id?: string
           license_key_id?: string | null
+          paused_at?: string | null
+          paused_days_left?: number | null
           source?: string
+          status?: string
           user_id?: string
         }
         Relationships: [
@@ -259,6 +268,14 @@ export type Database = {
     Functions: {
       activate_license_key: {
         Args: { p_device_id?: string; p_key: string }
+        Returns: Json
+      }
+      admin_renew_client: {
+        Args: { p_days?: number; p_user_id: string }
+        Returns: Json
+      }
+      admin_set_client_status: {
+        Args: { p_status: string; p_user_id: string }
         Returns: Json
       }
       ensure_admin_role: { Args: never; Returns: undefined }
