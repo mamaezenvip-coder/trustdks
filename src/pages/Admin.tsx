@@ -51,9 +51,10 @@ const Admin = () => {
  </div>
 
  <Tabs defaultValue="dashboard">
- <TabsList className="grid w-full grid-cols-5 bg-card/60 border border-primary/30 rounded-xl backdrop-blur-sm shadow-[0_0_20px_-8px_hsl(var(--primary)/0.55)]">
+ <TabsList className="grid w-full grid-cols-6 bg-card/60 border border-primary/30 rounded-xl backdrop-blur-sm shadow-[0_0_20px_-8px_hsl(var(--primary)/0.55)]">
  {[
   {v:'dashboard', Icon: LayoutDashboard, label:'Painel'},
+  {v:'clients', Icon: UserCog, label:'Clientes'},
   {v:'users', Icon: Users, label:'Usuários'},
   {v:'support', Icon: MessageSquare, label:'Suporte'},
   {v:'keys', Icon: Key, label:'Chaves'},
