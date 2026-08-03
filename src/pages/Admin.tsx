@@ -5,12 +5,13 @@ import {useAdmin} from'@/hooks/useAdmin';
 import {Button} from'@/components/ui/button';
 import {Badge} from'@/components/ui/badge';
 import {Tabs, TabsContent, TabsList, TabsTrigger} from'@/components/ui/tabs';
-import {Users, MessageSquare, ArrowLeft, Key, LayoutDashboard, RefreshCw, Music} from'lucide-react';
+import {Users, MessageSquare, ArrowLeft, Key, LayoutDashboard, RefreshCw, Music, UserCog} from'lucide-react';
 import AdminDashboard from'@/components/admin/AdminDashboard';
 import AdminUsers from'@/components/admin/AdminUsers';
 import AdminSupport from'@/components/admin/AdminSupport';
 import AdminLicenseKeys from'@/components/admin/AdminLicenseKeys';
 import AdminMedia from'@/components/admin/AdminMedia';
+import AdminClients from'@/components/admin/AdminClients';
 
 
 const Admin = () => {
@@ -50,9 +51,10 @@ const Admin = () => {
  </div>
 
  <Tabs defaultValue="dashboard">
- <TabsList className="grid w-full grid-cols-5 bg-card/60 border border-primary/30 rounded-xl backdrop-blur-sm shadow-[0_0_20px_-8px_hsl(var(--primary)/0.55)]">
+ <TabsList className="grid w-full grid-cols-6 bg-card/60 border border-primary/30 rounded-xl backdrop-blur-sm shadow-[0_0_20px_-8px_hsl(var(--primary)/0.55)]">
  {[
   {v:'dashboard', Icon: LayoutDashboard, label:'Painel'},
+  {v:'clients', Icon: UserCog, label:'Clientes'},
   {v:'users', Icon: Users, label:'Usuários'},
   {v:'support', Icon: MessageSquare, label:'Suporte'},
   {v:'keys', Icon: Key, label:'Chaves'},
@@ -71,6 +73,11 @@ const Admin = () => {
  <TabsContent value="dashboard"className="mt-4">
  <AdminDashboard />
  </TabsContent>
+
+ <TabsContent value="clients"className="mt-4">
+ <AdminClients />
+ </TabsContent>
+
 
  <TabsContent value="users"className="mt-4">
  <AdminUsers />

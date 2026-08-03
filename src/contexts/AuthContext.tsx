@@ -42,18 +42,18 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
  const checkLicense = async (userId: string) => {
  setLicenseLoading(true);
  try {
- const {data, error} = await supabase
-.from('key_activations')
-.select('expires_at, source')
-.eq('user_id', userId)
-.order('expires_at', {ascending: false})
-.limit(1)
-.maybeSingle();
+  const {data, error} = await (supabase as any)
+ .from('key_activations')
+ .select('expires_at, source, status')
+ .eq('user_id', userId)
+ .order('expires_at', {ascending: false})
+ .limit(1)
+ .maybeSingle();
 
  if (error) {
  console.error('License check error:', error);
  setLicense(emptyLicense);
-} else if (data && new Date(data.expires_at) > new Date()) {
+} else if (data && (data.status ?? 'active') === 'active'&& new Date(data.expires_at) > new Date()) {
  setLicense({
  isActive: true,
  expiresAt: data.expires_at,
