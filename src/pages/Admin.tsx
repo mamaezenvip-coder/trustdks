@@ -5,12 +5,13 @@ import {useAdmin} from'@/hooks/useAdmin';
 import {Button} from'@/components/ui/button';
 import {Badge} from'@/components/ui/badge';
 import {Tabs, TabsContent, TabsList, TabsTrigger} from'@/components/ui/tabs';
-import {Users, MessageSquare, ArrowLeft, Key, LayoutDashboard, RefreshCw, Music} from'lucide-react';
+import {Users, MessageSquare, ArrowLeft, Key, LayoutDashboard, RefreshCw, Music, UserCog} from'lucide-react';
 import AdminDashboard from'@/components/admin/AdminDashboard';
 import AdminUsers from'@/components/admin/AdminUsers';
 import AdminSupport from'@/components/admin/AdminSupport';
 import AdminLicenseKeys from'@/components/admin/AdminLicenseKeys';
 import AdminMedia from'@/components/admin/AdminMedia';
+import AdminClients from'@/components/admin/AdminClients';
 
 
 const Admin = () => {
