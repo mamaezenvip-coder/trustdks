@@ -24,7 +24,9 @@ import AntiInspect from'@/components/AntiInspect';
 import {PregnancyTracker} from'@/components/PregnancyTracker';
 import ProductShowcase from'@/components/ProductShowcase';
 import TrialBanner from'@/components/TrialBanner';
-import {Tabs, TabsContent, TabsList, TabsTrigger} from'@/components/ui/tabs';
+import FeatureRing, {type RingItem} from'@/components/FeatureRing';
+import {Tabs, TabsContent} from'@/components/ui/tabs';
+
 import {Baby, Music, Calendar, BookOpen, Moon, Milk, Sparkles, Pill, Brain, MapPin, Instagram, ShoppingBag, Cross, Bell, Heart, Lock, Key, LogOut, Shield} from'lucide-react';
 import mamaeZenLogo from'@/assets/mamae-zen-logo.png';
 import mamaeZenBrand from'@/assets/mamae-zen-banner.png.asset.json';
