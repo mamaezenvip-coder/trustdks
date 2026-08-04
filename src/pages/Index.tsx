@@ -24,7 +24,9 @@ import AntiInspect from'@/components/AntiInspect';
 import {PregnancyTracker} from'@/components/PregnancyTracker';
 import ProductShowcase from'@/components/ProductShowcase';
 import TrialBanner from'@/components/TrialBanner';
-import {Tabs, TabsContent, TabsList, TabsTrigger} from'@/components/ui/tabs';
+import FeatureRing, {type RingItem} from'@/components/FeatureRing';
+import {Tabs, TabsContent} from'@/components/ui/tabs';
+
 import {Baby, Music, Calendar, BookOpen, Moon, Milk, Sparkles, Pill, Brain, MapPin, Instagram, ShoppingBag, Cross, Bell, Heart, Lock, Key, LogOut, Shield} from'lucide-react';
 import mamaeZenLogo from'@/assets/mamae-zen-logo.png';
 import mamaeZenBrand from'@/assets/mamae-zen-banner.png.asset.json';
@@ -43,6 +45,8 @@ const Index = () => {
  const [tempName, setTempName] = useState<string>('');
  const [showNameDialog, setShowNameDialog] = useState<boolean>(false);
  const [showLicenseDialog, setShowLicenseDialog] = useState(false);
+ const [activeTab, setActiveTab] = useState('guides');
+
 
  useEffect(() => {
  const savedName = localStorage.getItem('userName');
@@ -91,20 +95,29 @@ const Index = () => {
  toast.success(messages[mood] || (isUSA?'Thanks for sharing!':'Obrigada por compartilhar!'));
 };
 
- const renderTabTrigger = (value: string, icon: React.ReactNode, label: string) => {
- const isLocked = LOCKED_TABS.includes(value) &&!license.isActive;
- return (
- <TabsTrigger
- value={value}
- className="flex-col gap-1 py-2 px-1 text-[11px] font-medium text-muted-foreground border border-transparent data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-primary data-[state=active]:shadow-[0_0_18px_-4px_hsl(var(--primary)/0.8)] hover:text-primary hover:border-primary/40 rounded-lg transition-all relative">
- <div className="relative">
- {icon}
- {isLocked && <Lock className="w-3 h-3 text-primary absolute -top-1 -right-2 drop-shadow-[0_0_4px_hsl(var(--primary))]"/>}
- </div>
- <span>{label}</span>
- </TabsTrigger>
-);
-};
+ const ringDefs: Array<[string, React.ReactNode, string, string]> = [
+ ['guides', <Baby className="w-5 h-5"/>,'Guias','Guides'],
+ ['sounds', <Music className="w-5 h-5"/>,'Músicas','Music'],
+ ['medicine', <Pill className="w-5 h-5"/>,'Remédios','Medicine'],
+ ['emergency', <MapPin className="w-5 h-5"/>,'Emergência','Emergency'],
+ ['notifications', <Bell className="w-5 h-5"/>,'Lembretes','Reminders'],
+ ['pharmacy', <Cross className="w-5 h-5"/>,'Farmácia','Pharmacy'],
+ ['pregnancy', <Heart className="w-5 h-5"/>,'Gravidez','Pregnancy'],
+ ['shop', <ShoppingBag className="w-5 h-5"/>,'Lojinha','Shop'],
+ ['sleep', <Moon className="w-5 h-5"/>,'Sono','Sleep'],
+ ['feeding', <Milk className="w-5 h-5"/>,'Mamar','Feeding'],
+ ['autism', <Brain className="w-5 h-5"/>,'Autismo','Autism'],
+ ['routine', <Calendar className="w-5 h-5"/>,'Rotina','Routine'],
+ ['ebook', <BookOpen className="w-5 h-5"/>,'E-book','E-book'],
+ ];
+
+ const ringItems: RingItem[] = ringDefs.map(([value, icon, pt, en]) => ({
+ value,
+ icon,
+ label: isUSA? en: pt,
+ locked: LOCKED_TABS.includes(value) &&!license.isActive,
+ }));
+
 
  const lockDescriptions: Record<string, {pt: string; en: string}> = {
  sounds: {
@@ -251,21 +264,11 @@ const Index = () => {
  </div>
 )}
 
- {/* Tabs */}
- <Tabs defaultValue="guides"className="animate-fade-in">
- <TabsList className="grid w-full grid-cols-4 gap-1 h-auto p-1.5 bg-card/60 border border-primary/25 rounded-xl backdrop-blur-sm shadow-[0_0_20px_-8px_hsl(var(--primary)/0.5)]">
- {renderTabTrigger('guides', <Baby className="w-4 h-4"/>, isUSA?'Guides':'Guias')}
- {renderTabTrigger('sounds', <Music className="w-4 h-4"/>, isUSA?'Music':'Músicas')}
- {renderTabTrigger('medicine', <Pill className="w-4 h-4"/>, isUSA?'Medicine':'Remédios')}
- {renderTabTrigger('emergency', <MapPin className="w-4 h-4"/>, isUSA?'Emergency':'Emergência')}
- </TabsList>
-
- <TabsList className="grid w-full grid-cols-4 gap-1 h-auto p-1.5 mt-2 bg-card/60 border border-primary/25 rounded-xl backdrop-blur-sm shadow-[0_0_20px_-8px_hsl(var(--primary)/0.5)]">
- {renderTabTrigger('notifications', <Bell className="w-4 h-4"/>, isUSA?'Reminders':'Lembretes')}
- {renderTabTrigger('pharmacy', <Cross className="w-4 h-4"/>, isUSA?'Pharmacy':'Farmácia')}
- {renderTabTrigger('pregnancy', <Heart className="w-4 h-4"/>, isUSA?'Pregnancy':'Gravidez')}
- {renderTabTrigger('shop', <ShoppingBag className="w-4 h-4"/>, isUSA?'Shop':'Lojinha')}
- </TabsList>
+  {/* Anel giratório de funções */}
+ <Tabs value={activeTab} onValueChange={setActiveTab} className="animate-fade-in">
+ <div className="p-3 rounded-2xl surface-card shadow-[0_0_28px_-12px_hsl(var(--primary)/0.6)]">
+ <FeatureRing items={ringItems} value={activeTab} onChange={setActiveTab} />
+ </div>
 
  <div className="mt-4">
  <TabsContent value="guides"className="mt-0 animate-fade-in"><PracticalGuides /></TabsContent>
@@ -278,35 +281,14 @@ const Index = () => {
  <TabsContent value="shop"className="mt-0 animate-fade-in">
  <ProductShowcase />
  </TabsContent>
- </div>
-
- {/* Secondary Tabs */}
- <div className="mt-4 p-3 rounded-xl bg-card/60 border border-primary/25 backdrop-blur-sm shadow-[0_0_20px_-8px_hsl(var(--primary)/0.5)]">
- <details className="group">
- <summary className="cursor-pointer list-none flex items-center justify-between font-semibold text-sm text-foreground">
- <span>{isUSA?'More Premium Features':'Mais Recursos Premium'}</span>
- <span className="transition group-open:rotate-180 text-primary">▼</span>
- </summary>
- <div className="mt-3 space-y-2">
- <TabsList className="grid w-full grid-cols-2 gap-1 h-auto p-1.5 bg-background/60 border border-primary/20 rounded-lg">
- {renderTabTrigger('sleep', <Moon className="w-4 h-4"/>, isUSA?'Sleep':'Sono')}
- {renderTabTrigger('feeding', <Milk className="w-4 h-4"/>, isUSA?'Feed':'Mamar')}
- {renderTabTrigger('autism', <Brain className="w-4 h-4"/>, isUSA?'Autism':'Autismo')}
- {renderTabTrigger('routine', <Calendar className="w-4 h-4"/>, isUSA?'Routine':'Rotina')}
- <TabsTrigger value="ebook"className="flex-col gap-1 py-2 text-[11px] text-muted-foreground border border-transparent data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-primary data-[state=active]:shadow-[0_0_18px_-4px_hsl(var(--primary)/0.8)] hover:text-primary hover:border-primary/40 rounded-lg col-span-2 transition-all">
- <BookOpen className="w-4 h-4"/>
- <span>E-book</span>
- </TabsTrigger>
- </TabsList>
- <TabsContent value="sleep"className="mt-2"><SleepTracker /></TabsContent>
- <TabsContent value="feeding"className="mt-2"><FeedingTracker /></TabsContent>
- <TabsContent value="autism"className="mt-2"><AutismGuide /></TabsContent>
- <TabsContent value="routine"className="mt-2"><RoutineCalendar /></TabsContent>
- <TabsContent value="ebook"className="mt-2"><GuideLibrary /></TabsContent>
- </div>
- </details>
+ <TabsContent value="sleep"className="mt-0 animate-fade-in"><SleepTracker /></TabsContent>
+ <TabsContent value="feeding"className="mt-0 animate-fade-in"><FeedingTracker /></TabsContent>
+ <TabsContent value="autism"className="mt-0 animate-fade-in"><AutismGuide /></TabsContent>
+ <TabsContent value="routine"className="mt-0 animate-fade-in"><RoutineCalendar /></TabsContent>
+ <TabsContent value="ebook"className="mt-0 animate-fade-in"><GuideLibrary /></TabsContent>
  </div>
  </Tabs>
+
 
  {/* Footer */}
  <div className="text-center space-y-2 pt-6 pb-4 border-t border-border">

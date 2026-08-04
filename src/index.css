@@ -11,48 +11,50 @@ All colors MUST be HSL.
     /* Padrão da logomarca: preto puro + branco + rosa choque (Deep Pink) */
     --background: 0 0% 0%;
     --foreground: 0 0% 100%;
-    --card: 0 0% 4%;
+    --card: 330 14% 6%;
     --card-foreground: 0 0% 100%;
-    --popover: 0 0% 4%;
+    --popover: 330 14% 6%;
     --popover-foreground: 0 0% 100%;
-    --primary: 328 100% 54%;
+    --primary: 330 100% 58%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 328 100% 54%;
+    --secondary: 315 95% 45%;
     --secondary-foreground: 0 0% 100%;
-    --muted: 0 0% 8%;
-    --muted-foreground: 0 0% 65%;
-    --accent: 328 100% 54%;
+    --muted: 330 10% 10%;
+    --muted-foreground: 330 12% 72%;
+    --accent: 330 100% 58%;
     --accent-foreground: 0 0% 100%;
-    --destructive: 0 84% 60%;
+    --destructive: 0 88% 58%;
     --destructive-foreground: 0 0% 100%;
-    --border: 328 100% 22%;
-    --input: 0 0% 10%;
-    --ring: 328 100% 54%;
+    --border: 330 70% 26%;
+    --input: 330 12% 12%;
+    --ring: 330 100% 58%;
     --radius: 0.75rem;
 
     /* Tokens premium alinhados ao banner */
-    --gradient-premium: linear-gradient(135deg, hsl(0 0% 0%) 0%, hsl(0 0% 0%) 100%);
-    --gradient-card: linear-gradient(135deg, hsl(0 0% 3%) 0%, hsl(0 0% 5%) 100%);
-    --gradient-button: linear-gradient(135deg, hsl(328 100% 54%) 0%, hsl(328 100% 60%) 100%);
+    --gradient-premium: linear-gradient(135deg, hsl(0 0% 0%) 0%, hsl(330 30% 5%) 100%);
+    --gradient-card: linear-gradient(160deg, hsl(330 18% 8%) 0%, hsl(0 0% 2%) 100%);
+    --gradient-button: linear-gradient(135deg, hsl(330 100% 58%) 0%, hsl(315 95% 48%) 100%);
 
-    --shadow-glow-pink: 0 0 30px hsl(328 100% 54% / 0.5);
-    --shadow-glow-purple: 0 0 30px hsl(328 100% 54% / 0.3);
+    --shadow-glow-pink: 0 0 30px hsl(330 100% 58% / 0.55);
+    --shadow-glow-purple: 0 0 30px hsl(315 95% 50% / 0.35);
+
 
     --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
     --sidebar-background: 0 0% 0%;
     --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 328 100% 54%;
+    --sidebar-primary: 330 100% 58%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 0% 6%;
+    --sidebar-accent: 330 14% 8%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 328 100% 54%;
-    --sidebar-ring: 328 100% 54%;
+    --sidebar-border: 330 70% 26%;
+    --sidebar-ring: 330 100% 58%;
 
-    /* Fundo: preto puro como no banner */
+    /* Fundo: preto puro com leve profundidade rosada */
     --bg-gradient-start: 0 0% 0%;
-    --bg-gradient-middle: 0 0% 0%;
+    --bg-gradient-middle: 330 25% 4%;
     --bg-gradient-end: 0 0% 0%;
+
   }
 
   /* Tema Rosa - neon rosa intenso */
@@ -113,8 +115,9 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground antialiased;
     background-image:
-      radial-gradient(ellipse 80% 50% at 50% -10%, hsl(328 100% 54% / 0.18), transparent 60%),
-      radial-gradient(ellipse 60% 40% at 100% 100%, hsl(328 100% 54% / 0.10), transparent 60%);
+      radial-gradient(ellipse 80% 50% at 50% -10%, hsl(330 100% 58% / 0.20), transparent 62%),
+      radial-gradient(ellipse 70% 45% at 0% 40%, hsl(315 95% 50% / 0.10), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 100% 100%, hsl(330 100% 58% / 0.12), transparent 60%);
     background-attachment: fixed;
   }
 
@@ -126,18 +129,18 @@ All colors MUST be HSL.
 @layer utilities {
   .neon-border {
     @apply border border-primary/50;
-    box-shadow: 0 0 0 1px hsl(328 100% 54% / 0.15), 0 0 22px -6px hsl(328 100% 54% / 0.55);
+    box-shadow: 0 0 0 1px hsl(var(--primary) / 0.18), 0 0 22px -6px hsl(var(--primary) / 0.6);
   }
   .neon-glow {
-    box-shadow: 0 0 24px -4px hsl(328 100% 54% / 0.55);
+    box-shadow: 0 0 24px -4px hsl(var(--primary) / 0.6);
   }
   .neon-text {
-    text-shadow: 0 0 12px hsl(328 100% 54% / 0.55);
+    text-shadow: 0 0 12px hsl(var(--primary) / 0.6);
   }
   .surface-card {
-    background:
-      linear-gradient(180deg, hsl(0 0% 5% / 0.9), hsl(0 0% 2% / 0.9));
+    background: var(--gradient-card);
     @apply border border-primary/25 rounded-xl backdrop-blur-sm;
   }
 }
+
 
