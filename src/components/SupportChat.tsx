@@ -117,11 +117,19 @@ const SupportChat = () => {
 });
 };
 
- try {
- const resp = await fetch(CHAT_URL, {
+  try {
+   const {data: sessionData} = await supabase.auth.getSession();
+   const accessToken = sessionData.session?.access_token;
+   if (!accessToken) {
+    toast.error('Sessão expirada. Faça login novamente.');
+    setIsLoading(false);
+    return;
+   }
+
+   const resp = await fetch(CHAT_URL, {
  method:'POST',
  headers: {'Content-Type':'application/json',
- Authorization:`Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+ Authorization:`Bearer ${accessToken}`,
 },
  body: JSON.stringify({messages: allMessages, specialist: specialist.id}),
  signal: controller.signal,
