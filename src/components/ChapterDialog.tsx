@@ -225,7 +225,7 @@ const ChapterDialog = ({chapter, open, onOpenChange}: ChapterDialogProps) => {
 
  return (
  <Dialog open={open} onOpenChange={onOpenChange}>
- <DialogContent className="max-w-2xl max-h-[80vh] bg-[#1e1b4b] border-secondary/30">
+ <DialogContent className="max-w-2xl max-h-[80vh] bg-[hsl(var(--card))] border-secondary/30">
  <DialogHeader>
  <DialogTitle className="flex items-center gap-3 text-2xl text-foreground">
  <span className="text-3xl">{chapter.emoji}</span>

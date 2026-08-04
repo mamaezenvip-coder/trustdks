@@ -14,8 +14,8 @@ type Props = {
   onChange: (value: string) => void;
 };
 
-const STEP = 26; // degrees between items
-const RADIUS = 132; // px
+const STEP = 12; // degrees between items
+const RADIUS = 340; // px (arco largo = scroll suave e mais próximo)
 
 /**
  * Anel giratório de funções: o usuário arrasta o dedo para girar
@@ -55,7 +55,7 @@ const FeatureRing = ({ items, value, onChange }: Props) => {
     if (!dragging.current) return;
     const delta = e.clientX - startX.current;
     if (Math.abs(delta) > 4) moved.current = true;
-    setAngle(clamp(startAngle.current + delta * 0.28));
+    setAngle(clamp(startAngle.current + delta * 0.11));
   };
 
   const onPointerUp = () => {
@@ -83,7 +83,13 @@ const FeatureRing = ({ items, value, onChange }: Props) => {
       </div>
 
       <div
-        className="relative h-[120px] overflow-hidden touch-pan-y cursor-grab active:cursor-grabbing"
+        className="relative h-[124px] overflow-hidden touch-pan-y cursor-grab active:cursor-grabbing"
+        style={{
+          maskImage:
+            'linear-gradient(to right, transparent, black 16%, black 84%, transparent)',
+          WebkitMaskImage:
+            'linear-gradient(to right, transparent, black 16%, black 84%, transparent)',
+        }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
@@ -92,31 +98,31 @@ const FeatureRing = ({ items, value, onChange }: Props) => {
       >
         {/* Trilho do anel */}
         <div
-          className="pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-full border border-primary/25"
+          className="pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-full border-t border-primary/20"
           style={{
             width: RADIUS * 2,
             height: RADIUS * 2,
-            top: 34,
-            boxShadow: '0 0 40px -12px hsl(var(--primary) / 0.55) inset',
+            top: 62,
           }}
         />
 
         {/* Marcador do topo */}
-        <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 top-1 w-16 h-16 rounded-full border-2 border-primary neon-glow" />
+        <div className="pointer-events-none absolute left-1/2 top-[62px] -translate-x-1/2 -translate-y-1/2 w-[74px] h-[74px] rounded-full border border-primary/70 shadow-[0_0_24px_-6px_hsl(var(--primary)/0.8)]" />
 
         <div
           className="absolute left-1/2 will-change-transform"
           style={{
-            top: 34 + RADIUS,
+            top: 62 + RADIUS,
             transform: `translateX(-50%) rotate(${angle}deg)`,
             transition: dragging.current ? 'none' : 'transform 380ms cubic-bezier(0.22,1,0.36,1)',
           }}
         >
+
           {items.map((item, i) => {
             const itemAngle = i * STEP;
             const diff = Math.abs(itemAngle + angle);
             const isActive = i === activeIndex;
-            const visible = diff < 75;
+            const visible = diff < 38;
             return (
               <button
                 key={item.value}
@@ -128,7 +134,7 @@ const FeatureRing = ({ items, value, onChange }: Props) => {
                 className="absolute left-0 top-0 origin-center"
                 style={{
                   transform: `rotate(${itemAngle}deg) translateY(-${RADIUS}px) rotate(${-itemAngle - angle}deg) translate(-50%, -50%)`,
-                  opacity: visible ? Math.max(0.25, 1 - diff / 70) : 0,
+                  opacity: visible ? Math.max(0.3, 1 - diff / 36) : 0,
                   pointerEvents: visible ? 'auto' : 'none',
                   transition: dragging.current ? 'none' : 'opacity 300ms ease',
                 }}
@@ -137,8 +143,8 @@ const FeatureRing = ({ items, value, onChange }: Props) => {
                 <span
                   className={`relative flex flex-col items-center justify-center gap-0.5 rounded-full border transition-all ${
                     isActive
-                      ? 'w-14 h-14 bg-primary text-primary-foreground border-primary shadow-[0_0_26px_-4px_hsl(var(--primary)/0.9)] scale-105'
-                      : 'w-12 h-12 bg-card/80 text-muted-foreground border-primary/30 backdrop-blur-sm'
+                      ? 'w-16 h-16 bg-primary text-primary-foreground border-primary shadow-[0_0_32px_-4px_hsl(var(--primary)/0.95)] scale-105'
+                      : 'w-14 h-14 bg-card/80 text-foreground/70 border-primary/30 backdrop-blur-sm'
                   }`}
                 >
                   {item.icon}

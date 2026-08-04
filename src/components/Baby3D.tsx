@@ -373,7 +373,7 @@ export const Baby3D = ({week}: Baby3DProps) => {
  return (
  <div 
  className="relative w-full h-80 rounded-2xl overflow-hidden border-2 border-primary/50 shadow-2xl"style={{
- background:'linear-gradient(135deg, #1e1b4b 0%, #581c87 30%, #831843 60%, #4c1d95 100%)',
+ background:'linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--primary)/0.15) 30%, hsl(var(--primary)/0.25) 60%, #4c1d95 100%)',
  boxShadow:'0 25px 50px -12px rgba(168, 85, 247, 0.4), inset 0 0 80px rgba(236, 72, 153, 0.1)'}}
  >
  <Canvas
