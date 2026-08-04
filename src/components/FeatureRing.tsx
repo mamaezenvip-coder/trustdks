@@ -83,7 +83,13 @@ const FeatureRing = ({ items, value, onChange }: Props) => {
       </div>
 
       <div
-        className="relative h-[132px] overflow-hidden touch-pan-y cursor-grab active:cursor-grabbing"
+        className="relative h-[124px] overflow-hidden touch-pan-y cursor-grab active:cursor-grabbing"
+        style={{
+          maskImage:
+            'linear-gradient(to right, transparent, black 16%, black 84%, transparent)',
+          WebkitMaskImage:
+            'linear-gradient(to right, transparent, black 16%, black 84%, transparent)',
+        }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
@@ -92,26 +98,26 @@ const FeatureRing = ({ items, value, onChange }: Props) => {
       >
         {/* Trilho do anel */}
         <div
-          className="pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-full border border-primary/25"
+          className="pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-full border-t border-primary/20"
           style={{
             width: RADIUS * 2,
             height: RADIUS * 2,
-            top: 46,
-            boxShadow: '0 0 40px -12px hsl(var(--primary) / 0.55) inset',
+            top: 62,
           }}
         />
 
         {/* Marcador do topo */}
-        <div className="pointer-events-none absolute left-1/2 -translate-x-1/2 top-0 w-[76px] h-[76px] rounded-full border-2 border-primary neon-glow" />
+        <div className="pointer-events-none absolute left-1/2 top-[62px] -translate-x-1/2 -translate-y-1/2 w-[74px] h-[74px] rounded-full border border-primary/70 shadow-[0_0_24px_-6px_hsl(var(--primary)/0.8)]" />
 
         <div
           className="absolute left-1/2 will-change-transform"
           style={{
-            top: 46 + RADIUS,
+            top: 62 + RADIUS,
             transform: `translateX(-50%) rotate(${angle}deg)`,
             transition: dragging.current ? 'none' : 'transform 380ms cubic-bezier(0.22,1,0.36,1)',
           }}
         >
+
           {items.map((item, i) => {
             const itemAngle = i * STEP;
             const diff = Math.abs(itemAngle + angle);
