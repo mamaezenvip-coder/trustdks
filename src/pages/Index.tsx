@@ -45,6 +45,8 @@ const Index = () => {
  const [tempName, setTempName] = useState<string>('');
  const [showNameDialog, setShowNameDialog] = useState<boolean>(false);
  const [showLicenseDialog, setShowLicenseDialog] = useState(false);
+ const [activeTab, setActiveTab] = useState('guides');
+
 
  useEffect(() => {
  const savedName = localStorage.getItem('userName');
