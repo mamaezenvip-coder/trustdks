@@ -43,17 +43,18 @@ All colors MUST be HSL.
 
     --sidebar-background: 0 0% 0%;
     --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 328 100% 54%;
+    --sidebar-primary: 330 100% 58%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 0% 6%;
+    --sidebar-accent: 330 14% 8%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 328 100% 54%;
-    --sidebar-ring: 328 100% 54%;
+    --sidebar-border: 330 70% 26%;
+    --sidebar-ring: 330 100% 58%;
 
-    /* Fundo: preto puro como no banner */
+    /* Fundo: preto puro com leve profundidade rosada */
     --bg-gradient-start: 0 0% 0%;
-    --bg-gradient-middle: 0 0% 0%;
+    --bg-gradient-middle: 330 25% 4%;
     --bg-gradient-end: 0 0% 0%;
+
   }
 
   /* Tema Rosa - neon rosa intenso */
