@@ -83,7 +83,7 @@ const FeatureRing = ({ items, value, onChange }: Props) => {
       </div>
 
       <div
-        className="relative h-[124px] overflow-hidden touch-pan-y cursor-grab active:cursor-grabbing"
+        className="relative h-[120px] overflow-hidden touch-pan-y cursor-grab active:cursor-grabbing"
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
@@ -96,7 +96,7 @@ const FeatureRing = ({ items, value, onChange }: Props) => {
           style={{
             width: RADIUS * 2,
             height: RADIUS * 2,
-            top: 84,
+            top: 34,
             boxShadow: '0 0 40px -12px hsl(var(--primary) / 0.55) inset',
           }}
         />
@@ -107,7 +107,7 @@ const FeatureRing = ({ items, value, onChange }: Props) => {
         <div
           className="absolute left-1/2 will-change-transform"
           style={{
-            top: 84 + RADIUS,
+            top: 34 + RADIUS,
             transform: `translateX(-50%) rotate(${angle}deg)`,
             transition: dragging.current ? 'none' : 'transform 380ms cubic-bezier(0.22,1,0.36,1)',
           }}
@@ -116,7 +116,7 @@ const FeatureRing = ({ items, value, onChange }: Props) => {
             const itemAngle = i * STEP;
             const diff = Math.abs(itemAngle + angle);
             const isActive = i === activeIndex;
-            const visible = diff < 60;
+            const visible = diff < 75;
             return (
               <button
                 key={item.value}
