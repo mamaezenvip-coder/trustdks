@@ -251,21 +251,11 @@ const Index = () => {
  </div>
 )}
 
- {/* Tabs */}
- <Tabs defaultValue="guides"className="animate-fade-in">
- <TabsList className="grid w-full grid-cols-4 gap-1 h-auto p-1.5 bg-card/60 border border-primary/25 rounded-xl backdrop-blur-sm shadow-[0_0_20px_-8px_hsl(var(--primary)/0.5)]">
- {renderTabTrigger('guides', <Baby className="w-4 h-4"/>, isUSA?'Guides':'Guias')}
- {renderTabTrigger('sounds', <Music className="w-4 h-4"/>, isUSA?'Music':'Músicas')}
- {renderTabTrigger('medicine', <Pill className="w-4 h-4"/>, isUSA?'Medicine':'Remédios')}
- {renderTabTrigger('emergency', <MapPin className="w-4 h-4"/>, isUSA?'Emergency':'Emergência')}
- </TabsList>
-
- <TabsList className="grid w-full grid-cols-4 gap-1 h-auto p-1.5 mt-2 bg-card/60 border border-primary/25 rounded-xl backdrop-blur-sm shadow-[0_0_20px_-8px_hsl(var(--primary)/0.5)]">
- {renderTabTrigger('notifications', <Bell className="w-4 h-4"/>, isUSA?'Reminders':'Lembretes')}
- {renderTabTrigger('pharmacy', <Cross className="w-4 h-4"/>, isUSA?'Pharmacy':'Farmácia')}
- {renderTabTrigger('pregnancy', <Heart className="w-4 h-4"/>, isUSA?'Pregnancy':'Gravidez')}
- {renderTabTrigger('shop', <ShoppingBag className="w-4 h-4"/>, isUSA?'Shop':'Lojinha')}
- </TabsList>
+  {/* Anel giratório de funções */}
+ <Tabs value={activeTab} onValueChange={setActiveTab} className="animate-fade-in">
+ <div className="p-3 rounded-2xl surface-card shadow-[0_0_28px_-12px_hsl(var(--primary)/0.6)]">
+ <FeatureRing items={ringItems} value={activeTab} onChange={setActiveTab} />
+ </div>
 
  <div className="mt-4">
  <TabsContent value="guides"className="mt-0 animate-fade-in"><PracticalGuides /></TabsContent>
@@ -278,35 +268,14 @@ const Index = () => {
  <TabsContent value="shop"className="mt-0 animate-fade-in">
  <ProductShowcase />
  </TabsContent>
- </div>
-
- {/* Secondary Tabs */}
- <div className="mt-4 p-3 rounded-xl bg-card/60 border border-primary/25 backdrop-blur-sm shadow-[0_0_20px_-8px_hsl(var(--primary)/0.5)]">
- <details className="group">
- <summary className="cursor-pointer list-none flex items-center justify-between font-semibold text-sm text-foreground">
- <span>{isUSA?'More Premium Features':'Mais Recursos Premium'}</span>
- <span className="transition group-open:rotate-180 text-primary">▼</span>
- </summary>
- <div className="mt-3 space-y-2">
- <TabsList className="grid w-full grid-cols-2 gap-1 h-auto p-1.5 bg-background/60 border border-primary/20 rounded-lg">
- {renderTabTrigger('sleep', <Moon className="w-4 h-4"/>, isUSA?'Sleep':'Sono')}
- {renderTabTrigger('feeding', <Milk className="w-4 h-4"/>, isUSA?'Feed':'Mamar')}
- {renderTabTrigger('autism', <Brain className="w-4 h-4"/>, isUSA?'Autism':'Autismo')}
- {renderTabTrigger('routine', <Calendar className="w-4 h-4"/>, isUSA?'Routine':'Rotina')}
- <TabsTrigger value="ebook"className="flex-col gap-1 py-2 text-[11px] text-muted-foreground border border-transparent data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-primary data-[state=active]:shadow-[0_0_18px_-4px_hsl(var(--primary)/0.8)] hover:text-primary hover:border-primary/40 rounded-lg col-span-2 transition-all">
- <BookOpen className="w-4 h-4"/>
- <span>E-book</span>
- </TabsTrigger>
- </TabsList>
- <TabsContent value="sleep"className="mt-2"><SleepTracker /></TabsContent>
- <TabsContent value="feeding"className="mt-2"><FeedingTracker /></TabsContent>
- <TabsContent value="autism"className="mt-2"><AutismGuide /></TabsContent>
- <TabsContent value="routine"className="mt-2"><RoutineCalendar /></TabsContent>
- <TabsContent value="ebook"className="mt-2"><GuideLibrary /></TabsContent>
- </div>
- </details>
+ <TabsContent value="sleep"className="mt-0 animate-fade-in"><SleepTracker /></TabsContent>
+ <TabsContent value="feeding"className="mt-0 animate-fade-in"><FeedingTracker /></TabsContent>
+ <TabsContent value="autism"className="mt-0 animate-fade-in"><AutismGuide /></TabsContent>
+ <TabsContent value="routine"className="mt-0 animate-fade-in"><RoutineCalendar /></TabsContent>
+ <TabsContent value="ebook"className="mt-0 animate-fade-in"><GuideLibrary /></TabsContent>
  </div>
  </Tabs>
+
 
  {/* Footer */}
  <div className="text-center space-y-2 pt-6 pb-4 border-t border-border">
