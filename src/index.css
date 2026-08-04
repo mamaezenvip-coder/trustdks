@@ -115,8 +115,9 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground antialiased;
     background-image:
-      radial-gradient(ellipse 80% 50% at 50% -10%, hsl(328 100% 54% / 0.18), transparent 60%),
-      radial-gradient(ellipse 60% 40% at 100% 100%, hsl(328 100% 54% / 0.10), transparent 60%);
+      radial-gradient(ellipse 80% 50% at 50% -10%, hsl(330 100% 58% / 0.20), transparent 62%),
+      radial-gradient(ellipse 70% 45% at 0% 40%, hsl(315 95% 50% / 0.10), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 100% 100%, hsl(330 100% 58% / 0.12), transparent 60%);
     background-attachment: fixed;
   }
 
@@ -128,18 +129,18 @@ All colors MUST be HSL.
 @layer utilities {
   .neon-border {
     @apply border border-primary/50;
-    box-shadow: 0 0 0 1px hsl(328 100% 54% / 0.15), 0 0 22px -6px hsl(328 100% 54% / 0.55);
+    box-shadow: 0 0 0 1px hsl(var(--primary) / 0.18), 0 0 22px -6px hsl(var(--primary) / 0.6);
   }
   .neon-glow {
-    box-shadow: 0 0 24px -4px hsl(328 100% 54% / 0.55);
+    box-shadow: 0 0 24px -4px hsl(var(--primary) / 0.6);
   }
   .neon-text {
-    text-shadow: 0 0 12px hsl(328 100% 54% / 0.55);
+    text-shadow: 0 0 12px hsl(var(--primary) / 0.6);
   }
   .surface-card {
-    background:
-      linear-gradient(180deg, hsl(0 0% 5% / 0.9), hsl(0 0% 2% / 0.9));
+    background: var(--gradient-card);
     @apply border border-primary/25 rounded-xl backdrop-blur-sm;
   }
 }
+
 
