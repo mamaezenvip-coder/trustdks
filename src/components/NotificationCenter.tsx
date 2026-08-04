@@ -103,16 +103,16 @@ const NotificationCenter = () => {
  case"vaccine":
  return"bg-accent";
  case"appointment":
- return"bg-green-500";
+ return"bg-primary";
  case"medicine":
  return"bg-secondary";
  default:
- return"bg-orange-500";
+ return"bg-secondary";
 }
 };
 
  return (
- <Card className="bg-gradient-to-br from-[#1e1b4b] via-[#581c87]/50 to-[#831843]/50 border-2 border-secondary/30 shadow-lg">
+ <Card className="bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--primary)/0.15)]/50 to-[hsl(var(--primary)/0.25)]/50 border-2 border-secondary/30 shadow-lg">
  <CardHeader className="pb-3">
  <div className="flex items-center justify-between">
  <div className="flex items-center gap-2">
@@ -128,7 +128,7 @@ const NotificationCenter = () => {
  Novo
  </Button>
  </DialogTrigger>
- <DialogContent className="sm:max-w-md bg-[#1e1b4b] border-secondary/30">
+ <DialogContent className="sm:max-w-md bg-[hsl(var(--card))] border-secondary/30">
  <DialogHeader>
  <DialogTitle className="text-foreground">Criar Novo Lembrete</DialogTitle>
  <DialogDescription className="text-secondary">
@@ -213,7 +213,7 @@ const NotificationCenter = () => {
  </div>
 ): (
  notifications.map((notification) => (
- <Card key={notification.id} className="relative overflow-hidden hover:shadow-md transition-shadow bg-[#1e1b4b] border-secondary/30">
+ <Card key={notification.id} className="relative overflow-hidden hover:shadow-md transition-shadow bg-[hsl(var(--card))] border-secondary/30">
  <div className={`absolute left-0 top-0 bottom-0 w-1 ${getTypeColor(notification.type)}`} />
  <CardContent className="p-3 pl-4">
  <div className="flex items-start justify-between gap-2">

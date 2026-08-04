@@ -157,7 +157,7 @@ export default function SleepTracker() {
  <CardContent className="pt-4 space-y-4">
  {/* Stats */}
  <div className="grid grid-cols-2 gap-2">
- <div className="p-3 rounded-lg bg-[#1e1b4b] border border-secondary/30">
+ <div className="p-3 rounded-lg bg-[hsl(var(--card))] border border-secondary/30">
  <div className="flex items-center gap-1.5 text-xs text-primary/70 mb-1">
  <Clock className="w-3 h-3"/>
  {texts.totalToday}
@@ -166,7 +166,7 @@ export default function SleepTracker() {
  {formatDuration(totalSleepToday)}
  </div>
  </div>
- <div className="p-3 rounded-lg bg-[#1e1b4b] border border-secondary/30">
+ <div className="p-3 rounded-lg bg-[hsl(var(--card))] border border-secondary/30">
  <div className="flex items-center gap-1.5 text-xs text-primary/70 mb-1">
  <TrendingUp className="w-3 h-3"/>
  {texts.sessions}
@@ -179,7 +179,7 @@ export default function SleepTracker() {
 
  {/* Controls */}
  {currentSleep? (
- <div className="p-3 rounded-lg bg-[#1e1b4b] border-2 border-secondary/50 space-y-3">
+ <div className="p-3 rounded-lg bg-[hsl(var(--card))] border-2 border-secondary/50 space-y-3">
  <div className="flex items-center justify-between">
  <div>
  <p className="font-semibold text-sm text-foreground">
@@ -226,12 +226,12 @@ export default function SleepTracker() {
  {todayEntries.map((entry) => (
  <div
  key={entry.id}
- className="p-2 rounded-lg bg-[#1e1b4b] border border-secondary/20 flex items-center justify-between text-xs">
+ className="p-2 rounded-lg bg-[hsl(var(--card))] border border-secondary/20 flex items-center justify-between text-xs">
  <div className="flex items-center gap-2">
  {entry.type ==='night'? (
  <Moon className="w-4 h-4 text-secondary"/>
 ): (
- <Sun className="w-4 h-4 text-amber-400"/>
+ <Sun className="w-4 h-4 text-primary"/>
 )}
  <div>
  <p className="font-medium text-xs text-foreground">
@@ -253,8 +253,8 @@ export default function SleepTracker() {
  </div>
 )}
 
- <div className="p-3 bg-[#1e1b4b] rounded-lg border border-green-500/30">
- <p className="text-xs text-green-300">
+ <div className="p-3 bg-[hsl(var(--card))] rounded-lg border border-primary/30">
+ <p className="text-xs text-muted-foreground">
  <strong>{texts.goal}</strong>
  </p>
  </div>

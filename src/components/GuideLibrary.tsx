@@ -40,7 +40,7 @@ const GuideLibrary = () => {
 };
 
  return (
- <Card className="border-secondary/30 shadow-lg bg-[#1e1b4b]/50">
+ <Card className="border-secondary/30 shadow-lg bg-[hsl(var(--card))]/50">
  <div className="p-6">
  <div className="flex items-center gap-3 mb-6">
  <BookOpen className="w-6 h-6 text-primary"/>
@@ -61,7 +61,7 @@ const GuideLibrary = () => {
  {chapters.map((chapter) => (
  <div
  key={chapter.id}
- className="group bg-[#1e1b4b]/80 hover:bg-[#1e1b4b] backdrop-blur-sm rounded-xl p-4 border border-secondary/30 hover:border-primary/50 transition-all duration-300 hover:shadow-lg">
+ className="group bg-[hsl(var(--card))]/80 hover:bg-[hsl(var(--card))] backdrop-blur-sm rounded-xl p-4 border border-secondary/30 hover:border-primary/50 transition-all duration-300 hover:shadow-lg">
  <div className="flex items-start gap-4">
  <div className="w-12 h-12 bg-gradient-to-br from-primary/30 to-secondary/30 rounded-xl flex items-center justify-center flex-shrink-0 text-2xl group-hover:scale-110 transition-transform duration-300">
  {chapter.emoji}
