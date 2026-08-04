@@ -93,20 +93,29 @@ const Index = () => {
  toast.success(messages[mood] || (isUSA?'Thanks for sharing!':'Obrigada por compartilhar!'));
 };
 
- const renderTabTrigger = (value: string, icon: React.ReactNode, label: string) => {
- const isLocked = LOCKED_TABS.includes(value) &&!license.isActive;
- return (
- <TabsTrigger
- value={value}
- className="flex-col gap-1 py-2 px-1 text-[11px] font-medium text-muted-foreground border border-transparent data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-primary data-[state=active]:shadow-[0_0_18px_-4px_hsl(var(--primary)/0.8)] hover:text-primary hover:border-primary/40 rounded-lg transition-all relative">
- <div className="relative">
- {icon}
- {isLocked && <Lock className="w-3 h-3 text-primary absolute -top-1 -right-2 drop-shadow-[0_0_4px_hsl(var(--primary))]"/>}
- </div>
- <span>{label}</span>
- </TabsTrigger>
-);
-};
+ const ringDefs: Array<[string, React.ReactNode, string, string]> = [
+ ['guides', <Baby className="w-5 h-5"/>,'Guias','Guides'],
+ ['sounds', <Music className="w-5 h-5"/>,'Músicas','Music'],
+ ['medicine', <Pill className="w-5 h-5"/>,'Remédios','Medicine'],
+ ['emergency', <MapPin className="w-5 h-5"/>,'Emergência','Emergency'],
+ ['notifications', <Bell className="w-5 h-5"/>,'Lembretes','Reminders'],
+ ['pharmacy', <Cross className="w-5 h-5"/>,'Farmácia','Pharmacy'],
+ ['pregnancy', <Heart className="w-5 h-5"/>,'Gravidez','Pregnancy'],
+ ['shop', <ShoppingBag className="w-5 h-5"/>,'Lojinha','Shop'],
+ ['sleep', <Moon className="w-5 h-5"/>,'Sono','Sleep'],
+ ['feeding', <Milk className="w-5 h-5"/>,'Mamar','Feeding'],
+ ['autism', <Brain className="w-5 h-5"/>,'Autismo','Autism'],
+ ['routine', <Calendar className="w-5 h-5"/>,'Rotina','Routine'],
+ ['ebook', <BookOpen className="w-5 h-5"/>,'E-book','E-book'],
+ ];
+
+ const ringItems: RingItem[] = ringDefs.map(([value, icon, pt, en]) => ({
+ value,
+ icon,
+ label: isUSA? en: pt,
+ locked: LOCKED_TABS.includes(value) &&!license.isActive,
+ }));
+
 
  const lockDescriptions: Record<string, {pt: string; en: string}> = {
  sounds: {
