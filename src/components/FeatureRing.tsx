@@ -55,7 +55,7 @@ const FeatureRing = ({ items, value, onChange }: Props) => {
     if (!dragging.current) return;
     const delta = e.clientX - startX.current;
     if (Math.abs(delta) > 4) moved.current = true;
-    setAngle(clamp(startAngle.current - delta * 0.28));
+    setAngle(clamp(startAngle.current + delta * 0.28));
   };
 
   const onPointerUp = () => {
