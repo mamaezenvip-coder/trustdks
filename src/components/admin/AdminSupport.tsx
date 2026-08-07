@@ -212,7 +212,7 @@ const AdminSupport = () => {
  onClick={() => setSelectedTicket(t)}
  className="w-full text-left p-3 rounded-lg bg-muted/50 border border-primary/20 hover:bg-muted transition-colors">
  <div className="flex items-center gap-2">
- {t.status ==='open'? <Clock className="w-3.5 h-3.5 text-yellow-500"/>: <CheckCircle className="w-3.5 h-3.5 text-green-500"/>}
+ {t.status ==='open'? <Clock className="w-3.5 h-3.5 text-primary"/>: <CheckCircle className="w-3.5 h-3.5 text-primary"/>}
  <span className="text-sm font-medium text-foreground flex-1 truncate">{t.subject}</span>
  <Badge variant={t.status ==='open'?'default':'secondary'} className="text-[10px]">
  {t.status ==='open'?'Aberto':'Fechado'}

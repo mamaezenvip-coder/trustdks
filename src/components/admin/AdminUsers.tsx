@@ -71,7 +71,7 @@ const AdminUsers = () => {
  {(p.display_name || p.email ||'?')[0].toUpperCase()}
  </div>
 )}
- <span className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-card ${isOnline(p.last_seen_at)?'bg-green-500':'bg-muted-foreground/40'}`} />
+ <span className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-card ${isOnline(p.last_seen_at)?'bg-primary':'bg-muted-foreground/40'}`} />
  </div>
  <div className="flex-1 min-w-0">
  <p className="text-sm font-medium text-foreground truncate">{p.display_name ||'Sem nome'}</p>
