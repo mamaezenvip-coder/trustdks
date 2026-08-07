@@ -80,11 +80,11 @@ const AdminLicenseKeys = () => {
  <p className="text-[10px] text-muted-foreground">Total</p>
  </Card>
  <Card className="bg-card/80 border border-primary/30 shadow-[0_0_18px_-8px_hsl(var(--primary)/0.55)] p-3 text-center">
- <p className="text-lg font-bold text-green-400">{unused}</p>
+ <p className="text-lg font-bold text-primary">{unused}</p>
  <p className="text-[10px] text-muted-foreground">Disponíveis</p>
  </Card>
  <Card className="bg-card/80 border border-primary/30 shadow-[0_0_18px_-8px_hsl(var(--primary)/0.55)] p-3 text-center">
- <p className="text-lg font-bold text-orange-400">{used}</p>
+ <p className="text-lg font-bold text-primary">{used}</p>
  <p className="text-[10px] text-muted-foreground">Usadas</p>
  </Card>
  </div>

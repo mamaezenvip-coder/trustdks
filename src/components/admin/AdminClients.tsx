@@ -30,7 +30,7 @@ const daysLeft = (iso: string) =>
 const statusLabel = (a?: Activation) => {
   if (!a) return { text: 'Sem licença', cls: 'bg-muted text-muted-foreground border-border' };
   if (a.status === 'blocked') return { text: 'Bloqueado', cls: 'bg-destructive/15 text-destructive border-destructive/40' };
-  if (a.status === 'paused') return { text: `Pausado (${a.paused_days_left ?? 0}d)`, cls: 'bg-yellow-500/15 text-yellow-400 border-yellow-500/40' };
+  if (a.status === 'paused') return { text: `Pausado (${a.paused_days_left ?? 0}d)`, cls: 'bg-primary/15 text-primary border-primary/40' };
   if (new Date(a.expires_at) <= new Date()) return { text: 'Expirado', cls: 'bg-muted text-muted-foreground border-border' };
   return { text: `Ativo (${daysLeft(a.expires_at)}d)`, cls: 'bg-primary/15 text-primary border-primary/40' };
 };
@@ -151,7 +151,7 @@ const AdminClients = () => {
                     variant="outline"
                     disabled={isBusy}
                     onClick={() => setStatus(p.id, 'paused')}
-                    className="text-[11px] border-yellow-500/40 text-yellow-400 hover:bg-yellow-500/10"
+                    className="text-[11px] border-primary/40 text-primary hover:bg-primary/15"
                   >
                     <PauseCircle className="w-3.5 h-3.5 mr-1" /> Pausar
                   </Button>

@@ -8,36 +8,35 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Padrão da logomarca: preto puro + branco + rosa choque (Deep Pink) */
+    /* PALETA OFICIAL: 3 cores — preto (fundo), rosa choque (destaque), branco (texto) */
     --background: 0 0% 0%;
     --foreground: 0 0% 100%;
-    --card: 330 14% 6%;
+    --card: 0 0% 4%;
     --card-foreground: 0 0% 100%;
-    --popover: 330 14% 6%;
+    --popover: 0 0% 4%;
     --popover-foreground: 0 0% 100%;
     --primary: 330 100% 58%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 315 95% 45%;
+    --secondary: 330 100% 58%;
     --secondary-foreground: 0 0% 100%;
-    --muted: 330 10% 10%;
-    --muted-foreground: 330 12% 72%;
+    --muted: 0 0% 8%;
+    --muted-foreground: 0 0% 78%;
     --accent: 330 100% 58%;
     --accent-foreground: 0 0% 100%;
-    --destructive: 0 88% 58%;
+    --destructive: 330 100% 58%;
     --destructive-foreground: 0 0% 100%;
-    --border: 330 70% 26%;
-    --input: 330 12% 12%;
+    --border: 330 100% 58%;
+    --input: 0 0% 10%;
     --ring: 330 100% 58%;
     --radius: 0.75rem;
 
-    /* Tokens premium alinhados ao banner */
-    --gradient-premium: linear-gradient(135deg, hsl(0 0% 0%) 0%, hsl(330 30% 5%) 100%);
-    --gradient-card: linear-gradient(160deg, hsl(330 18% 8%) 0%, hsl(0 0% 2%) 100%);
-    --gradient-button: linear-gradient(135deg, hsl(330 100% 58%) 0%, hsl(315 95% 48%) 100%);
+    /* Tokens premium (apenas preto + rosa) */
+    --gradient-premium: linear-gradient(135deg, hsl(0 0% 0%) 0%, hsl(0 0% 4%) 100%);
+    --gradient-card: linear-gradient(160deg, hsl(0 0% 6%) 0%, hsl(0 0% 2%) 100%);
+    --gradient-button: linear-gradient(135deg, hsl(330 100% 58%) 0%, hsl(330 100% 44%) 100%);
 
     --shadow-glow-pink: 0 0 30px hsl(330 100% 58% / 0.55);
-    --shadow-glow-purple: 0 0 30px hsl(315 95% 50% / 0.35);
-
+    --shadow-glow-purple: 0 0 30px hsl(330 100% 58% / 0.35);
 
     --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
@@ -45,65 +44,55 @@ All colors MUST be HSL.
     --sidebar-foreground: 0 0% 100%;
     --sidebar-primary: 330 100% 58%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 330 14% 8%;
+    --sidebar-accent: 0 0% 6%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 330 70% 26%;
+    --sidebar-border: 330 100% 58%;
     --sidebar-ring: 330 100% 58%;
 
-    /* Fundo: preto puro com leve profundidade rosada */
     --bg-gradient-start: 0 0% 0%;
-    --bg-gradient-middle: 330 25% 4%;
+    --bg-gradient-middle: 0 0% 2%;
     --bg-gradient-end: 0 0% 0%;
-
   }
 
-  /* Tema Rosa - neon rosa intenso */
-  [data-theme="pink"] {
-    --bg-gradient-start: 0 0% 2%;
-    --bg-gradient-middle: 340 50% 8%;
-    --bg-gradient-end: 0 0% 3%;
-    --primary: 340 100% 55%;
-    --secondary: 330 90% 50%;
-  }
-
-  /* Tema Azul - neon azul sobre preto */
+  /* Temas mantidos na paleta oficial (preto + rosa + branco) */
+  [data-theme="pink"],
   [data-theme="blue"] {
-    --bg-gradient-start: 0 0% 2%;
-    --bg-gradient-middle: 240 50% 8%;
-    --bg-gradient-end: 0 0% 3%;
-    --primary: 240 100% 65%;
-    --secondary: 260 90% 55%;
+    --bg-gradient-start: 0 0% 0%;
+    --bg-gradient-middle: 0 0% 2%;
+    --bg-gradient-end: 0 0% 0%;
+    --primary: 330 100% 58%;
+    --secondary: 330 100% 58%;
   }
 
   .dark {
-    --background: 0 0% 3%;
-    --foreground: 0 0% 96%;
-    --card: 0 0% 7%;
-    --card-foreground: 0 0% 96%;
-    --popover: 0 0% 7%;
-    --popover-foreground: 0 0% 96%;
-    --primary: 330 100% 55%;
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 4%;
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 4%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 330 100% 58%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 320 90% 50%;
+    --secondary: 330 100% 58%;
     --secondary-foreground: 0 0% 100%;
-    --muted: 0 0% 10%;
-    --muted-foreground: 0 0% 50%;
-    --accent: 330 70% 15%;
-    --accent-foreground: 0 0% 96%;
-    --destructive: 0 62.8% 50%;
+    --muted: 0 0% 8%;
+    --muted-foreground: 0 0% 78%;
+    --accent: 330 100% 58%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 330 100% 58%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 14%;
-    --input: 0 0% 12%;
-    --ring: 330 100% 55%;
-    
-    --sidebar-background: 0 0% 5%;
-    --sidebar-foreground: 0 0% 96%;
-    --sidebar-primary: 330 100% 55%;
+    --border: 330 100% 58%;
+    --input: 0 0% 10%;
+    --ring: 330 100% 58%;
+
+    --sidebar-background: 0 0% 0%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 330 100% 58%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 330 50% 12%;
-    --sidebar-accent-foreground: 0 0% 96%;
-    --sidebar-border: 0 0% 12%;
-    --sidebar-ring: 330 100% 55%;
+    --sidebar-accent: 0 0% 6%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 330 100% 58%;
+    --sidebar-ring: 330 100% 58%;
   }
 }
 
@@ -115,9 +104,8 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground antialiased;
     background-image:
-      radial-gradient(ellipse 80% 50% at 50% -10%, hsl(330 100% 58% / 0.20), transparent 62%),
-      radial-gradient(ellipse 70% 45% at 0% 40%, hsl(315 95% 50% / 0.10), transparent 60%),
-      radial-gradient(ellipse 60% 40% at 100% 100%, hsl(330 100% 58% / 0.12), transparent 60%);
+      radial-gradient(ellipse 80% 50% at 50% -10%, hsl(330 100% 58% / 0.18), transparent 62%),
+      radial-gradient(ellipse 60% 40% at 100% 100%, hsl(330 100% 58% / 0.10), transparent 60%);
     background-attachment: fixed;
   }
 

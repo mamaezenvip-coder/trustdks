@@ -51,7 +51,7 @@ const specialists: Specialist[] = [
  name:'Enf. Carla',
  title:'Enfermeira',
  icon: <Heart className="w-5 h-5"/>,
- color:'text-red-400',
+ color:'text-primary',
  greeting:'Olá mamãe! Sou a Enf. Carla, especialista em cuidados com recém-nascidos. No que posso te ajudar?',
  avatar: specialistEnfermeira,
 },
@@ -69,7 +69,7 @@ const specialists: Specialist[] = [
  name:'Dra. Beatriz',
  title:'Nutricionista',
  icon: <Apple className="w-5 h-5"/>,
- color:'text-green-400',
+ color:'text-primary',
  greeting:'Oi mamãe! Sou a Dra. Beatriz, nutricionista materno-infantil. Vamos falar sobre alimentação?',
  avatar: specialistNutricionista,
 },
@@ -246,7 +246,7 @@ const SupportChat = () => {
  <p className="text-sm font-bold text-foreground leading-none">{selectedSpecialist.name}</p>
  <p className="text-[10px] text-muted-foreground">{selectedSpecialist.title} • Online 24h</p>
  </div>
- <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse ml-1"/>
+ <span className="w-2 h-2 rounded-full bg-primary animate-pulse ml-1"/>
  </div>
 ): (
  <div className="flex flex-col">
@@ -358,8 +358,8 @@ const SupportChat = () => {
  <p className="text-xs text-muted-foreground">{s.title}</p>
  </div>
  <div className="flex items-center gap-1.5">
- <span className="w-2 h-2 rounded-full bg-green-500"/>
- <span className="text-[10px] text-green-500 font-medium">Online</span>
+ <span className="w-2 h-2 rounded-full bg-primary"/>
+ <span className="text-[10px] text-primary font-medium">Online</span>
  </div>
  </button>
 ))}
