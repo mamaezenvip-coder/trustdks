@@ -144,10 +144,10 @@ export default function SleepTracker() {
 });
 
  return (
- <Card className="border-primary/20 shadow-lg bg-gradient-to-br from-secondary/40 to-secondary/40">
- <CardHeader className="bg-gradient-to-r from-secondary/20 to-secondary/20 pb-3">
+ <Card className="border-primary/20 shadow-lg bg-card/80">
+ <CardHeader className="bg-primary/10 border-b border-primary/20 pb-3">
  <CardTitle className="text-lg flex items-center gap-2 text-foreground">
- <Moon className="w-5 h-5 text-secondary"/>
+ <Moon className="w-5 h-5 text-primary"/>
  {texts.title}
  </CardTitle>
  <CardDescription className="text-xs text-primary/70">
@@ -157,7 +157,7 @@ export default function SleepTracker() {
  <CardContent className="pt-4 space-y-4">
  {/* Stats */}
  <div className="grid grid-cols-2 gap-2">
- <div className="p-3 rounded-lg bg-[hsl(var(--card))] border border-secondary/30">
+ <div className="p-3 rounded-lg bg-[hsl(var(--card))] border border-primary/30">
  <div className="flex items-center gap-1.5 text-xs text-primary/70 mb-1">
  <Clock className="w-3 h-3"/>
  {texts.totalToday}
@@ -166,7 +166,7 @@ export default function SleepTracker() {
  {formatDuration(totalSleepToday)}
  </div>
  </div>
- <div className="p-3 rounded-lg bg-[hsl(var(--card))] border border-secondary/30">
+ <div className="p-3 rounded-lg bg-[hsl(var(--card))] border border-primary/30">
  <div className="flex items-center gap-1.5 text-xs text-primary/70 mb-1">
  <TrendingUp className="w-3 h-3"/>
  {texts.sessions}
@@ -179,7 +179,7 @@ export default function SleepTracker() {
 
  {/* Controls */}
  {currentSleep? (
- <div className="p-3 rounded-lg bg-[hsl(var(--card))] border-2 border-secondary/50 space-y-3">
+ <div className="p-3 rounded-lg bg-[hsl(var(--card))] border-2 border-primary/50 space-y-3">
  <div className="flex items-center justify-between">
  <div>
  <p className="font-semibold text-sm text-foreground">
@@ -189,9 +189,9 @@ export default function SleepTracker() {
  {texts.start}{formatTime(currentSleep.startTime)}
  </p>
  </div>
- <div className="w-2 h-2 bg-secondary rounded-full animate-pulse"/>
+ <div className="w-2 h-2 bg-primary rounded-full animate-pulse"/>
  </div>
- <Button onClick={endSleep} className="w-full text-sm bg-gradient-to-r from-primary to-secondary hover:from-primary hover:to-secondary text-foreground"size="sm">
+ <Button onClick={endSleep} className="w-full text-sm bg-primary hover:bg-primary/90 text-primary-foreground"size="sm">
  {texts.wakeUp}
  </Button>
  </div>
@@ -199,7 +199,7 @@ export default function SleepTracker() {
  <div className="grid grid-cols-2 gap-2">
  <Button
  onClick={() => startSleep('night')}
- size="sm"className="h-auto py-4 flex-col gap-1.5 bg-gradient-to-r from-secondary to-secondary hover:from-secondary hover:to-secondary text-foreground">
+ size="sm"className="h-auto py-4 flex-col gap-1.5 bg-primary hover:bg-primary/90 text-primary-foreground">
  <Moon className="w-5 h-5"/>
  <div className="text-center">
  <div className="font-semibold text-xs">{texts.nightSleep}</div>
@@ -207,7 +207,7 @@ export default function SleepTracker() {
  </Button>
  <Button
  onClick={() => startSleep('nap')}
- variant="outline"size="sm"className="h-auto py-4 flex-col gap-1.5 border-secondary/30 text-primary hover:bg-secondary/20 hover:text-foreground">
+ variant="outline"size="sm"className="h-auto py-4 flex-col gap-1.5 border-primary/40 text-primary hover:bg-primary/15 hover:text-primary">
  <Sun className="w-5 h-5"/>
  <div className="text-center">
  <div className="font-semibold text-xs">{texts.nap}</div>
@@ -226,10 +226,10 @@ export default function SleepTracker() {
  {todayEntries.map((entry) => (
  <div
  key={entry.id}
- className="p-2 rounded-lg bg-[hsl(var(--card))] border border-secondary/20 flex items-center justify-between text-xs">
+ className="p-2 rounded-lg bg-[hsl(var(--card))] border border-primary/20 flex items-center justify-between text-xs">
  <div className="flex items-center gap-2">
  {entry.type ==='night'? (
- <Moon className="w-4 h-4 text-secondary"/>
+ <Moon className="w-4 h-4 text-primary"/>
 ): (
  <Sun className="w-4 h-4 text-primary"/>
 )}

@@ -153,8 +153,8 @@ export default function FeedingTracker() {
 : null;
 
  return (
- <Card className="border-primary/20 shadow-lg bg-gradient-to-br from-secondary/40 to-primary/40">
- <CardHeader className="bg-gradient-to-r from-primary/20 to-primary/20 pb-3">
+ <Card className="border-primary/20 shadow-lg bg-card/80">
+ <CardHeader className="bg-primary/10 border-b border-primary/20 pb-3">
  <CardTitle className="text-lg flex items-center gap-2 text-foreground">
  <Milk className="w-5 h-5 text-primary"/>
  {texts.title}
@@ -166,7 +166,7 @@ export default function FeedingTracker() {
  <CardContent className="pt-4 space-y-4">
  {/* Stats */}
  <div className="grid grid-cols-2 gap-2">
- <div className="p-3 rounded-lg bg-[hsl(var(--card))] border border-secondary/30">
+ <div className="p-3 rounded-lg bg-[hsl(var(--card))] border border-primary/30">
  <div className="flex items-center gap-1.5 text-xs text-primary/70 mb-1">
  <TrendingUp className="w-3 h-3"/>
  {texts.feedings}
@@ -175,7 +175,7 @@ export default function FeedingTracker() {
  {totalFeedingsToday}
  </div>
  </div>
- <div className="p-3 rounded-lg bg-[hsl(var(--card))] border border-secondary/30">
+ <div className="p-3 rounded-lg bg-[hsl(var(--card))] border border-primary/30">
  <div className="flex items-center gap-1.5 text-xs text-primary/70 mb-1">
  <Clock className="w-3 h-3"/>
  {texts.last}
@@ -200,7 +200,7 @@ export default function FeedingTracker() {
  </div>
  <div className="w-2 h-2 bg-primary rounded-full animate-pulse"/>
  </div>
- <Button onClick={endFeeding} className="w-full text-sm bg-gradient-to-r from-primary to-secondary hover:from-primary hover:to-secondary text-foreground"size="sm">
+ <Button onClick={endFeeding} className="w-full text-sm bg-primary hover:bg-primary/90 text-primary-foreground"size="sm">
  {texts.finish}
  </Button>
  </div>
@@ -209,10 +209,10 @@ export default function FeedingTracker() {
  <div className="space-y-1.5">
  <label className="text-xs font-medium text-primary">{texts.feedingType}</label>
  <Select value={selectedType} onValueChange={setSelectedType}>
- <SelectTrigger className="text-xs bg-[hsl(var(--card))] border-secondary/30 text-foreground">
+ <SelectTrigger className="text-xs bg-[hsl(var(--card))] border-primary/30 text-foreground">
  <SelectValue />
  </SelectTrigger>
- <SelectContent className="bg-[hsl(var(--card))] border-secondary/30">
+ <SelectContent className="bg-[hsl(var(--card))] border-primary/30">
  <SelectItem value="breast-left"className="text-xs text-foreground"> {typeNames['breast-left']}</SelectItem>
  <SelectItem value="breast-right"className="text-xs text-foreground"> {typeNames['breast-right']}</SelectItem>
  <SelectItem value="both-breasts"className="text-xs text-foreground"> {typeNames['both-breasts']}</SelectItem>
@@ -222,7 +222,7 @@ export default function FeedingTracker() {
  </div>
  <Button
  onClick={startFeeding}
- size="sm"className="w-full text-sm bg-gradient-to-r from-primary to-secondary hover:from-primary hover:to-secondary text-foreground">
+ size="sm"className="w-full text-sm bg-primary hover:bg-primary/90 text-primary-foreground">
  <Milk className="w-4 h-4 mr-1.5"/>
  {texts.start}
  </Button>
@@ -239,7 +239,7 @@ export default function FeedingTracker() {
  {todayEntries.map((entry) => (
  <div
  key={entry.id}
- className="p-2 rounded-lg bg-[hsl(var(--card))] border border-secondary/20 flex items-center justify-between text-xs">
+ className="p-2 rounded-lg bg-[hsl(var(--card))] border border-primary/20 flex items-center justify-between text-xs">
  <div className="flex items-center gap-2">
  <span className="text-base">{getTypeIcon(entry.type)}</span>
  <div>
