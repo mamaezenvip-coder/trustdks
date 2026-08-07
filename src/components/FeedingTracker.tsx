@@ -166,7 +166,7 @@ export default function FeedingTracker() {
  <CardContent className="pt-4 space-y-4">
  {/* Stats */}
  <div className="grid grid-cols-2 gap-2">
- <div className="p-3 rounded-lg bg-[hsl(var(--card))] border border-secondary/30">
+ <div className="p-3 rounded-lg bg-[hsl(var(--card))] border border-primary/30">
  <div className="flex items-center gap-1.5 text-xs text-primary/70 mb-1">
  <TrendingUp className="w-3 h-3"/>
  {texts.feedings}
@@ -175,7 +175,7 @@ export default function FeedingTracker() {
  {totalFeedingsToday}
  </div>
  </div>
- <div className="p-3 rounded-lg bg-[hsl(var(--card))] border border-secondary/30">
+ <div className="p-3 rounded-lg bg-[hsl(var(--card))] border border-primary/30">
  <div className="flex items-center gap-1.5 text-xs text-primary/70 mb-1">
  <Clock className="w-3 h-3"/>
  {texts.last}
@@ -209,10 +209,10 @@ export default function FeedingTracker() {
  <div className="space-y-1.5">
  <label className="text-xs font-medium text-primary">{texts.feedingType}</label>
  <Select value={selectedType} onValueChange={setSelectedType}>
- <SelectTrigger className="text-xs bg-[hsl(var(--card))] border-secondary/30 text-foreground">
+ <SelectTrigger className="text-xs bg-[hsl(var(--card))] border-primary/30 text-foreground">
  <SelectValue />
  </SelectTrigger>
- <SelectContent className="bg-[hsl(var(--card))] border-secondary/30">
+ <SelectContent className="bg-[hsl(var(--card))] border-primary/30">
  <SelectItem value="breast-left"className="text-xs text-foreground"> {typeNames['breast-left']}</SelectItem>
  <SelectItem value="breast-right"className="text-xs text-foreground"> {typeNames['breast-right']}</SelectItem>
  <SelectItem value="both-breasts"className="text-xs text-foreground"> {typeNames['both-breasts']}</SelectItem>

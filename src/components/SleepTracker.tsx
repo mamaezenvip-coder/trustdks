@@ -147,7 +147,7 @@ export default function SleepTracker() {
  <Card className="border-primary/20 shadow-lg bg-card/80">
  <CardHeader className="bg-primary/10 border-b border-primary/20 pb-3">
  <CardTitle className="text-lg flex items-center gap-2 text-foreground">
- <Moon className="w-5 h-5 text-secondary"/>
+ <Moon className="w-5 h-5 text-primary"/>
  {texts.title}
  </CardTitle>
  <CardDescription className="text-xs text-primary/70">
@@ -157,7 +157,7 @@ export default function SleepTracker() {
  <CardContent className="pt-4 space-y-4">
  {/* Stats */}
  <div className="grid grid-cols-2 gap-2">
- <div className="p-3 rounded-lg bg-[hsl(var(--card))] border border-secondary/30">
+ <div className="p-3 rounded-lg bg-[hsl(var(--card))] border border-primary/30">
  <div className="flex items-center gap-1.5 text-xs text-primary/70 mb-1">
  <Clock className="w-3 h-3"/>
  {texts.totalToday}
@@ -166,7 +166,7 @@ export default function SleepTracker() {
  {formatDuration(totalSleepToday)}
  </div>
  </div>
- <div className="p-3 rounded-lg bg-[hsl(var(--card))] border border-secondary/30">
+ <div className="p-3 rounded-lg bg-[hsl(var(--card))] border border-primary/30">
  <div className="flex items-center gap-1.5 text-xs text-primary/70 mb-1">
  <TrendingUp className="w-3 h-3"/>
  {texts.sessions}
@@ -179,7 +179,7 @@ export default function SleepTracker() {
 
  {/* Controls */}
  {currentSleep? (
- <div className="p-3 rounded-lg bg-[hsl(var(--card))] border-2 border-secondary/50 space-y-3">
+ <div className="p-3 rounded-lg bg-[hsl(var(--card))] border-2 border-primary/50 space-y-3">
  <div className="flex items-center justify-between">
  <div>
  <p className="font-semibold text-sm text-foreground">
@@ -189,7 +189,7 @@ export default function SleepTracker() {
  {texts.start}{formatTime(currentSleep.startTime)}
  </p>
  </div>
- <div className="w-2 h-2 bg-secondary rounded-full animate-pulse"/>
+ <div className="w-2 h-2 bg-primary rounded-full animate-pulse"/>
  </div>
  <Button onClick={endSleep} className="w-full text-sm bg-primary hover:bg-primary/90 text-primary-foreground"size="sm">
  {texts.wakeUp}
@@ -229,7 +229,7 @@ export default function SleepTracker() {
  className="p-2 rounded-lg bg-[hsl(var(--card))] border border-primary/20 flex items-center justify-between text-xs">
  <div className="flex items-center gap-2">
  {entry.type ==='night'? (
- <Moon className="w-4 h-4 text-secondary"/>
+ <Moon className="w-4 h-4 text-primary"/>
 ): (
  <Sun className="w-4 h-4 text-primary"/>
 )}
