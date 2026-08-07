@@ -1,280 +1,178 @@
-import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription} from'@/components/ui/dialog';
-import {ScrollArea} from'@/components/ui/scroll-area';
-
-interface Chapter {
- id: number;
- title: string;
- subtitle: string;
- emoji: string;
-}
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
+import {
+  Clock,
+  Users,
+  ChefHat,
+  Lightbulb,
+  Utensils,
+  Snowflake,
+  Sparkles,
+  ListChecks,
+} from 'lucide-react';
+import { guideImages, type GuideChapter } from '@/data/guideContent';
 
 interface ChapterDialogProps {
- chapter: Chapter | null;
- open: boolean;
- onOpenChange: (open: boolean) => void;
+  chapter: GuideChapter | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-const chapterContents: Record<number, string> = {
- 1:`**Aceitando as Mudanças Pós-Parto**
-
-Após o parto, seu corpo está se recuperando de um processo monumental. O útero se contrai, os hormônios flutuam e a fadiga se instala. É crucial entender que o corpo precisa de tempo para se curar.
-
-• **Recuperação Uterina**: O útero leva cerca de 6 a 8 semanas para retornar ao seu tamanho pré-gravidez.
-• **Flutuações Hormonais**: A queda dos hormônios da gravidez e o início da produção de prolactina (para amamentação) afetam o humor, a energia e o metabolismo.
-• **Diástase dos Retos Abdominais**: É comum que os músculos abdominais se afastem. Exercícios específicos são necessários para ajudar na recuperação.
-
-**Dica prática**: Tire um momento para olhar-se no espelho com gentileza. Reconheça a força e a beleza do seu corpo que gerou uma vida.`,
-
- 2:`**A Importância da Nutrição Adequada**
-
-Uma dieta balanceada é crucial para a recuperação pós-parto, para manter a energia, melhorar o humor e, para as mães que amamentam, garantir uma boa produção de leite.
-
-**Montando um Plano Alimentar Nutritivo:**
-
-• **Proteínas Magras**: Frango, peixe, ovos, leguminosas
-• **Carboidratos Complexos**: Aveia, arroz integral, quinoa, batata doce
-• **Gorduras Saudáveis**: Abacate, azeite, nozes, sementes
-• **Vegetais e Frutas**: Variedade colorida para vitaminas e minerais
-• **Hidratação**: Beba muita água sempre!`,
-
- 3:`**A Indispensável Função da Água no Pós-Parto**
-
-Seu corpo precisa de água para funcionar adequadamente, especialmente após o trauma do parto e durante a amamentação.
-
-**Por que a água é essencial:**
-
-• **Recuperação e Cicatrização**: Transporta nutrientes e oxigênio
-• **Produção de Leite**: O leite materno é 88% água
-• **Metabolismo**: Crucial para queima de gordura
-• **Energia**: Desidratação causa fadiga
-
-**Dica**: Beba um copo grande de água toda vez que amamentar o bebê!`,
-
- 4:`**Amamentação e Perda de Peso**
-
-A produção de leite materno é energeticamente exigente. O corpo pode queimar entre 300-500 calorias extras por dia!
-
-**Maximizando os Benefícios:**
-
-• Mantenha dieta equilibrada
-• Hidratação constante
-• Coma quando tiver fome
-• Priorize o descanso
-• Amamente sob demanda
-
-**Lembre-se**: Nem toda mãe perde peso rapidamente com amamentação, e está tudo bem!`,
-
- 5:`**Liberação Médica: O Primeiro Passo**
-
-Não inicie exercícios sem liberação médica!
-
-• **Parto Vaginal**: Geralmente 6 semanas
-• **Cesariana**: 8-12 semanas
-• **Complicações**: Pode ser mais tempo
-
-**Primeiros Passos Seguros:**
-
-• Caminhadas leves
-• Exercícios do assoalho pélvico (Kegel)
-• Respiração diafragmática
-• Alongamentos suaves`,
-
- 6:`**Foco no Core e Assoalho Pélvico**
-
-Após a gravidez, o core está enfraquecido. Priorizar esses músculos é crucial!
-
-**Exercícios Recomendados:**
-
-• Exercícios Kegel
-• Prancha modificada (em joelhos)
-• Ponte (Glute Bridge)
-• Caminhada progressiva
-• Natação/hidroginástica
-
-**Evite**: Abdominais tradicionais que causem abaulamento na barriga!`,
-
- 7:`**O Que é Diástase?**
-
-Separação dos músculos retos abdominais devido ao estiramento da linha alba durante a gravidez.
-
-**Como Identificar:**
-
-Deite-se, coloque dedos sobre o umbigo, levante a cabeça levemente. Se houver espaço entre os músculos (mais de 2 dedos), você tem diástase.
-
-**Exercícios Seguros:**
-
-• Respiração diafragmática
-• Ativação do transverso abdominal
-• Ponte
-• Prancha em joelhos
-
-**Consulte um fisioterapeuta pélvico!**`,
-
- 8:`**Sono, Hormônios e Peso**
-
-A privação de sono desregula hormônios que controlam o apetite e pode levar ao acúmulo de gordura.
-
-**Estratégias Realistas:**
-
-• Durma quando o bebê dormir
-• Peça ajuda ao parceiro
-• Crie ambiente propício
-• Rotina relaxante
-• Divida tarefas noturnas
-
-**Lembre-se**: O sono não é egoísmo, é necessidade!`,
-
- 9:`**Estresse, Hormônios e Ganho de Peso**
-
-Cortisol elevado pode levar ao armazenamento de gordura abdominal e aumento do apetite.
-
-**Estratégias de Gerenciamento:**
-
-• Não busque perfeição
-• Peça ajuda
-• Conecte-se com outras mães
-• Pequenos momentos de autocuidado
-• Movimento leve
-• Técnicas de relaxamento
-
-**Busque apoio profissional se precisar!**`,
-
- 10:`**Flexibilidade é a Chave**
-
-A vida com bebê é imprevisível. O objetivo é um conjunto de hábitos adaptáveis.
-
-**Estratégias para Construir Rotina:**
-
-• Planejamento do dia seguinte
-• Prepare o terreno (roupas, lanches)
-• Aproveite sonecas do bebê
-• Envolva o bebê nas atividades
-• Divisão de tarefas
-• Seja gentil consigo mesma
-
-**Priorize 2-3 objetivos por dia!**`,
-
- 11:`**Por Que a Balança Pode Enganar**
-
-Flutuações de líquidos, volume de leite, construção muscular - tudo afeta o peso!
-
-**Métricas Mais Significativas:**
-
-• Medidas corporais
-• Como as roupas servem
-• Fotos de progresso
-• Níveis de energia
-• Força e resistência
-• Qualidade do sono
-• Bem-estar mental
-
-**Foque em como você se sente, não apenas no número!**`,
-
- 12:`**Superando Obstáculos**
-
-**Fadiga**: Priorize sono, mini-sessões de movimento
-**Falta de Tempo**: Planeje, delegue, micro-hábitos
-**Motivação**: Seja gentil, metas pequenas, apoio social
-
-**Lembre-se**: O progresso não é linear. Cada dia é nova oportunidade!`,
-
- 13:`**Por Que o Apoio é Essencial**
-
-Reduz estresse, reforça motivação, previne isolamento.
-
-**Tipos de Apoio:**
-
-• Parceiro/a - comunicação clara
-• Familiares e amigos - seja específica
-• Profissionais de saúde
-• Comunidades de mães
-
-**Despreze a ideia de"super-mãe"e priorize o autocuidado!**`,
-
- 14:`**O Seu Corpo: Um Templo de Milagres**
-
-Cada marca conta história de amor, força e vida.
-
-**Autocuidado Além do Físico:**
-
-• Momentos de quietude
-• Hobbies e paixões
-• Conexões sociais
-• Roupas que agradam
-• Digital detox
-• Terapia se precisar
-
-**Seu valor não está ligado ao seu peso!**`,
-
- 15:`**Sustentabilidade a Longo Prazo**
-
-Esta jornada é sobre criar hábitos saudáveis para a vida toda.
-
-**Princípios Fundamentais:**
-
-• Consistência, não perfeição
-• Flexibilidade e adaptação
-• Autocuidado contínuo
-• Celebração de vitórias
-• Comunidade de apoio
-
-**Você é forte, capaz e está fazendo um trabalho maravilhoso! **`};
-
-const ChapterDialog = ({chapter, open, onOpenChange}: ChapterDialogProps) => {
- if (!chapter) return null;
-
- return (
- <Dialog open={open} onOpenChange={onOpenChange}>
- <DialogContent className="max-w-2xl max-h-[80vh] bg-[hsl(var(--card))] border-secondary/30">
- <DialogHeader>
- <DialogTitle className="flex items-center gap-3 text-2xl text-foreground">
- <span className="text-3xl">{chapter.emoji}</span>
- <div>
- <div>Capítulo {chapter.id}: {chapter.title}</div>
- <DialogDescription className="text-base mt-1 text-secondary">
- {chapter.subtitle}
- </DialogDescription>
- </div>
- </DialogTitle>
- </DialogHeader>
- 
- <ScrollArea className="h-full pr-4">
- <div className="prose prose-sm max-w-none">
- {chapterContents[chapter.id]?.split('\n\n').map((paragraph, idx) => {
- if (paragraph.startsWith('**') && paragraph.endsWith('**')) {
- return (
- <h3 key={idx} className="font-bold text-lg mt-4 mb-2 text-primary">
- {paragraph.replace(/\*\*/g,'')}
- </h3>
-);
-}
- if (paragraph.startsWith('•')) {
- const items = paragraph.split('\n•').map(item => item.trim().replace(/^•\s*/,''));
- return (
- <ul key={idx} className="list-disc pl-6 space-y-2 my-3">
- {items.map((item, i) => (
- <li key={i} className="text-secondary">
- {item.split('**').map((part, j) => 
- j % 2 === 1? <strong key={j} className="text-foreground">{part}</strong>: part
-)}
- </li>
-))}
- </ul>
-);
-}
- return (
- <p key={idx} className="text-secondary leading-relaxed mb-3">
- {paragraph.split('**').map((part, i) => 
- i % 2 === 1? <strong key={i} className="text-foreground">{part}</strong>: part
-)}
- </p>
-);
-})}
- </div>
- </ScrollArea>
- </DialogContent>
- </Dialog>
-);
+const ChapterDialog = ({ chapter, open, onOpenChange }: ChapterDialogProps) => {
+  if (!chapter) return null;
+
+  const { recipe } = chapter;
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl w-[calc(100vw-1.5rem)] h-[88vh] p-0 gap-0 overflow-hidden bg-card border-primary/40">
+        <div className="relative h-40 sm:h-48 shrink-0 overflow-hidden">
+          <img
+            src={guideImages[chapter.image]}
+            alt={`${chapter.title} — ${chapter.subtitle}`}
+            className="w-full h-full object-cover animate-scale-in"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-card via-card/70 to-transparent" />
+          <DialogHeader className="absolute bottom-0 left-0 right-0 p-5 text-left space-y-1">
+            <span className="inline-flex w-fit items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/20 border border-primary/50 text-[11px] font-bold text-primary">
+              <ChefHat className="w-3 h-3" />
+              Capítulo {chapter.id} · {chapter.minutes} min de leitura
+            </span>
+            <DialogTitle className="text-xl sm:text-2xl font-bold text-foreground leading-tight">
+              {chapter.title}
+            </DialogTitle>
+            <DialogDescription className="text-sm text-primary/90">
+              {chapter.subtitle}
+            </DialogDescription>
+          </DialogHeader>
+        </div>
+
+        <ScrollArea className="flex-1 h-full">
+          <div className="p-5 sm:p-6 space-y-7 pb-10">
+            {/* Intro */}
+            <p className="text-[15px] leading-relaxed text-foreground/90 animate-fade-in">
+              {chapter.intro}
+            </p>
+
+            {/* Sections */}
+            {chapter.sections.map((section, sIdx) => (
+              <div
+                key={section.heading}
+                style={{ animationDelay: `${80 + sIdx * 90}ms` }}
+                className="animate-fade-in rounded-2xl border border-primary/25 bg-background/60 p-4 sm:p-5"
+              >
+                <h4 className="flex items-center gap-2 font-bold text-foreground mb-3">
+                  <ListChecks className="w-4 h-4 text-primary shrink-0" />
+                  {section.heading}
+                </h4>
+                <ul className="space-y-2.5">
+                  {section.items.map((item, i) => (
+                    <li key={i} className="flex gap-3 text-sm text-foreground/85 leading-relaxed">
+                      <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-primary shrink-0 shadow-[0_0_8px_hsl(var(--primary))]" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+
+            {/* Tip */}
+            <div className="animate-fade-in rounded-2xl border border-primary/50 bg-primary/10 p-4 sm:p-5">
+              <h4 className="flex items-center gap-2 font-bold text-primary mb-2">
+                <Lightbulb className="w-4 h-4" />
+                Dica Mamãe Zen
+              </h4>
+              <p className="text-sm text-foreground/90 leading-relaxed">{chapter.tip}</p>
+            </div>
+
+            {/* Recipe */}
+            <div className="animate-fade-in rounded-2xl border border-primary/40 overflow-hidden">
+              <div className="bg-primary/15 px-4 sm:px-5 py-4 border-b border-primary/30">
+                <span className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-primary mb-1">
+                  <Utensils className="w-3.5 h-3.5" />
+                  Receita completa do capítulo
+                </span>
+                <h4 className="text-lg font-bold text-foreground leading-tight">{recipe.name}</h4>
+                <p className="text-sm text-foreground/80 mt-1.5 leading-relaxed">{recipe.why}</p>
+                <div className="flex flex-wrap gap-2 mt-3">
+                  <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-background/70 border border-primary/30 text-[11px] text-foreground/85">
+                    <Clock className="w-3 h-3 text-primary" />
+                    {recipe.time}
+                  </span>
+                  <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-background/70 border border-primary/30 text-[11px] text-foreground/85">
+                    <Users className="w-3 h-3 text-primary" />
+                    {recipe.yield}
+                  </span>
+                </div>
+              </div>
+
+              <div className="p-4 sm:p-5 space-y-6 bg-background/50">
+                <div>
+                  <h5 className="text-xs font-bold uppercase tracking-widest text-primary mb-3">
+                    Ingredientes
+                  </h5>
+                  <ul className="grid gap-2">
+                    {recipe.ingredients.map((ing, i) => (
+                      <li
+                        key={i}
+                        className="flex items-start gap-3 text-sm text-foreground/85 border-b border-primary/10 pb-2 last:border-0"
+                      >
+                        <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                        {ing}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <Separator className="bg-primary/20" />
+
+                <div>
+                  <h5 className="text-xs font-bold uppercase tracking-widest text-primary mb-3">
+                    Modo de preparo
+                  </h5>
+                  <ol className="space-y-3">
+                    {recipe.steps.map((step, i) => (
+                      <li key={i} className="flex gap-3">
+                        <span className="shrink-0 w-6 h-6 rounded-full bg-primary/20 border border-primary/50 text-primary text-[11px] font-bold flex items-center justify-center">
+                          {i + 1}
+                        </span>
+                        <p className="text-sm text-foreground/85 leading-relaxed pt-0.5">{step}</p>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+
+                <Separator className="bg-primary/20" />
+
+                <div className="rounded-xl border border-primary/30 bg-primary/5 p-4">
+                  <h5 className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-primary mb-2">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    Degustação
+                  </h5>
+                  <p className="text-sm text-foreground/85 leading-relaxed">{recipe.tasting}</p>
+                </div>
+
+                <div className="rounded-xl border border-primary/20 bg-background/70 p-4">
+                  <h5 className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-primary mb-2">
+                    <Snowflake className="w-3.5 h-3.5" />
+                    Armazenamento
+                  </h5>
+                  <p className="text-sm text-foreground/85 leading-relaxed">{recipe.storage}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ScrollArea>
+      </DialogContent>
+    </Dialog>
+  );
 };
 
 export default ChapterDialog;
