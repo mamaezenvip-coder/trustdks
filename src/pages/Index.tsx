@@ -225,7 +225,7 @@ const Index = () => {
  </a>
   <div className="flex items-center justify-center gap-2 text-xs">
    {license.isActive? (
-    <span className="px-3 py-1 rounded-full bg-primary/15 text-primary font-semibold text-[11px] tracking-wide border border-primary/40 shadow-[0_0_14px_-4px_hsl(160_80%_50%/0.6)]">● PREMIUM</span>
+    <span className="px-3 py-1 rounded-full bg-primary/15 text-primary font-semibold text-[11px] tracking-wide border border-primary/40 shadow-[0_0_14px_-4px_hsl(var(--primary)/0.6)]">● PREMIUM</span>
 ): (
  <Button
  variant="ghost"size="sm"onClick={() => setShowLicenseDialog(true)}
