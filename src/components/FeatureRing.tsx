@@ -14,12 +14,13 @@ type Props = {
   onChange: (value: string) => void;
 };
 
-const STEP = 12; // degrees between items
-const RADIUS = 340; // px (arco largo = scroll suave e mais próximo)
+const STEP = 12; // graus entre itens
+const RADIUS = 340; // px
+const CENTER_Y = 62; // altura fixa do item ativo dentro do trilho
 
 /**
  * Anel giratório de funções: o usuário arrasta o dedo para girar
- * o anel e o item no topo fica selecionado.
+ * o anel e o item central (sempre na mesma altura) fica selecionado.
  */
 const FeatureRing = ({ items, value, onChange }: Props) => {
   const count = items.length;
@@ -30,7 +31,6 @@ const FeatureRing = ({ items, value, onChange }: Props) => {
   const startAngle = useRef(0);
   const moved = useRef(false);
 
-  // Sincroniza quando a seleção muda de fora
   useEffect(() => {
     if (!dragging.current) setAngle(-activeIndex * STEP);
   }, [activeIndex]);
@@ -99,63 +99,59 @@ const FeatureRing = ({ items, value, onChange }: Props) => {
         {/* Trilho do anel */}
         <div
           className="pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-full border-t border-primary/20"
-          style={{
-            width: RADIUS * 2,
-            height: RADIUS * 2,
-            top: 62,
-          }}
+          style={{ width: RADIUS * 2, height: RADIUS * 2, top: CENTER_Y }}
         />
 
-        {/* Marcador do topo */}
-        <div className="pointer-events-none absolute left-1/2 top-[62px] -translate-x-1/2 -translate-y-1/2 w-[74px] h-[74px] rounded-full border border-primary/70 shadow-[0_0_24px_-6px_hsl(var(--primary)/0.8)]" />
-
+        {/* Marcador do centro (altura fixa) */}
         <div
-          className="absolute left-1/2 will-change-transform"
-          style={{
-            top: 62 + RADIUS,
-            transform: `translateX(-50%) rotate(${angle}deg)`,
-            transition: dragging.current ? 'none' : 'transform 380ms cubic-bezier(0.22,1,0.36,1)',
-          }}
-        >
+          className="pointer-events-none absolute left-1/2 -translate-x-1/2 -translate-y-1/2 w-[74px] h-[74px] rounded-full border border-primary/70 shadow-[0_0_24px_-6px_hsl(var(--primary)/0.8)]"
+          style={{ top: CENTER_Y }}
+        />
 
-          {items.map((item, i) => {
-            const itemAngle = i * STEP;
-            const diff = Math.abs(itemAngle + angle);
-            const isActive = i === activeIndex;
-            const visible = diff < 38;
-            return (
-              <button
-                key={item.value}
-                type="button"
-                onClick={() => {
-                  if (moved.current) return;
-                  onChange(item.value);
-                }}
-                className="absolute left-0 top-0 origin-center"
-                style={{
-                  transform: `rotate(${itemAngle}deg) translateY(-${RADIUS}px) rotate(${-itemAngle - angle}deg) translate(-50%, -50%)`,
-                  opacity: visible ? Math.max(0.3, 1 - diff / 36) : 0,
-                  pointerEvents: visible ? 'auto' : 'none',
-                  transition: dragging.current ? 'none' : 'opacity 300ms ease',
-                }}
-                aria-label={item.label}
+        {items.map((item, i) => {
+          // deslocamento angular em relação ao centro (0 = ativo, sempre em CENTER_Y)
+          const diffDeg = i * STEP + angle;
+          const rad = (diffDeg * Math.PI) / 180;
+          const x = Math.sin(rad) * RADIUS;
+          const y = (1 - Math.cos(rad)) * RADIUS; // afunda levemente nas laterais
+          const diff = Math.abs(diffDeg);
+          const isActive = i === activeIndex;
+          const visible = diff < 38;
+          return (
+            <button
+              key={item.value}
+              type="button"
+              onClick={() => {
+                if (moved.current) return;
+                onChange(item.value);
+              }}
+              className="absolute left-1/2 will-change-transform"
+              style={{
+                top: CENTER_Y,
+                transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
+                opacity: visible ? Math.max(0.3, 1 - diff / 36) : 0,
+                pointerEvents: visible ? 'auto' : 'none',
+                transition: dragging.current
+                  ? 'none'
+                  : 'transform 380ms cubic-bezier(0.22,1,0.36,1), opacity 300ms ease',
+              }}
+              aria-label={item.label}
+            >
+              <span
+                className={`relative flex flex-col items-center justify-center gap-0.5 rounded-full border transition-all ${
+                  isActive
+                    ? 'w-16 h-16 bg-primary text-primary-foreground border-primary shadow-[0_0_32px_-4px_hsl(var(--primary)/0.95)] scale-105'
+                    : 'w-14 h-14 bg-card/80 text-foreground/70 border-primary/30 backdrop-blur-sm'
+                }`}
               >
-                <span
-                  className={`relative flex flex-col items-center justify-center gap-0.5 rounded-full border transition-all ${
-                    isActive
-                      ? 'w-16 h-16 bg-primary text-primary-foreground border-primary shadow-[0_0_32px_-4px_hsl(var(--primary)/0.95)] scale-105'
-                      : 'w-14 h-14 bg-card/80 text-foreground/70 border-primary/30 backdrop-blur-sm'
-                  }`}
-                >
-                  {item.icon}
-                  {item.locked && (
-                    <Lock className="w-3 h-3 text-primary absolute -top-0.5 -right-0.5 drop-shadow-[0_0_4px_hsl(var(--primary))]" />
-                  )}
-                </span>
-              </button>
-            );
-          })}
-        </div>
+                {item.icon}
+                {item.locked && (
+                  <Lock className="w-3 h-3 text-primary absolute -top-0.5 -right-0.5 drop-shadow-[0_0_4px_hsl(var(--primary))]" />
+                )}
+              </span>
+            </button>
+          );
+        })}
       </div>
 
       {/* Pontinhos de progresso */}
