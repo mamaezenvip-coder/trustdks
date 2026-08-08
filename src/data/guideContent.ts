@@ -4,6 +4,15 @@ import guideBreastfeeding from '@/assets/guide-breastfeeding.jpg';
 import guideExercise from '@/assets/guide-exercise.jpg';
 import guideSleep from '@/assets/guide-sleep.jpg';
 import guideSelfcare from '@/assets/guide-selfcare.jpg';
+import guideTiming from '@/assets/guide-timing.jpg';
+import guideDiastase from '@/assets/guide-diastase.jpg';
+import guideStress from '@/assets/guide-stress.jpg';
+import guideRoutine from '@/assets/guide-routine.jpg';
+import guideScale from '@/assets/guide-scale.jpg';
+import guideObstacles from '@/assets/guide-obstacles.jpg';
+import guideCommunity from '@/assets/guide-community.jpg';
+import guideBody from '@/assets/guide-body.jpg';
+import guideFocus from '@/assets/guide-focus.jpg';
 
 export const guideImages = {
   nutrition: guideNutrition,
@@ -12,7 +21,17 @@ export const guideImages = {
   exercise: guideExercise,
   sleep: guideSleep,
   selfcare: guideSelfcare,
+  timing: guideTiming,
+  diastase: guideDiastase,
+  stress: guideStress,
+  routine: guideRoutine,
+  scale: guideScale,
+  obstacles: guideObstacles,
+  community: guideCommunity,
+  body: guideBody,
+  focus: guideFocus,
 };
+
 
 export type GuideImageKey = keyof typeof guideImages;
 
@@ -273,7 +292,7 @@ export const guideChapters: GuideChapter[] = [
     id: 5,
     title: 'O Timing é Tudo',
     subtitle: 'Quando Começar os Exercícios',
-    image: 'exercise',
+    image: 'timing',
     minutes: 6,
     intro:
       'Voltar cedo demais custa caro: incontinência, prolapso e diástase que não fecha. A liberação médica é obrigatória — em geral 6 semanas no parto vaginal e 8 a 12 semanas na cesárea. Mas isso não significa ficar parada: respiração e caminhada leve começam já nos primeiros dias, com autorização.',
@@ -382,7 +401,7 @@ export const guideChapters: GuideChapter[] = [
     id: 7,
     title: 'Diástase dos Retos',
     subtitle: 'Entenda e Recupere',
-    image: 'exercise',
+    image: 'diastase',
     minutes: 7,
     intro:
       'A diástase é o afastamento dos músculos retos abdominais pela distensão da linha alba. Ela acontece em praticamente toda gestação a termo — o problema não é o afastamento em si, e sim a linha alba que não gera tensão. Por isso o objetivo não é "fechar o buraco", e sim recuperar a firmeza do tecido.',
@@ -491,7 +510,7 @@ export const guideChapters: GuideChapter[] = [
     id: 9,
     title: 'Gerenciando o Estresse',
     subtitle: 'Cuidando das Emoções',
-    image: 'selfcare',
+    image: 'stress',
     minutes: 8,
     intro:
       'Cortisol cronicamente alto favorece o acúmulo de gordura abdominal, aumenta a compulsão por açúcar e prejudica a cicatrização. Baby blues nas duas primeiras semanas é comum. Tristeza profunda, ansiedade intensa ou desinteresse que passam de 14 dias podem ser depressão pós-parto — e isso tem tratamento.',
@@ -544,7 +563,7 @@ export const guideChapters: GuideChapter[] = [
     id: 10,
     title: 'Criando uma Rotina',
     subtitle: 'Sustentável com um Bebê',
-    image: 'nutrition',
+    image: 'routine',
     minutes: 7,
     intro:
       'Rotina com bebê não é horário fixo: é sequência previsível. O bebê não sabe que são 9h, mas reconhece a ordem "acorda, mama, brinca, dorme". A sua rotina se encaixa nessa sequência — e não o contrário.',
@@ -598,7 +617,7 @@ export const guideChapters: GuideChapter[] = [
     id: 11,
     title: 'Além da Balança',
     subtitle: 'Desapegando dos Números',
-    image: 'selfcare',
+    image: 'scale',
     minutes: 6,
     intro:
       'O peso oscila 1 a 2 kg no mesmo dia por líquidos, volume de leite, intestino e ciclo hormonal. Usar a balança como único termômetro no pós-parto é medir a maré para avaliar o oceano. Existem indicadores muito mais úteis.',
@@ -653,7 +672,7 @@ export const guideChapters: GuideChapter[] = [
     id: 12,
     title: 'Superando Obstáculos',
     subtitle: 'Fadiga, Tempo e Motivação',
-    image: 'exercise',
+    image: 'obstacles',
     minutes: 6,
     intro:
       'Motivação é consequência, não causa. Quem espera vontade para começar não começa nunca no puerpério. A estratégia é reduzir o tamanho da tarefa até que ela caiba no seu pior dia.',
@@ -705,7 +724,7 @@ export const guideChapters: GuideChapter[] = [
     id: 13,
     title: 'A Força da Comunidade',
     subtitle: 'Buscar Apoio',
-    image: 'nutrition',
+    image: 'community',
     minutes: 5,
     intro:
       'Maternidade solitária adoece. Historicamente, mulheres pariam cercadas de outras mulheres — hoje, muitas passam o dia inteiro sozinhas com um recém-nascido. Construir rede não é fraqueza, é biologia social.',
@@ -760,7 +779,7 @@ export const guideChapters: GuideChapter[] = [
     id: 14,
     title: 'Celebrando o Corpo',
     subtitle: 'Autocuidado e Autoaceitação',
-    image: 'selfcare',
+    image: 'body',
     minutes: 6,
     intro:
       'Estrias, cicatriz de cesárea, barriga mais mole, seios diferentes: seu corpo mudou porque fez algo extraordinário. Aceitar não significa desistir de cuidar — significa cuidar por afeto, e não por punição. Corpo tratado como inimigo não colabora.',
@@ -815,7 +834,7 @@ export const guideChapters: GuideChapter[] = [
     id: 15,
     title: 'Mantenha o Foco',
     subtitle: 'Sustentabilidade a Longo Prazo',
-    image: 'nutrition',
+    image: 'focus',
     minutes: 7,
     intro:
       'Você chegou ao fim do guia — e ao começo da parte que importa: transformar o que leu em rotina. Nada aqui foi feito para durar 30 dias. Foi feito para caber na sua vida pelos próximos anos, com bebê, com criança e com você inteira.',
