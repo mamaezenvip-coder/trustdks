@@ -63,13 +63,21 @@ const GuideLibrary = () => {
                 <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-background/80 border border-primary/50 text-[11px] font-bold text-primary backdrop-blur-sm">
                   Capítulo {chapter.id}
                 </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="absolute top-2 right-2 h-8 w-8 bg-background/60 backdrop-blur-sm hover:bg-background/80"
+                <span
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Favoritar capítulo"
+                  className="absolute top-2 right-2 h-8 w-8 rounded-md flex items-center justify-center bg-background/60 backdrop-blur-sm hover:bg-background/80 cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
                     toggleFavorite(chapter.id);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      toggleFavorite(chapter.id);
+                    }
                   }}
                 >
                   <Heart
@@ -79,7 +87,8 @@ const GuideLibrary = () => {
                         : 'text-foreground/70'
                     }`}
                   />
-                </Button>
+                </span>
+
                 <div className="absolute bottom-3 left-3 right-3">
                   <h3 className="font-bold text-foreground leading-tight">
                     {chapter.title}
