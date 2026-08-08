@@ -1,270 +1,311 @@
-import {useState, useRef, useCallback, useEffect} from'react';
-import {backgroundAudioService} from'@/services/BackgroundAudioService';
+import { useState, useRef, useCallback, useEffect } from 'react';
+import { backgroundAudioService } from '@/services/BackgroundAudioService';
 
 interface YouTubeMetadata {
- title?: string;
- artist?: string;
- artwork?: string;
+  title?: string;
+  artist?: string;
+  artwork?: string;
 }
 
 interface YouTubeState {
- isPlaying: boolean;
- currentVideoId: string | null;
- volume: number;
- isLoading: boolean;
+  isPlaying: boolean;
+  currentVideoId: string | null;
+  volume: number;
+  isLoading: boolean;
 }
+
+const HOST_ID = 'mamae-zen-persistent-audio-host';
+const MOUNT_ID = 'mamae-zen-youtube-player';
+
+declare global {
+  interface Window {
+    YT?: any;
+    onYouTubeIframeAPIReady?: () => void;
+  }
+}
+
+/** Player único e persistente — nunca é recriado nem re-parenteado. */
+let ytPlayer: any = null;
+let ytApiPromise: Promise<any> | null = null;
+
+const getHost = (): HTMLDivElement | null => {
+  if (typeof document === 'undefined') return null;
+  let host = document.getElementById(HOST_ID) as HTMLDivElement | null;
+  if (!host) {
+    host = document.createElement('div');
+    host.id = HOST_ID;
+    host.setAttribute('aria-hidden', 'true');
+    host.style.cssText =
+      'position:fixed;left:0;bottom:0;width:1px;height:1px;opacity:0.01;pointer-events:none;z-index:-1;overflow:hidden;';
+    document.body.appendChild(host);
+
+    const mount = document.createElement('div');
+    mount.id = MOUNT_ID;
+    mount.style.cssText = 'width:100%;height:100%;';
+    host.appendChild(mount);
+  }
+  return host;
+};
+
+const loadYouTubeApi = (): Promise<any> => {
+  if (ytApiPromise) return ytApiPromise;
+
+  ytApiPromise = new Promise((resolve) => {
+    if (window.YT?.Player) {
+      resolve(window.YT);
+      return;
+    }
+
+    const previous = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = () => {
+      previous?.();
+      resolve(window.YT);
+    };
+
+    if (!document.querySelector('script[data-mz-yt-api]')) {
+      const script = document.createElement('script');
+      script.src = 'https://www.youtube.com/iframe_api';
+      script.async = true;
+      script.dataset.mzYtApi = 'true';
+      document.head.appendChild(script);
+    }
+  });
+
+  return ytApiPromise;
+};
 
 export const useYouTubeEmbed = () => {
- const persistedAudioState = backgroundAudioService.getState();
- const [state, setState] = useState<YouTubeState>({
- isPlaying: persistedAudioState.isPlaying,
- currentVideoId: persistedAudioState.currentVideoId,
- volume: persistedAudioState.volume,
- isLoading: false,
-});
+  const persistedAudioState = backgroundAudioService.getState();
+  const [state, setState] = useState<YouTubeState>({
+    isPlaying: persistedAudioState.isPlaying,
+    currentVideoId: persistedAudioState.currentVideoId,
+    volume: persistedAudioState.volume,
+    isLoading: false,
+  });
 
- const iframeRef = useRef<HTMLIFrameElement | null>(null);
- const containerRef = useRef<HTMLDivElement | null>(null);
- const hiddenContainerRef = useRef<HTMLDivElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const hiddenContainerRef = useRef<HTMLDivElement | null>(null);
+  const volumeRef = useRef(state.volume);
+  volumeRef.current = state.volume;
 
- // Detecta se é iOS
- const isIOS = typeof navigator!=='undefined'&& /iPad|iPhone|iPod/.test(navigator.userAgent);
+  const isIOS =
+    typeof navigator !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent);
 
- const getPersistentHost = useCallback(() => {
-  if (typeof document === 'undefined') return null;
+  /**
+   * O iframe nunca muda de pai (isso derrubava o áudio). Em vez disso, o host
+   * fixo é posicionado exatamente sobre o container visível.
+   */
+  const syncHostPosition = useCallback(() => {
+    const host = getHost();
+    if (!host) return;
 
-  let host = document.getElementById('mamae-zen-persistent-audio-host') as HTMLDivElement | null;
-  if (!host) {
-   host = document.createElement('div');
-   host.id = 'mamae-zen-persistent-audio-host';
-   host.setAttribute('aria-hidden', 'true');
-   host.style.cssText = 'position:fixed;left:0;bottom:0;width:1px;height:1px;opacity:0.01;pointer-events:none;z-index:-1;overflow:hidden;';
-   document.body.appendChild(host);
-  }
+    const target = containerRef.current;
+    const rect = target?.getBoundingClientRect();
+    const visible = !!rect && rect.width > 4 && rect.height > 4;
 
-  return host;
- }, []);
+    if (visible) {
+      host.style.cssText = `position:fixed;left:${rect.left}px;top:${rect.top}px;width:${rect.width}px;height:${rect.height}px;opacity:1;pointer-events:auto;z-index:5;overflow:hidden;border-radius:12px;background:#000;`;
+    } else {
+      host.style.cssText =
+        'position:fixed;left:0;bottom:0;width:1px;height:1px;opacity:0.01;pointer-events:none;z-index:-1;overflow:hidden;';
+    }
+  }, []);
 
- const persistIframe = useCallback(() => {
-  if (!iframeRef.current || !backgroundAudioService.isPlaying()) return;
+  useEffect(() => {
+    syncHostPosition();
+    const onChange = () => syncHostPosition();
+    window.addEventListener('scroll', onChange, true);
+    window.addEventListener('resize', onChange);
+    const timer = window.setInterval(onChange, 400);
 
-  const host = getPersistentHost();
-  if (!host) return;
+    return () => {
+      window.removeEventListener('scroll', onChange, true);
+      window.removeEventListener('resize', onChange);
+      window.clearInterval(timer);
+    };
+  }, [syncHostPosition, state.currentVideoId]);
 
-  iframeRef.current.style.cssText = 'width:1px;height:1px;position:absolute;opacity:0.01;pointer-events:none;';
-  host.appendChild(iframeRef.current);
- }, [getPersistentHost]);
+  const attachControlHandlers = useCallback(() => {
+    backgroundAudioService.setControlHandlers({
+      play: () => {
+        try {
+          ytPlayer?.unMute?.();
+          ytPlayer?.playVideo?.();
+        } catch {
+          /* player não pronto */
+        }
+      },
+      pause: () => {
+        try {
+          ytPlayer?.pauseVideo?.();
+        } catch {
+          /* noop */
+        }
+        setState((prev) => ({ ...prev, isPlaying: false }));
+      },
+      stop: () => {
+        try {
+          ytPlayer?.stopVideo?.();
+        } catch {
+          /* noop */
+        }
+        setState((prev) => ({ ...prev, isPlaying: false, currentVideoId: null, isLoading: false }));
+      },
+    });
+  }, []);
 
- // Cleanup ao desmontar
- useEffect(() => {
-  if (!iframeRef.current) {
-   const persistedIframe = document.getElementById('mamae-zen-youtube-player') as HTMLIFrameElement | null;
-   if (persistedIframe) {
-    iframeRef.current = persistedIframe;
-   }
-  }
+  const play = useCallback(
+    async (videoId: string, _showVisible: boolean = true, metadata?: YouTubeMetadata) => {
+      setState((prev) => ({ ...prev, isLoading: true, currentVideoId: videoId }));
+      getHost();
+      syncHostPosition();
 
-  if (iframeRef.current && containerRef.current && state.currentVideoId) {
-   iframeRef.current.style.cssText ='width:100%;height:200px;border-radius:12px;background:#000;';
-   containerRef.current.appendChild(iframeRef.current);
-  }
+      const YT = await loadYouTubeApi();
+      if (!YT?.Player) {
+        setState((prev) => ({ ...prev, isLoading: false }));
+        return;
+      }
 
- return () => {
-  persistIframe();
-};
-}, [persistIframe, state.currentVideoId]);
+      const finishStart = () => {
+        setState((prev) => ({ ...prev, isLoading: false, isPlaying: true }));
+        attachControlHandlers();
+        backgroundAudioService.startAudio(videoId, metadata);
+      };
 
- const sendCommand = useCallback((func: string, args: unknown[] = []) => {
- try {
-  iframeRef.current?.contentWindow?.postMessage(
-  JSON.stringify({event:'command', func, args}),
-  '*'
- );
- } catch (e) {
-  if (import.meta.env.DEV) console.warn('YT command failed', e);
- }
-}, []);
+      if (ytPlayer?.loadVideoById) {
+        try {
+          ytPlayer.loadVideoById({ videoId, startSeconds: 0 });
+          ytPlayer.unMute?.();
+          ytPlayer.setVolume?.(volumeRef.current);
+          ytPlayer.playVideo?.();
+          finishStart();
+          return;
+        } catch {
+          ytPlayer = null;
+        }
+      }
 
- const removeIframe = useCallback(() => {
- if (iframeRef.current) {
-  iframeRef.current.src ='';
-  iframeRef.current.remove();
-  iframeRef.current = null;
- }
- if (containerRef.current) containerRef.current.innerHTML ='';
- if (hiddenContainerRef.current) hiddenContainerRef.current.innerHTML ='';
-  const host = document.getElementById('mamae-zen-persistent-audio-host');
-  if (host) host.innerHTML ='';
-}, []);
+      ytPlayer = new YT.Player(MOUNT_ID, {
+        videoId,
+        host: 'https://www.youtube.com',
+        playerVars: {
+          autoplay: 1,
+          controls: 1,
+          playsinline: 1,
+          rel: 0,
+          modestbranding: 1,
+          loop: 1,
+          playlist: videoId,
+          enablejsapi: 1,
+          origin: window.location.origin,
+          fs: 1,
+          iv_load_policy: 3,
+          cc_load_policy: 0,
+        },
+        events: {
+          onReady: (event: any) => {
+            try {
+              event.target.unMute();
+              event.target.setVolume(volumeRef.current);
+              event.target.playVideo();
+            } catch {
+              /* noop */
+            }
+            finishStart();
+          },
+          onStateChange: (event: any) => {
+            const YTState = window.YT?.PlayerState;
+            if (!YTState) return;
 
- // Manter áudio em segundo plano
- useEffect(() => {
- const handleVisibilityChange = () => {
- if (document.visibilityState ==='hidden'&& state.isPlaying) {
- // Mantém o serviço de áudio em segundo plano ativo
- backgroundAudioService.startAudio(state.currentVideoId ||'');
-  persistIframe();
-  sendCommand('playVideo');
-}
-};
+            if (event.data === YTState.PLAYING) {
+              setState((prev) => ({ ...prev, isPlaying: true, isLoading: false }));
+              backgroundAudioService.resumeAudio();
+            } else if (event.data === YTState.PAUSED) {
+              setState((prev) => ({ ...prev, isPlaying: false, isLoading: false }));
+              backgroundAudioService.pauseAudio();
+            } else if (event.data === YTState.BUFFERING) {
+              setState((prev) => ({ ...prev, isLoading: true }));
+            } else if (event.data === YTState.ENDED) {
+              try {
+                event.target.playVideo();
+              } catch {
+                /* noop */
+              }
+            }
+          },
+          onError: () => {
+            setState((prev) => ({ ...prev, isLoading: false }));
+          },
+        },
+      });
+    },
+    [attachControlHandlers, syncHostPosition],
+  );
 
- document.addEventListener('visibilitychange', handleVisibilityChange);
- return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-}, [state.isPlaying, state.currentVideoId, sendCommand, persistIframe]);
-
- const createIframe = useCallback((videoId: string, showVisible: boolean = true, metadata?: YouTubeMetadata) => {
- // Atualiza estado primeiro para garantir que o container seja renderizado
- setState(prev => ({
-...prev, 
- isLoading: true,
- currentVideoId: videoId,
-}));
-
- // Aguarda um frame para o container ser renderizado
- requestAnimationFrame(() => {
- const container = showVisible? containerRef.current: hiddenContainerRef.current;
- if (!container) {
- console.error('Container não encontrado');
- setState(prev => ({...prev, isLoading: false}));
- return;
-}
-
- // Remove iframe anterior
- if (iframeRef.current) {
- iframeRef.current.src ='';
- iframeRef.current.remove();
- iframeRef.current = null;
-}
-
- // Limpa ambos os containers
- if (containerRef.current) containerRef.current.innerHTML ='';
- if (hiddenContainerRef.current) hiddenContainerRef.current.innerHTML ='';
-
- // Cria novo iframe
- const iframe = document.createElement('iframe');
-  iframe.id ='mamae-zen-youtube-player';
- iframe.allow ='autoplay; encrypted-media; picture-in-picture; fullscreen';
- iframe.setAttribute('allowfullscreen','true');
- iframe.setAttribute('playsinline','true');
- iframe.setAttribute('frameborder','0');
- 
- if (showVisible) {
- iframe.style.cssText ='width:100%;height:200px;border-radius:12px;background:#000;';
-} else {
- // Player oculto para background
- iframe.style.cssText ='width:1px;height:1px;position:absolute;opacity:0.01;pointer-events:none;';
-}
-
-  // Parâmetros do YouTube otimizados para reprodução contínua
- // mute=1 garante que o autoplay funcione em todos os browsers; desmutamos via postMessage após carregar
- const params = new URLSearchParams({
- autoplay:'1',
- mute:'1',
- controls: showVisible?'1':'0',
- playsinline:'1',
- rel:'0',
- modestbranding:'1',
- loop:'1',
- playlist: videoId,
- enablejsapi:'1',
- origin: window.location.origin,
- fs:'1',
- iv_load_policy:'3',
- cc_load_policy:'0',
-});
-
- iframe.src =`https://www.youtube.com/embed/${videoId}?${params.toString()}`;
- 
- iframe.onload = () => {
- setState(prev => ({
-...prev, 
- isLoading: false,
- isPlaying: true,
-}));
-
- // Desmuta após pequeno delay para garantir que o player esteja pronto
- setTimeout(() => {
- sendCommand('unMute');
- sendCommand('playVideo');
-}, 800);
- 
- // Atualiza o serviço de áudio em segundo plano
- backgroundAudioService.setControlHandlers({
-   play: () => {
-    sendCommand('unMute');
-    sendCommand('playVideo');
-   },
-   pause: () => {
-    sendCommand('pauseVideo');
+  const pause = useCallback(() => {
+    try {
+      ytPlayer?.pauseVideo?.();
+    } catch {
+      /* noop */
+    }
     backgroundAudioService.pauseAudio();
-    setState(prev => ({...prev, isPlaying: false}));
-   },
-  stop: () => {
-  removeIframe();
-  setState(prev => ({...prev, isPlaying: false, currentVideoId: null, isLoading: false}));
- },
- });
- backgroundAudioService.startAudio(videoId, metadata);
-};
+    setState((prev) => ({ ...prev, isPlaying: false, isLoading: false }));
+  }, []);
 
- container.appendChild(iframe);
- iframeRef.current = iframe;
-});
-}, [removeIframe, sendCommand]);
+  const resume = useCallback(() => {
+    if (!state.currentVideoId) return;
+    try {
+      ytPlayer?.unMute?.();
+      ytPlayer?.setVolume?.(volumeRef.current);
+      ytPlayer?.playVideo?.();
+    } catch {
+      /* noop */
+    }
+    backgroundAudioService.resumeAudio();
+    setState((prev) => ({ ...prev, isPlaying: true, isLoading: false }));
+  }, [state.currentVideoId]);
 
- const play = useCallback((videoId: string, showVisible: boolean = true, metadata?: YouTubeMetadata) => {
- createIframe(videoId, showVisible, metadata);
-}, [createIframe]);
+  const stop = useCallback(() => {
+    try {
+      ytPlayer?.stopVideo?.();
+    } catch {
+      /* noop */
+    }
+    backgroundAudioService.stopAudio();
+    setState((prev) => ({
+      isPlaying: false,
+      currentVideoId: null,
+      volume: prev.volume,
+      isLoading: false,
+    }));
+    syncHostPosition();
+  }, [syncHostPosition]);
 
- const stop = useCallback(() => {
- removeIframe();
- 
- // Para o serviço de áudio em segundo plano
- backgroundAudioService.stopAudio();
- 
- setState({
- isPlaying: false,
- currentVideoId: null,
- volume: state.volume,
- isLoading: false,
-});
-}, [removeIframe, state.volume]);
+  const setVolume = useCallback((volume: number) => {
+    volumeRef.current = volume;
+    setState((prev) => ({ ...prev, volume }));
+    try {
+      ytPlayer?.setVolume?.(volume);
+    } catch {
+      /* noop */
+    }
+    backgroundAudioService.setVolume(volume);
+  }, []);
 
- const pause = useCallback(() => {
-  sendCommand('pauseVideo');
-  backgroundAudioService.pauseAudio();
-  setState(prev => ({...prev, isPlaying: false, isLoading: false}));
- }, [sendCommand]);
-
- const resume = useCallback(() => {
-  if (!state.currentVideoId) return;
-
-  sendCommand('unMute');
-  sendCommand('playVideo');
-  backgroundAudioService.resumeAudio();
-  setState(prev => ({...prev, isPlaying: true, isLoading: false}));
- }, [sendCommand, state.currentVideoId]);
-
- const setVolume = useCallback((volume: number) => {
- setState(prev => ({...prev, volume}));
- sendCommand('setVolume', [volume]);
- backgroundAudioService.setVolume(volume);
-}, [sendCommand]);
-
- return {
- isPlaying: state.isPlaying,
- currentVideoId: state.currentVideoId,
- volume: state.volume,
- isLoading: state.isLoading,
- isIOS,
- containerRef,
- hiddenContainerRef,
- play,
-  pause,
-  resume,
- stop,
- setVolume,
-};
+  return {
+    isPlaying: state.isPlaying,
+    currentVideoId: state.currentVideoId,
+    volume: state.volume,
+    isLoading: state.isLoading,
+    isIOS,
+    containerRef,
+    hiddenContainerRef,
+    play,
+    pause,
+    resume,
+    stop,
+    setVolume,
+  };
 };
 
 export default useYouTubeEmbed;
