@@ -4,6 +4,15 @@ import guideBreastfeeding from '@/assets/guide-breastfeeding.jpg';
 import guideExercise from '@/assets/guide-exercise.jpg';
 import guideSleep from '@/assets/guide-sleep.jpg';
 import guideSelfcare from '@/assets/guide-selfcare.jpg';
+import guideTiming from '@/assets/guide-timing.jpg';
+import guideDiastase from '@/assets/guide-diastase.jpg';
+import guideStress from '@/assets/guide-stress.jpg';
+import guideRoutine from '@/assets/guide-routine.jpg';
+import guideScale from '@/assets/guide-scale.jpg';
+import guideObstacles from '@/assets/guide-obstacles.jpg';
+import guideCommunity from '@/assets/guide-community.jpg';
+import guideBody from '@/assets/guide-body.jpg';
+import guideFocus from '@/assets/guide-focus.jpg';
 
 export const guideImages = {
   nutrition: guideNutrition,
@@ -12,7 +21,17 @@ export const guideImages = {
   exercise: guideExercise,
   sleep: guideSleep,
   selfcare: guideSelfcare,
+  timing: guideTiming,
+  diastase: guideDiastase,
+  stress: guideStress,
+  routine: guideRoutine,
+  scale: guideScale,
+  obstacles: guideObstacles,
+  community: guideCommunity,
+  body: guideBody,
+  focus: guideFocus,
 };
+
 
 export type GuideImageKey = keyof typeof guideImages;
 
