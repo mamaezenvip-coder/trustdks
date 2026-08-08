@@ -29,7 +29,7 @@ const GuideLibrary = () => {
           </div>
           <div>
             <h2 className="text-2xl font-bold text-foreground leading-tight">Guia Completo</h2>
-            <p className="text-xs text-muted-foreground">15 capítulos · receitas passo a passo</p>
+            <p className="text-xs text-foreground/70">15 capítulos · receitas passo a passo</p>
           </div>
         </div>
 
@@ -37,11 +37,12 @@ const GuideLibrary = () => {
 
         <div className="border-t border-primary/20 my-6 pt-6">
           <h3 className="text-lg font-bold text-foreground mb-2">Emagrecimento Pós-Parto Saudável</h3>
-          <p className="text-muted-foreground mb-4 text-sm leading-relaxed">
+          <p className="text-foreground/80 mb-4 text-sm leading-relaxed">
             Conteúdo completo com fotos, protocolos práticos e uma receita detalhada em cada capítulo —
             do preparo até a degustação.
           </p>
         </div>
+
 
         <div className="grid gap-4">
           {guideChapters.map((chapter, index) => (
@@ -80,15 +81,15 @@ const GuideLibrary = () => {
                   />
                 </Button>
                 <div className="absolute bottom-3 left-3 right-3">
-                  <h3 className="font-bold text-foreground leading-tight group-hover:text-primary transition-colors">
+                  <h3 className="font-bold text-foreground leading-tight">
                     {chapter.title}
                   </h3>
-                  <p className="text-xs text-muted-foreground line-clamp-1">{chapter.subtitle}</p>
+                  <p className="text-xs text-foreground/80 line-clamp-1">{chapter.subtitle}</p>
                 </div>
               </div>
 
               <div className="flex items-center justify-between px-4 py-3">
-                <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
+                <div className="flex items-center gap-3 text-[11px] text-foreground/80">
                   <span className="flex items-center gap-1">
                     <Clock className="w-3.5 h-3.5 text-primary" />
                     {chapter.minutes} min
@@ -98,6 +99,7 @@ const GuideLibrary = () => {
                     1 receita
                   </span>
                 </div>
+
                 <span className="flex items-center gap-1 text-xs font-semibold text-primary">
                   Ler capítulo
                   <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
