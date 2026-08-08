@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+
 import { BookOpen, ChevronRight, Heart, Clock, ChefHat } from 'lucide-react';
 import { useState } from 'react';
 import ChapterDialog from './ChapterDialog';
