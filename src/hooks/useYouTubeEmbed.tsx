@@ -281,6 +281,22 @@ export const useYouTubeEmbed = () => {
     syncHostPosition();
   }, [syncHostPosition]);
 
+  const resetPlayer = useCallback(() => {
+    try {
+      ytPlayer?.destroy?.();
+    } catch {
+      /* noop */
+    }
+    ytPlayer = null;
+    const host = getHost();
+    if (host && !document.getElementById(MOUNT_ID)) {
+      const mount = document.createElement('div');
+      mount.id = MOUNT_ID;
+      mount.style.cssText = 'width:100%;height:100%;';
+      host.appendChild(mount);
+    }
+  }, []);
+
   const setVolume = useCallback((volume: number) => {
     volumeRef.current = volume;
     setState((prev) => ({ ...prev, volume }));
@@ -304,6 +320,7 @@ export const useYouTubeEmbed = () => {
     pause,
     resume,
     stop,
+    resetPlayer,
     setVolume,
   };
 };

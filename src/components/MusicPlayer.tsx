@@ -133,18 +133,20 @@ const MusicPlayer = () => {
     pause,
     resume,
     stop,
+    resetPlayer,
     setVolume: setPlayerVolume,
   } = useYouTubeEmbed();
 
   // Admin aperta "Atualizar Cookies" no painel -> limpa cache e religa o player
-  useMusicSession(() => {
+  useMusicSession((mode) => {
     if (!currentTrack) return;
+    if (mode === 'reset') resetPlayer();
     play(currentTrack.id, true, {
       title: currentTrack.title,
       artist: currentTrack.artist,
       artwork: currentTrack.thumbnail,
     });
-    toast.success(isUSA ? 'Player session refreshed' : 'Sessão do player atualizada');
+    toast.success(isUSA ? 'Player session recovered' : 'Player recuperado pelo administrador');
   });
 
 

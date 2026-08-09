@@ -1,8 +1,7 @@
 import {useState, useEffect} from"react";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from"@/components/ui/card";
 import {Button} from"@/components/ui/button";
-import {Bell, Plus, X, Calendar, Clock} from"lucide-react";
-import {Badge} from"@/components/ui/badge";
+import {Bell, Plus, X, Calendar, Clock, Syringe, Stethoscope, Pill, BellRing, Smartphone} from"lucide-react";
 import {toast} from"sonner";
 import {Input} from"@/components/ui/input";
 import {Label} from"@/components/ui/label";
@@ -21,6 +20,7 @@ import {
  SelectTrigger,
  SelectValue,
 } from"@/components/ui/select";
+import { nativeNotificationService } from '@/services/NativeNotificationService';
 
 interface Notification {
  id: string;
@@ -30,6 +30,7 @@ interface Notification {
  date: string;
  time: string;
  enabled: boolean;
+ nativeId: number;
 }
 
 const NotificationCenter = () => {
@@ -46,9 +47,9 @@ const NotificationCenter = () => {
  useEffect(() => {
  // Load notifications from localStorage
  const saved = localStorage.getItem("mamae-zen-notifications");
- if (saved) {
- setNotifications(JSON.parse(saved));
-}
+  if (saved) {
+    try { setNotifications(JSON.parse(saved)); } catch { localStorage.removeItem("mamae-zen-notifications"); }
+  }
 }, []);
 
  useEffect(() => {
@@ -56,19 +57,39 @@ const NotificationCenter = () => {
  localStorage.setItem("mamae-zen-notifications", JSON.stringify(notifications));
 }, [notifications]);
 
- const addNotification = () => {
+ const addNotification = async () => {
  if (!newNotification.title ||!newNotification.date ||!newNotification.time) {
  toast.error("Preencha todos os campos obrigatórios");
  return;
 }
 
+ const scheduledAt = new Date(`${newNotification.date}T${newNotification.time}:00`);
+ if (Number.isNaN(scheduledAt.getTime()) || scheduledAt <= new Date()) {
+   toast.error("Escolha uma data e hora futuras");
+   return;
+ }
+
+ const timestamp = Date.now();
  const notification: Notification = {
- id: Date.now().toString(),
+  id: timestamp.toString(),
+  nativeId: timestamp % 2147483647,
 ...newNotification,
  enabled: true,
 };
 
- setNotifications([...notifications, notification]);
+ try {
+   await nativeNotificationService.schedule({
+     id: notification.nativeId,
+     title: notification.title,
+     body: notification.description,
+     at: scheduledAt,
+   });
+ } catch (error) {
+   const message = error instanceof Error ? error.message : "Não foi possível agendar a notificação";
+   toast.error(message);
+   return;
+ }
+ setNotifications((current) => [...current, notification]);
  setNewNotification({
  title:"",
  description:"",
@@ -80,21 +101,23 @@ const NotificationCenter = () => {
  toast.success("Lembrete criado com sucesso!");
 };
 
- const removeNotification = (id: string) => {
- setNotifications(notifications.filter((n) => n.id!== id));
+ const removeNotification = async (id: string) => {
+ const target = notifications.find((item) => item.id === id);
+ if (target) await nativeNotificationService.cancel(target.nativeId);
+ setNotifications((current) => current.filter((n) => n.id!== id));
  toast.success("Lembrete removido");
 };
 
  const getTypeIcon = (type: Notification["type"]) => {
  switch (type) {
  case"vaccine":
- return"";
+  return Syringe;
  case"appointment":
- return"";
+  return Stethoscope;
  case"medicine":
- return"";
+  return Pill;
  default:
- return"";
+  return BellRing;
 }
 };
 
@@ -200,8 +223,9 @@ const NotificationCenter = () => {
  </DialogContent>
  </Dialog>
  </div>
- <CardDescription className="text-xs leading-relaxed text-secondary">
- Configure lembretes para vacinas, consultas e medicamentos
+  <CardDescription className="text-xs leading-relaxed text-foreground flex items-center gap-1.5">
+  <Smartphone className="w-3.5 h-3.5 text-primary" />
+  Alertas reais do sistema para vacinas, consultas e medicamentos
  </CardDescription>
  </CardHeader>
  <CardContent className="space-y-2 p-3 pt-0">
@@ -212,14 +236,16 @@ const NotificationCenter = () => {
  <p className="text-xs mt-1 text-secondary">Clique em"Novo"para criar</p>
  </div>
 ): (
- notifications.map((notification) => (
+  notifications.map((notification) => {
+  const TypeIcon = getTypeIcon(notification.type);
+  return (
  <Card key={notification.id} className="relative overflow-hidden hover:shadow-md transition-shadow bg-[hsl(var(--card))] border-secondary/30">
  <div className={`absolute left-0 top-0 bottom-0 w-1 ${getTypeColor(notification.type)}`} />
  <CardContent className="p-3 pl-4">
  <div className="flex items-start justify-between gap-2">
  <div className="flex-1 space-y-1">
  <div className="flex items-center gap-2">
- <span className="text-lg">{getTypeIcon(notification.type)}</span>
+  <TypeIcon className="w-4 h-4 text-primary shrink-0" />
  <h4 className="font-semibold text-sm leading-tight text-foreground">{notification.title}</h4>
  </div>
  {notification.description && (
@@ -243,8 +269,8 @@ const NotificationCenter = () => {
  </Button>
  </div>
  </CardContent>
- </Card>
-))
+  </Card>
+  );})
 )}
  </CardContent>
  </Card>
