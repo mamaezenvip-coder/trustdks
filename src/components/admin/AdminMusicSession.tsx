@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Cookie, Loader2, RefreshCw } from 'lucide-react';
+import { Cookie, Loader2, RefreshCw, Radio, RotateCcw, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 
 const client = supabase as any;
@@ -30,7 +30,7 @@ const AdminMusicSession = () => {
     load();
   }, []);
 
-  const refreshSession = async () => {
+  const refreshSession = async (mode: 'refresh' | 'reconnect' | 'reset' = 'refresh') => {
     setRefreshing(true);
     const next = (version ?? 1) + 1;
     const { error } = await client
@@ -38,7 +38,7 @@ const AdminMusicSession = () => {
       .upsert(
         {
           key: SETTING_KEY,
-          value: { version: next },
+          value: { version: next, mode, requested_at: new Date().toISOString() },
           updated_by: (await client.auth.getUser()).data?.user?.id ?? null,
         },
         { onConflict: 'key' },
@@ -48,7 +48,12 @@ const AdminMusicSession = () => {
       console.error(error);
       toast.error('Erro ao atualizar cookies do player');
     } else {
-      toast.success(`Cookies atualizados! Players vão recarregar (v${next})`);
+      const labels = {
+        refresh: 'Cache limpo e players atualizados',
+        reconnect: 'Reconexão enviada para todos os players',
+        reset: 'Recuperação completa enviada para todos os players',
+      };
+      toast.success(`${labels[mode]} (v${next})`);
       setVersion(next);
       setUpdatedAt(new Date().toISOString());
     }
@@ -62,10 +67,10 @@ const AdminMusicSession = () => {
           <Cookie className="w-5 h-5 text-primary drop-shadow-[0_0_8px_hsl(var(--primary)/0.8)]" />
         </div>
         <div className="min-w-0">
-          <p className="font-bold text-foreground text-sm">Cookies do Player de Música</p>
+          <p className="font-bold text-foreground text-sm">Central de Recuperação do Player</p>
           <p className="text-xs text-muted-foreground">
-            Se o player travar ou o navegador derrubar o áudio, aperte o botão abaixo: todos os
-            aparelhos limpam os cookies/cache e o som volta a tocar automaticamente.
+            Comandos reais enviados em tempo real aos aparelhos conectados. Comece pela reconexão
+            e use a recuperação completa somente se o player continuar travado.
           </p>
         </div>
       </div>
@@ -85,14 +90,28 @@ const AdminMusicSession = () => {
         )}
       </div>
 
-      <Button onClick={refreshSession} disabled={refreshing || loading} className="w-full font-bold">
+      <div className="grid gap-2">
+      <Button onClick={() => refreshSession('reconnect')} disabled={refreshing || loading} className="w-full font-bold">
         {refreshing ? (
           <Loader2 className="w-4 h-4 mr-2 animate-spin" />
         ) : (
-          <RefreshCw className="w-4 h-4 mr-2" />
+          <Radio className="w-4 h-4 mr-2" />
         )}
-        Atualizar Cookies
+        Reconectar Players
       </Button>
+      <div className="grid grid-cols-2 gap-2">
+        <Button variant="outline" onClick={() => refreshSession('refresh')} disabled={refreshing || loading}>
+          <RefreshCw className="w-4 h-4 mr-2" /> Limpar Cache
+        </Button>
+        <Button variant="outline" onClick={() => refreshSession('reset')} disabled={refreshing || loading}>
+          <RotateCcw className="w-4 h-4 mr-2" /> Recuperar Tudo
+        </Button>
+      </div>
+      <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
+        <ShieldCheck className="w-3.5 h-3.5 text-primary" />
+        O áudio em execução é preservado sempre que o sistema operacional permitir.
+      </div>
+      </div>
     </Card>
   );
 };

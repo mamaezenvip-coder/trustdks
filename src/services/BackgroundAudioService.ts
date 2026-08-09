@@ -169,6 +169,7 @@ class BackgroundAudioService {
     if (typeof navigator === 'undefined' || !('mediaSession' in navigator)) return;
     try {
       navigator.mediaSession.setActionHandler('play', () => {
+        this.controlHandlers.play?.();
         this.resumeAudio();
       });
       navigator.mediaSession.setActionHandler('pause', () => {
@@ -262,6 +263,7 @@ class BackgroundAudioService {
           : undefined,
       });
       await MediaSession.setActionHandler({ action: 'play' }, () => {
+        this.controlHandlers.play?.();
         this.resumeAudio();
       });
       await MediaSession.setActionHandler({ action: 'pause' }, () => {
