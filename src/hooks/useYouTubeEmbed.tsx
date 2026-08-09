@@ -36,7 +36,7 @@ const getHost = (): HTMLDivElement | null => {
     host.id = HOST_ID;
     host.setAttribute('aria-hidden', 'true');
     host.style.cssText =
-      'position:fixed;left:0;bottom:0;width:1px;height:1px;opacity:0.01;pointer-events:none;z-index:-1;overflow:hidden;';
+      'position:fixed;left:-320px;bottom:0;width:240px;height:135px;opacity:0.01;pointer-events:none;z-index:-1;overflow:hidden;';
     document.body.appendChild(host);
 
     const mount = document.createElement('div');
@@ -107,7 +107,7 @@ export const useYouTubeEmbed = () => {
       host.style.cssText = `position:fixed;left:${rect.left}px;top:${rect.top}px;width:${rect.width}px;height:${rect.height}px;opacity:1;pointer-events:auto;z-index:5;overflow:hidden;border-radius:12px;background:#000;`;
     } else {
       host.style.cssText =
-        'position:fixed;left:0;bottom:0;width:1px;height:1px;opacity:0.01;pointer-events:none;z-index:-1;overflow:hidden;';
+        'position:fixed;left:-320px;bottom:0;width:240px;height:135px;opacity:0.01;pointer-events:none;z-index:-1;overflow:hidden;';
     }
   }, []);
 

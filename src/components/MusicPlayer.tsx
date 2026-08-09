@@ -29,6 +29,7 @@ import { Badge } from '@/components/ui/badge';
 import { useCountry } from '@/contexts/CountryContext';
 import { useYouTubeEmbed } from '@/hooks/useYouTubeEmbed';
 import { useMusicSession } from '@/hooks/useMusicSession';
+import { backgroundAudioService } from '@/services/BackgroundAudioService';
 
 import type { LucideIcon } from 'lucide-react';
 
@@ -115,7 +116,16 @@ const pinnedTracks: PinnedSound[] = [
 
 const MusicPlayer = () => {
   const { isUSA } = useCountry();
-  const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
+  const [currentTrack, setCurrentTrack] = useState<Track | null>(() => {
+    const persisted = backgroundAudioService.getState();
+    if (!persisted.currentVideoId) return null;
+    return {
+      id: persisted.currentVideoId,
+      title: persisted.title || 'Mamãe Zen Music',
+      artist: persisted.artist || 'Mamãe Zen',
+      thumbnail: persisted.artwork,
+    };
+  });
   const [volume, setVolume] = useState([70]);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<Track[]>([]);
