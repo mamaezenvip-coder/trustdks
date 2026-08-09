@@ -30,6 +30,18 @@ class NativeNotificationService {
     const allowed = await this.requestPermission();
     if (!allowed) throw new Error('Permissão de notificações não concedida.');
 
+    if (Capacitor.getPlatform() === 'android') {
+      await LocalNotifications.createChannel({
+        id: 'mamae-zen-reminders',
+        name: 'Lembretes Mamãe Zen',
+        description: 'Vacinas, consultas, medicamentos e lembretes personalizados.',
+        importance: 5,
+        visibility: 1,
+        vibration: true,
+        lights: true,
+      });
+    }
+
     await LocalNotifications.schedule({
       notifications: [{
         id: reminder.id,
