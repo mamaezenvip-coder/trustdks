@@ -19,6 +19,11 @@ const config: CapacitorConfig = {
       playIcon: 'media_play',
       pauseIcon: 'media_pause',
       stopIcon: 'media_stop'
+    },
+    LocalNotifications: {
+      smallIcon: 'ic_stat_mamae_zen',
+      iconColor: '#FF2D95',
+      sound: 'default'
     }
   },
   android: {

@@ -29,6 +29,7 @@ import { Badge } from '@/components/ui/badge';
 import { useCountry } from '@/contexts/CountryContext';
 import { useYouTubeEmbed } from '@/hooks/useYouTubeEmbed';
 import { useMusicSession } from '@/hooks/useMusicSession';
+import { backgroundAudioService } from '@/services/BackgroundAudioService';
 
 import type { LucideIcon } from 'lucide-react';
 
@@ -115,7 +116,16 @@ const pinnedTracks: PinnedSound[] = [
 
 const MusicPlayer = () => {
   const { isUSA } = useCountry();
-  const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
+  const [currentTrack, setCurrentTrack] = useState<Track | null>(() => {
+    const persisted = backgroundAudioService.getState();
+    if (!persisted.currentVideoId) return null;
+    return {
+      id: persisted.currentVideoId,
+      title: persisted.title || 'Mamãe Zen Music',
+      artist: persisted.artist || 'Mamãe Zen',
+      thumbnail: persisted.artwork,
+    };
+  });
   const [volume, setVolume] = useState([70]);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<Track[]>([]);
@@ -133,18 +143,20 @@ const MusicPlayer = () => {
     pause,
     resume,
     stop,
+    resetPlayer,
     setVolume: setPlayerVolume,
   } = useYouTubeEmbed();
 
   // Admin aperta "Atualizar Cookies" no painel -> limpa cache e religa o player
-  useMusicSession(() => {
+  useMusicSession((mode) => {
     if (!currentTrack) return;
+    if (mode === 'reset') resetPlayer();
     play(currentTrack.id, true, {
       title: currentTrack.title,
       artist: currentTrack.artist,
       artwork: currentTrack.thumbnail,
     });
-    toast.success(isUSA ? 'Player session refreshed' : 'Sessão do player atualizada');
+    toast.success(isUSA ? 'Player session recovered' : 'Player recuperado pelo administrador');
   });
 
 

@@ -39,19 +39,21 @@ export const clearMusicSessionCache = async () => {
  * Quando o admin aperta "Atualizar Cookies" no painel, a versão muda,
  * o cache é limpo e o callback recebe a ordem de recarregar o player.
  */
-export const useMusicSession = (onRefresh?: () => void) => {
+export type MusicSessionMode = 'refresh' | 'reconnect' | 'reset';
+
+export const useMusicSession = (onRefresh?: (mode: MusicSessionMode) => void) => {
   const [version, setVersion] = useState<number | null>(null);
   const versionRef = useRef<number | null>(null);
   const callbackRef = useRef(onRefresh);
   callbackRef.current = onRefresh;
 
-  const applyVersion = useCallback(async (next: number) => {
+  const applyVersion = useCallback(async (next: number, mode: MusicSessionMode = 'refresh') => {
     const previous = versionRef.current;
     versionRef.current = next;
     setVersion(next);
     if (previous !== null && next !== previous) {
-      await clearMusicSessionCache();
-      callbackRef.current?.();
+      if (mode !== 'reconnect') await clearMusicSessionCache();
+      callbackRef.current?.(mode);
     }
   }, []);
 
@@ -65,8 +67,8 @@ export const useMusicSession = (onRefresh?: () => void) => {
         .eq('key', SETTING_KEY)
         .maybeSingle();
       if (!active) return;
-      const v = Number(data?.value?.version ?? 1);
-      applyVersion(Number.isFinite(v) ? v : 1);
+       const v = Number(data?.value?.version ?? 1);
+       applyVersion(Number.isFinite(v) ? v : 1, data?.value?.mode ?? 'refresh');
     })();
 
     const channel = client
@@ -76,7 +78,8 @@ export const useMusicSession = (onRefresh?: () => void) => {
         { event: '*', schema: 'public', table: 'app_settings', filter: `key=eq.${SETTING_KEY}` },
         (payload: any) => {
           const v = Number(payload?.new?.value?.version ?? 0);
-          if (Number.isFinite(v) && v > 0) applyVersion(v);
+          const mode = payload?.new?.value?.mode as MusicSessionMode | undefined;
+          if (Number.isFinite(v) && v > 0) applyVersion(v, mode ?? 'refresh');
         },
       )
       .subscribe();
