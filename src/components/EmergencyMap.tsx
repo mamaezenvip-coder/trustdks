@@ -170,49 +170,35 @@ const EmergencyMap = () => {
 }
 };
 
- const clearAppCache = () => {
+ // Limpeza leve de storage antes de buscas pesadas (evita tela preta por storage cheio).
+ // Nunca remove service worker, Cache API ou sessão de login/música.
+ const trimAppStorage = () => {
  try {
- // Limpa dados antigos do localStorage
  const keysToTrim = ['sleepEntries','feedingEntries','notifications','musicCache','youtubeCache'];
  keysToTrim.forEach(key => {
  const stored = localStorage.getItem(key);
- if (stored) {
+ if (!stored) return;
  try {
  const data = JSON.parse(stored);
  if (Array.isArray(data) && data.length > 50) {
  localStorage.setItem(key, JSON.stringify(data.slice(0, 30)));
-}
-} catch {
+ }
+ } catch {
  localStorage.removeItem(key);
-}
-}
-});
+ }
+ });
 
- // Remove itens expirados ou temporários
  const keysToRemove: string[] = [];
  for (let i = 0; i < localStorage.length; i++) {
  const key = localStorage.key(i);
- if (key && (key.startsWith('temp_') || key.startsWith('cache_'))) {
- keysToRemove.push(key);
-}
-}
+ if (key && (key.startsWith('temp_') || key.startsWith('cache_'))) keysToRemove.push(key);
+ }
  keysToRemove.forEach(key => localStorage.removeItem(key));
+ } catch (error) {
+ if (import.meta.env.DEV) console.error('Storage cleanup error:', error);
+ }
+ };
 
- // Limpa sessionStorage desnecessário
- const sessionKeysToRemove: string[] = [];
- for (let i = 0; i < sessionStorage.length; i++) {
- const key = sessionStorage.key(i);
- if (key && key!=='lastCleanup') {
- sessionKeysToRemove.push(key);
-}
-}
- sessionKeysToRemove.forEach(key => sessionStorage.removeItem(key));
-
-  // Não remove iframes, service worker ou Cache API: isso pode parar música/PWA em segundo plano.
-} catch (error) {
- console.error('Cache cleanup error:', error);
-}
-};
 
  const getLocation = async () => {
  setLoading(true);
