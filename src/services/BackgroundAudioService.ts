@@ -45,6 +45,8 @@ class BackgroundAudioService {
   private keepAliveTimer: number | null = null;
   private nativeBackgroundTaskId: CallbackID | null = null;
   private controlHandlers: AudioControlHandlers = {};
+  private lastPlayNudge = 0;
+
 
   // Web Audio silent context (mais confiável que <audio> data-URI no iOS 17+)
   private audioCtx: AudioContext | null = null;
