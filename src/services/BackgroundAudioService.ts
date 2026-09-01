@@ -207,11 +207,17 @@ class BackgroundAudioService {
 
   // ============ WAKE LOCK ============
   private async requestWakeLock(): Promise<void> {
+    if (this.wakeLock) return; // evita vazamento de sentinels repetidos
+    if (typeof document !== 'undefined' && document.visibilityState !== 'visible') return;
     if ('wakeLock' in navigator) {
       try {
-        this.wakeLock = await (navigator as any).wakeLock.request('screen');
+        const sentinel = await (navigator as any).wakeLock.request('screen');
+        this.wakeLock = sentinel;
+        sentinel.addEventListener?.('release', () => {
+          if (this.wakeLock === sentinel) this.wakeLock = null;
+        });
       } catch {
-        /* não disponível */
+        this.wakeLock = null;
       }
     }
   }
@@ -231,8 +237,15 @@ class BackgroundAudioService {
     this.requestWakeLock();
     this.resumeSilentAudio();
     this.setMediaPlaybackState('playing');
-    this.controlHandlers.play?.();
+    // Só reenvia "play" quando o navegador realmente derrubou o áudio.
+    // Chamar playVideo a cada ciclo fazia o player do YouTube reiniciar/gaguejar.
+    const now = Date.now();
+    if (now - this.lastPlayNudge > 12000) {
+      this.lastPlayNudge = now;
+      this.controlHandlers.play?.();
+    }
   }
+
 
   // ============ CAPACITOR NATIVE MEDIA SESSION ============
   private async setMediaPlaybackState(playbackState: 'none' | 'paused' | 'playing'): Promise<void> {
