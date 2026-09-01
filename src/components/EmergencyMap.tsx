@@ -263,8 +263,10 @@ const EmergencyMap = () => {
 }
 },
  (error) => {
+ if (settled) return;
+ settled = true;
  clearTimeout(timeoutId);
- console.error('Error getting location:', error);
+ if (import.meta.env.DEV) console.error('Error getting location:', error);
  let message = isUSA 
 ?"Could not get your location. Please enable GPS.":"Não foi possível obter sua localização. Ative o GPS.";
  
@@ -278,7 +280,7 @@ const EmergencyMap = () => {
 },
  {
  enableHighAccuracy: true,
- timeout: 15000,
+ timeout: 18000,
  maximumAge: 0
 }
 );
@@ -287,29 +289,18 @@ const EmergencyMap = () => {
  const openInMaps = (place: Emergency) => {
  if (!place.lat ||!place.lng) {
  const query = encodeURIComponent(place.address);
- const mapsUrl =`https://www.google.com/maps/search/?api=1&query=${query}`;
- window.open(mapsUrl,'_blank');
+ window.open(`https://www.google.com/maps/search/?api=1&query=${query}`,'_blank','noopener,noreferrer');
  return;
 }
 
- const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
- const isAndroid = /Android/i.test(navigator.userAgent);
- 
- if (isIOS) {
+ // Um único destino: evita abrir mapa duas vezes no Android.
  const mapsUrl =`https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lng}&travelmode=driving`;
- window.open(mapsUrl,'_blank');
-} else if (isAndroid) {
- const intentUrl =`google.navigation:q=${place.lat},${place.lng}`;
- window.location.href = intentUrl;
- setTimeout(() => {
- const mapsUrl =`https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lng}&travelmode=driving`;
- window.open(mapsUrl,'_blank');
-}, 1000);
-} else {
- const mapsUrl =`https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lng}`;
- window.open(mapsUrl,'_blank');
-}
+ window.open(mapsUrl,'_blank','noopener,noreferrer');
 };
+
+ const hasPhone = (phone: string) =>
+ !!phone && phone!=="Não disponível"&& phone!=="Not available";
+
 
  const callPhone = (phone: string) => {
  window.location.href =`tel:${phone}`;
