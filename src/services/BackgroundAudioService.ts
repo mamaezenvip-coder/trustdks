@@ -400,9 +400,11 @@ class BackgroundAudioService {
     if (!this.audioState.currentVideoId) return;
 
     this.audioState = { ...this.audioState, isPlaying: true };
+    this.lastPlayNudge = 0; // retomada manual precisa reenviar play imediatamente
     this.keepAliveNow();
     this.startKeepAlive();
   }
+
 
   public setControlHandlers(handlers: AudioControlHandlers): void {
     this.controlHandlers = handlers;
