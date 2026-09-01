@@ -291,7 +291,9 @@ export const useYouTubeEmbed = () => {
   }, [state.currentVideoId]);
 
   const stop = useCallback(() => {
+    userPausedRef.current = true;
     try {
+
       ytPlayer?.stopVideo?.();
     } catch {
       /* noop */
