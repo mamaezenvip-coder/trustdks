@@ -202,6 +202,7 @@ const EmergencyMap = () => {
 
  const getLocation = async () => {
  setLoading(true);
+ trimAppStorage();
  toast.info(isUSA?"Searching hospitals in your area...":"Buscando hospitais da sua região...");
  
  if (!navigator.geolocation) {
@@ -210,14 +211,21 @@ const EmergencyMap = () => {
  return;
 }
 
- const timeoutId = setTimeout(() => {
+ // Guarda para não disparar dois avisos (timeout manual + timeout do GPS)
+ let settled = false;
+ const timeoutId = window.setTimeout(() => {
+ if (settled) return;
+ settled = true;
  toast.error(isUSA?"Location request timed out. Please try again.":"Tempo esgotado. Tente novamente.");
  setLoading(false);
-}, 15000);
+}, 20000);
 
  navigator.geolocation.getCurrentPosition(
  async (position) => {
+ if (settled) return;
+ settled = true;
  clearTimeout(timeoutId);
+
  try {
  const location = {
  lat: position.coords.latitude,
