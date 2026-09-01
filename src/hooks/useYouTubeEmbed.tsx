@@ -262,6 +262,7 @@ export const useYouTubeEmbed = () => {
   );
 
   const pause = useCallback(() => {
+    userPausedRef.current = true;
     try {
       ytPlayer?.pauseVideo?.();
     } catch {
@@ -273,6 +274,8 @@ export const useYouTubeEmbed = () => {
 
   const resume = useCallback(() => {
     if (!state.currentVideoId) return;
+    userPausedRef.current = false;
+
     try {
       ytPlayer?.unMute?.();
       ytPlayer?.setVolume?.(volumeRef.current);
