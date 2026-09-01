@@ -227,8 +227,19 @@ export const useYouTubeEmbed = () => {
               setState((prev) => ({ ...prev, isPlaying: true, isLoading: false }));
               backgroundAudioService.resumeAudio();
             } else if (event.data === YTState.PAUSED) {
+              // O navegador/SO derrubou o áudio em background sem o usuário pedir:
+              // reenvia play em vez de aceitar a pausa.
+              if (typeof document !== 'undefined' && document.hidden && !userPausedRef.current) {
+                try {
+                  event.target.playVideo();
+                } catch {
+                  /* noop */
+                }
+                return;
+              }
               setState((prev) => ({ ...prev, isPlaying: false, isLoading: false }));
               backgroundAudioService.pauseAudio();
+
             } else if (event.data === YTState.BUFFERING) {
               setState((prev) => ({ ...prev, isLoading: true }));
             } else if (event.data === YTState.ENDED) {
