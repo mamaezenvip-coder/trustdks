@@ -45,6 +45,8 @@ class BackgroundAudioService {
   private keepAliveTimer: number | null = null;
   private nativeBackgroundTaskId: CallbackID | null = null;
   private controlHandlers: AudioControlHandlers = {};
+  private lastPlayNudge = 0;
+
 
   // Web Audio silent context (mais confiável que <audio> data-URI no iOS 17+)
   private audioCtx: AudioContext | null = null;
@@ -207,11 +209,17 @@ class BackgroundAudioService {
 
   // ============ WAKE LOCK ============
   private async requestWakeLock(): Promise<void> {
+    if (this.wakeLock) return; // evita vazamento de sentinels repetidos
+    if (typeof document !== 'undefined' && document.visibilityState !== 'visible') return;
     if ('wakeLock' in navigator) {
       try {
-        this.wakeLock = await (navigator as any).wakeLock.request('screen');
+        const sentinel = await (navigator as any).wakeLock.request('screen');
+        this.wakeLock = sentinel;
+        sentinel.addEventListener?.('release', () => {
+          if (this.wakeLock === sentinel) this.wakeLock = null;
+        });
       } catch {
-        /* não disponível */
+        this.wakeLock = null;
       }
     }
   }
@@ -231,8 +239,15 @@ class BackgroundAudioService {
     this.requestWakeLock();
     this.resumeSilentAudio();
     this.setMediaPlaybackState('playing');
-    this.controlHandlers.play?.();
+    // Só reenvia "play" quando o navegador realmente derrubou o áudio.
+    // Chamar playVideo a cada ciclo fazia o player do YouTube reiniciar/gaguejar.
+    const now = Date.now();
+    if (now - this.lastPlayNudge > 12000) {
+      this.lastPlayNudge = now;
+      this.controlHandlers.play?.();
+    }
   }
+
 
   // ============ CAPACITOR NATIVE MEDIA SESSION ============
   private async setMediaPlaybackState(playbackState: 'none' | 'paused' | 'playing'): Promise<void> {
@@ -385,9 +400,11 @@ class BackgroundAudioService {
     if (!this.audioState.currentVideoId) return;
 
     this.audioState = { ...this.audioState, isPlaying: true };
+    this.lastPlayNudge = 0; // retomada manual precisa reenviar play imediatamente
     this.keepAliveNow();
     this.startKeepAlive();
   }
+
 
   public setControlHandlers(handlers: AudioControlHandlers): void {
     this.controlHandlers = handlers;

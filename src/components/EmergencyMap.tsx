@@ -170,52 +170,39 @@ const EmergencyMap = () => {
 }
 };
 
- const clearAppCache = () => {
+ // Limpeza leve de storage antes de buscas pesadas (evita tela preta por storage cheio).
+ // Nunca remove service worker, Cache API ou sessão de login/música.
+ const trimAppStorage = () => {
  try {
- // Limpa dados antigos do localStorage
  const keysToTrim = ['sleepEntries','feedingEntries','notifications','musicCache','youtubeCache'];
  keysToTrim.forEach(key => {
  const stored = localStorage.getItem(key);
- if (stored) {
+ if (!stored) return;
  try {
  const data = JSON.parse(stored);
  if (Array.isArray(data) && data.length > 50) {
  localStorage.setItem(key, JSON.stringify(data.slice(0, 30)));
-}
-} catch {
+ }
+ } catch {
  localStorage.removeItem(key);
-}
-}
-});
+ }
+ });
 
- // Remove itens expirados ou temporários
  const keysToRemove: string[] = [];
  for (let i = 0; i < localStorage.length; i++) {
  const key = localStorage.key(i);
- if (key && (key.startsWith('temp_') || key.startsWith('cache_'))) {
- keysToRemove.push(key);
-}
-}
+ if (key && (key.startsWith('temp_') || key.startsWith('cache_'))) keysToRemove.push(key);
+ }
  keysToRemove.forEach(key => localStorage.removeItem(key));
+ } catch (error) {
+ if (import.meta.env.DEV) console.error('Storage cleanup error:', error);
+ }
+ };
 
- // Limpa sessionStorage desnecessário
- const sessionKeysToRemove: string[] = [];
- for (let i = 0; i < sessionStorage.length; i++) {
- const key = sessionStorage.key(i);
- if (key && key!=='lastCleanup') {
- sessionKeysToRemove.push(key);
-}
-}
- sessionKeysToRemove.forEach(key => sessionStorage.removeItem(key));
-
-  // Não remove iframes, service worker ou Cache API: isso pode parar música/PWA em segundo plano.
-} catch (error) {
- console.error('Cache cleanup error:', error);
-}
-};
 
  const getLocation = async () => {
  setLoading(true);
+ trimAppStorage();
  toast.info(isUSA?"Searching hospitals in your area...":"Buscando hospitais da sua região...");
  
  if (!navigator.geolocation) {
@@ -224,14 +211,21 @@ const EmergencyMap = () => {
  return;
 }
 
- const timeoutId = setTimeout(() => {
+ // Guarda para não disparar dois avisos (timeout manual + timeout do GPS)
+ let settled = false;
+ const timeoutId = window.setTimeout(() => {
+ if (settled) return;
+ settled = true;
  toast.error(isUSA?"Location request timed out. Please try again.":"Tempo esgotado. Tente novamente.");
  setLoading(false);
-}, 15000);
+}, 20000);
 
  navigator.geolocation.getCurrentPosition(
  async (position) => {
+ if (settled) return;
+ settled = true;
  clearTimeout(timeoutId);
+
  try {
  const location = {
  lat: position.coords.latitude,
@@ -269,8 +263,10 @@ const EmergencyMap = () => {
 }
 },
  (error) => {
+ if (settled) return;
+ settled = true;
  clearTimeout(timeoutId);
- console.error('Error getting location:', error);
+ if (import.meta.env.DEV) console.error('Error getting location:', error);
  let message = isUSA 
 ?"Could not get your location. Please enable GPS.":"Não foi possível obter sua localização. Ative o GPS.";
  
@@ -284,7 +280,7 @@ const EmergencyMap = () => {
 },
  {
  enableHighAccuracy: true,
- timeout: 15000,
+ timeout: 18000,
  maximumAge: 0
 }
 );
@@ -293,29 +289,18 @@ const EmergencyMap = () => {
  const openInMaps = (place: Emergency) => {
  if (!place.lat ||!place.lng) {
  const query = encodeURIComponent(place.address);
- const mapsUrl =`https://www.google.com/maps/search/?api=1&query=${query}`;
- window.open(mapsUrl,'_blank');
+ window.open(`https://www.google.com/maps/search/?api=1&query=${query}`,'_blank','noopener,noreferrer');
  return;
 }
 
- const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
- const isAndroid = /Android/i.test(navigator.userAgent);
- 
- if (isIOS) {
+ // Um único destino: evita abrir mapa duas vezes no Android.
  const mapsUrl =`https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lng}&travelmode=driving`;
- window.open(mapsUrl,'_blank');
-} else if (isAndroid) {
- const intentUrl =`google.navigation:q=${place.lat},${place.lng}`;
- window.location.href = intentUrl;
- setTimeout(() => {
- const mapsUrl =`https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lng}&travelmode=driving`;
- window.open(mapsUrl,'_blank');
-}, 1000);
-} else {
- const mapsUrl =`https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lng}`;
- window.open(mapsUrl,'_blank');
-}
+ window.open(mapsUrl,'_blank','noopener,noreferrer');
 };
+
+ const hasPhone = (phone: string) =>
+ !!phone && phone!=="Não disponível"&& phone!=="Not available";
+
 
  const callPhone = (phone: string) => {
  window.location.href =`tel:${phone}`;

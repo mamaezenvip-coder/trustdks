@@ -86,7 +86,9 @@ export const useYouTubeEmbed = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const hiddenContainerRef = useRef<HTMLDivElement | null>(null);
   const volumeRef = useRef(state.volume);
+  const userPausedRef = useRef(false);
   volumeRef.current = state.volume;
+
 
   const isIOS =
     typeof navigator !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent);
@@ -113,7 +115,10 @@ export const useYouTubeEmbed = () => {
 
   useEffect(() => {
     syncHostPosition();
-    const onChange = () => syncHostPosition();
+    const onChange = () => {
+      if (typeof document !== 'undefined' && document.hidden) return; // economiza CPU em background
+      syncHostPosition();
+    };
     window.addEventListener('scroll', onChange, true);
     window.addEventListener('resize', onChange);
     const timer = window.setInterval(onChange, 400);
@@ -124,6 +129,7 @@ export const useYouTubeEmbed = () => {
       window.clearInterval(timer);
     };
   }, [syncHostPosition, state.currentVideoId]);
+
 
   const attachControlHandlers = useCallback(() => {
     backgroundAudioService.setControlHandlers({
@@ -136,6 +142,7 @@ export const useYouTubeEmbed = () => {
         }
       },
       pause: () => {
+        userPausedRef.current = true;
         try {
           ytPlayer?.pauseVideo?.();
         } catch {
@@ -144,6 +151,7 @@ export const useYouTubeEmbed = () => {
         setState((prev) => ({ ...prev, isPlaying: false }));
       },
       stop: () => {
+        userPausedRef.current = true;
         try {
           ytPlayer?.stopVideo?.();
         } catch {
@@ -151,14 +159,17 @@ export const useYouTubeEmbed = () => {
         }
         setState((prev) => ({ ...prev, isPlaying: false, currentVideoId: null, isLoading: false }));
       },
+
     });
   }, []);
 
   const play = useCallback(
     async (videoId: string, _showVisible: boolean = true, metadata?: YouTubeMetadata) => {
+      userPausedRef.current = false;
       setState((prev) => ({ ...prev, isLoading: true, currentVideoId: videoId }));
       getHost();
       syncHostPosition();
+
 
       const YT = await loadYouTubeApi();
       if (!YT?.Player) {
@@ -221,8 +232,19 @@ export const useYouTubeEmbed = () => {
               setState((prev) => ({ ...prev, isPlaying: true, isLoading: false }));
               backgroundAudioService.resumeAudio();
             } else if (event.data === YTState.PAUSED) {
+              // O navegador/SO derrubou o áudio em background sem o usuário pedir:
+              // reenvia play em vez de aceitar a pausa.
+              if (typeof document !== 'undefined' && document.hidden && !userPausedRef.current) {
+                try {
+                  event.target.playVideo();
+                } catch {
+                  /* noop */
+                }
+                return;
+              }
               setState((prev) => ({ ...prev, isPlaying: false, isLoading: false }));
               backgroundAudioService.pauseAudio();
+
             } else if (event.data === YTState.BUFFERING) {
               setState((prev) => ({ ...prev, isLoading: true }));
             } else if (event.data === YTState.ENDED) {
@@ -243,6 +265,7 @@ export const useYouTubeEmbed = () => {
   );
 
   const pause = useCallback(() => {
+    userPausedRef.current = true;
     try {
       ytPlayer?.pauseVideo?.();
     } catch {
@@ -254,6 +277,8 @@ export const useYouTubeEmbed = () => {
 
   const resume = useCallback(() => {
     if (!state.currentVideoId) return;
+    userPausedRef.current = false;
+
     try {
       ytPlayer?.unMute?.();
       ytPlayer?.setVolume?.(volumeRef.current);
@@ -266,7 +291,9 @@ export const useYouTubeEmbed = () => {
   }, [state.currentVideoId]);
 
   const stop = useCallback(() => {
+    userPausedRef.current = true;
     try {
+
       ytPlayer?.stopVideo?.();
     } catch {
       /* noop */

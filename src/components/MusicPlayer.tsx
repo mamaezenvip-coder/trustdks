@@ -478,10 +478,16 @@ const MusicPlayer = () => {
                   <p className="text-xs text-muted-foreground truncate">{currentTrack.artist}</p>
                 </div>
               </div>
-              <Button size="icon" variant="ghost" onClick={handlePauseResume} className="h-10 w-10">
-                {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-              </Button>
+              <div className="flex items-center gap-1">
+                <Button size="icon" variant="ghost" onClick={handlePauseResume} className="h-10 w-10">
+                  {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                </Button>
+                <Button size="icon" variant="ghost" onClick={handleStop} className="h-10 w-10" aria-label={texts.stopped}>
+                  <Square className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
+
 
             <div className="flex gap-2 mb-3">
               <Button
