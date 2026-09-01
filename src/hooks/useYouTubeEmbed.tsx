@@ -142,6 +142,7 @@ export const useYouTubeEmbed = () => {
         }
       },
       pause: () => {
+        userPausedRef.current = true;
         try {
           ytPlayer?.pauseVideo?.();
         } catch {
@@ -150,6 +151,7 @@ export const useYouTubeEmbed = () => {
         setState((prev) => ({ ...prev, isPlaying: false }));
       },
       stop: () => {
+        userPausedRef.current = true;
         try {
           ytPlayer?.stopVideo?.();
         } catch {
@@ -157,6 +159,7 @@ export const useYouTubeEmbed = () => {
         }
         setState((prev) => ({ ...prev, isPlaying: false, currentVideoId: null, isLoading: false }));
       },
+
     });
   }, []);
 
