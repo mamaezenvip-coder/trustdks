@@ -162,9 +162,11 @@ export const useYouTubeEmbed = () => {
 
   const play = useCallback(
     async (videoId: string, _showVisible: boolean = true, metadata?: YouTubeMetadata) => {
+      userPausedRef.current = false;
       setState((prev) => ({ ...prev, isLoading: true, currentVideoId: videoId }));
       getHost();
       syncHostPosition();
+
 
       const YT = await loadYouTubeApi();
       if (!YT?.Player) {
