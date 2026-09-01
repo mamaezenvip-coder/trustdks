@@ -86,7 +86,9 @@ export const useYouTubeEmbed = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const hiddenContainerRef = useRef<HTMLDivElement | null>(null);
   const volumeRef = useRef(state.volume);
+  const userPausedRef = useRef(false);
   volumeRef.current = state.volume;
+
 
   const isIOS =
     typeof navigator !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent);
