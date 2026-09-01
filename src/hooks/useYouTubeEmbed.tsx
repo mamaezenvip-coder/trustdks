@@ -115,7 +115,10 @@ export const useYouTubeEmbed = () => {
 
   useEffect(() => {
     syncHostPosition();
-    const onChange = () => syncHostPosition();
+    const onChange = () => {
+      if (typeof document !== 'undefined' && document.hidden) return; // economiza CPU em background
+      syncHostPosition();
+    };
     window.addEventListener('scroll', onChange, true);
     window.addEventListener('resize', onChange);
     const timer = window.setInterval(onChange, 400);
@@ -126,6 +129,7 @@ export const useYouTubeEmbed = () => {
       window.clearInterval(timer);
     };
   }, [syncHostPosition, state.currentVideoId]);
+
 
   const attachControlHandlers = useCallback(() => {
     backgroundAudioService.setControlHandlers({
