@@ -359,18 +359,21 @@ const MusicPlayer = () => {
       </div>
 
       {/* YouTube Player */}
-      <div className={currentVideoId ? 'px-4 mb-2' : 'h-0 overflow-hidden'}>
-        <div
-          ref={containerRef}
-          className="rounded-xl overflow-hidden shadow-lg border border-border min-h-[200px] bg-background"
-        />
-        {currentVideoId && isIOS && (
-          <p className="text-center text-xs text-primary mt-2 flex items-center justify-center gap-1">
-            <Info className="w-3 h-3" />
-            {texts.tapToPlay}
-          </p>
-        )}
-      </div>
+      {currentVideoId && (
+        <div className="px-4 mb-2">
+          <div
+            ref={containerRef}
+            className="rounded-xl overflow-hidden shadow-lg border border-border h-[200px] bg-background"
+          />
+          {isIOS && (
+            <p className="text-center text-xs text-primary mt-2 flex items-center justify-center gap-1">
+              <Info className="w-3 h-3" />
+              {texts.tapToPlay}
+            </p>
+          )}
+        </div>
+      )}
+
 
       <div ref={hiddenContainerRef} className="fixed bottom-0 left-0 w-px h-px opacity-[0.01] pointer-events-none -z-10" />
 
