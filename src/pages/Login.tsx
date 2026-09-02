@@ -555,7 +555,10 @@ const Login = () => {
  {/* Footer */}
  <div className="relative z-10 pb-6 px-6 text-center space-y-1.5">
  <p className="text-[9px] text-muted-foreground/30">
- {isUSA?'By signing up you agree to our terms':'Ao criar conta você concorda com nossos termos'}
+ {isUSA?'By signing up you agree to our terms and the ':'Ao criar conta você concorda com nossos termos e a '}
+ <Link to="/privacy" className="text-primary underline underline-offset-2">
+ {isUSA?'Privacy Policy':'Política de Privacidade'}
+ </Link>
  </p>
  <p className="text-[9px] text-muted-foreground/40 font-medium">
  © {new Date().getFullYear()} Mamãe Zen Premium
