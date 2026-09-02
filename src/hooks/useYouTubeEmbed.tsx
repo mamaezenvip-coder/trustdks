@@ -97,21 +97,34 @@ export const useYouTubeEmbed = () => {
    * O iframe nunca muda de pai (isso derrubava o áudio). Em vez disso, o host
    * fixo é posicionado exatamente sobre o container visível.
    */
+  const hideHost = useCallback(() => {
+    const host = document.getElementById(HOST_ID) as HTMLDivElement | null;
+    if (!host) return;
+    host.style.cssText =
+      'position:fixed;left:-320px;bottom:0;width:240px;height:135px;opacity:0.01;pointer-events:none;z-index:-1;overflow:hidden;';
+  }, []);
+
   const syncHostPosition = useCallback(() => {
     const host = getHost();
     if (!host) return;
 
     const target = containerRef.current;
     const rect = target?.getBoundingClientRect();
-    const visible = !!rect && rect.width > 4 && rect.height > 4;
+    const hasVideo = !!ytPlayer && !!state.currentVideoId;
+    const visible =
+      hasVideo &&
+      !!rect &&
+      rect.width > 4 &&
+      rect.height > 4 &&
+      rect.bottom > 0 &&
+      rect.top < window.innerHeight;
 
-    if (visible) {
+    if (visible && rect) {
       host.style.cssText = `position:fixed;left:${rect.left}px;top:${rect.top}px;width:${rect.width}px;height:${rect.height}px;opacity:1;pointer-events:auto;z-index:5;overflow:hidden;border-radius:12px;background:#000;`;
     } else {
-      host.style.cssText =
-        'position:fixed;left:-320px;bottom:0;width:240px;height:135px;opacity:0.01;pointer-events:none;z-index:-1;overflow:hidden;';
+      hideHost();
     }
-  }, []);
+  }, [hideHost, state.currentVideoId]);
 
   useEffect(() => {
     syncHostPosition();
@@ -127,8 +140,11 @@ export const useYouTubeEmbed = () => {
       window.removeEventListener('scroll', onChange, true);
       window.removeEventListener('resize', onChange);
       window.clearInterval(timer);
+      // Ao sair da aba de música o player volta a ficar oculto (áudio continua).
+      hideHost();
     };
-  }, [syncHostPosition, state.currentVideoId]);
+  }, [syncHostPosition, hideHost, state.currentVideoId]);
+
 
 
   const attachControlHandlers = useCallback(() => {
