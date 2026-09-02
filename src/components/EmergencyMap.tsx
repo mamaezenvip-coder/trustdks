@@ -489,11 +489,20 @@ const EmergencyMap = () => {
  <div className="flex gap-2">
  <Button 
  onClick={() => openInMaps(place)} 
- size="sm"variant="default"className="w-full">
+ size="sm"variant="default"className="flex-1">
  <Navigation className="w-3 h-3"/>
  {isUSA?"Directions":"Rotas"}
  </Button>
+ {hasPhone(place.phone) && (
+ <Button 
+ onClick={() => callPhone(place.phone)} 
+ size="sm"variant="outline"className="flex-1">
+ <Phone className="w-3 h-3"/>
+ {isUSA?"Call":"Ligar"}
+ </Button>
+)}
  </div>
+
  </div>
  </CardContent>
  </Card>
