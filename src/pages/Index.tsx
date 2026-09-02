@@ -215,9 +215,11 @@ const Index = () => {
        className="w-full max-w-sm h-auto object-contain drop-shadow-[0_0_25px_hsl(330_100%_60%/0.5)]"
      />
    </div>
-  <p className="text-muted-foreground text-sm font-medium px-4">
- {isUSA?'Premium motherhood app':'App premium de maternidade'}
+  <p className="px-4 text-base sm:text-lg font-extrabold tracking-tight leading-snug">
+ <span className="text-foreground">{isUSA?'Mamãe Zen system for ':'Sistema Mamãe Zen para '}</span>
+ <span className="text-primary drop-shadow-[0_0_12px_hsl(var(--primary)/0.55)]">{isUSA?'first-time moms':'mães de primeira viagem'}</span>
  </p>
+
  <a
  href="https://www.instagram.com/app_mamae_zen?igsh=bGlydG9udHp3aXhs"target="_blank"rel="noopener noreferrer"className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors">
  <Instagram className="w-5 h-5"/>
