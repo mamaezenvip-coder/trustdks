@@ -1,5 +1,6 @@
 import {createRoot} from"react-dom/client";
 import App from"./App.tsx";
+import {HelmetProvider} from"react-helmet-async";
 import"./index.css";
 
 const host = window.location.hostname;
@@ -15,4 +16,4 @@ if ('serviceWorker'in navigator && !isLovablePreview && !isEmbeddedPreview) {
 });
 }
 
-createRoot(document.getElementById("root")!).render(<App />);
+createRoot(document.getElementById("root")!).render(<HelmetProvider><App /></HelmetProvider>);
