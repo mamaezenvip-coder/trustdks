@@ -23,12 +23,13 @@ interface Emergency {
  isPublic?: boolean;
 }
 
-const EmergencyMap = () => {
- const {isUSA} = useCountry();
- const [userLocation, setUserLocation] = useState<Location | null>(null);
- const [loading, setLoading] = useState(false);
- const [nearbyPlaces, setNearbyPlaces] = useState<Emergency[]>([]);
- const [locationCity, setLocationCity] = useState<string>("");
+ const EmergencyMap = () => {
+  const {isUSA} = useCountry();
+  const [userLocation, setUserLocation] = useState<Location | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [nearbyPlaces, setNearbyPlaces] = useState<Emergency[]>([]);
+  const [locationCity, setLocationCity] = useState<string>("");
+  const [selectedDestination, setSelectedDestination] = useState<Emergency | null>(null);
 
  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
  const R = 6371;
@@ -287,17 +288,9 @@ const EmergencyMap = () => {
 );
 };
 
- const openInMaps = (place: Emergency) => {
- if (!place.lat ||!place.lng) {
- const query = encodeURIComponent(place.address);
- window.open(`https://www.google.com/maps/search/?api=1&query=${query}`,'_blank','noopener,noreferrer');
- return;
-}
-
- // Um único destino: evita abrir mapa duas vezes no Android.
- const mapsUrl =`https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lng}&travelmode=driving`;
- window.open(mapsUrl,'_blank','noopener,noreferrer');
-};
+  const openInMaps = (place: Emergency) => {
+    setSelectedDestination(place);
+  };
 
  const hasPhone = (phone: string) =>
  !!phone && phone!=="Não disponível"&& phone!=="Not available";
@@ -340,9 +333,16 @@ const EmergencyMap = () => {
  return badges;
 };
 
- return (
- <div className="space-y-4">
- <Card className="bg-gradient-to-br from-primary/20 via-secondary/20 to-accent/20 border-2 border-primary/30">
+  return (
+  <>
+  <RouteMapDialog
+    destination={selectedDestination}
+    origin={userLocation}
+    open={selectedDestination !== null}
+    onOpenChange={(open) => { if (!open) setSelectedDestination(null); }}
+  />
+  <div className="space-y-4">
+  <Card className="bg-card border-2 border-primary/30">
  <CardHeader className="pb-3">
  <div className="flex items-center gap-2">
  <Hospital className="w-5 h-5 text-primary"/>
@@ -457,8 +457,8 @@ const EmergencyMap = () => {
 
  {/* Lista de Hospitais e Clínicas */}
  <div className="space-y-2">
- {nearbyPlaces.length > 0 && (
- <div className="bg-gradient-to-r from-primary/10 to-secondary/10 p-3 rounded-lg border border-primary/20">
+  {nearbyPlaces.length > 0 && (
+  <div className="bg-card p-3 rounded-lg border border-primary/20">
  <h3 className="text-sm font-bold text-foreground">
  {nearbyPlaces.length} {isUSA?"facilities found":"unidades encontradas"} {locationCity &&`- ${locationCity}`}
  </h3>
@@ -510,16 +510,17 @@ const EmergencyMap = () => {
 ))}
  </div>
 
- <Card className="bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20">
+ <Card className="bg-card border border-primary/20">
  <CardContent className="p-3">
  <p className="text-xs text-center leading-relaxed">
  <strong> {isUSA?"Tip":"Dica"}:</strong> {isUSA 
 ?"Save emergency numbers in your phone contacts. In emergencies with babies, every second counts!":"Salve os números de emergência na agenda do seu celular. Em situações de emergência com bebês, cada segundo conta!"}
  </p>
  </CardContent>
- </Card>
- </div>
-);
+  </Card>
+  </div>
+  </>
+ );
 };
 
 export default EmergencyMap;
