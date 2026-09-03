@@ -5,6 +5,7 @@ import {MapPin, Phone, Navigation, Hospital, Stethoscope, Loader2} from"lucide-r
 import {toast} from"sonner";
 import {Badge} from"@/components/ui/badge";
 import {useCountry} from"@/contexts/CountryContext";
+import RouteMapDialog, {type RouteDestination} from"@/components/RouteMapDialog";
 
 interface Location {
  lat: number;
