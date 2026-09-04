@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Card } from '@/components/ui/card';
-import { Sparkles, Moon, Sun, Sunset, Smile, Heart, BatteryLow, AlertCircle, PartyPopper, type LucideIcon } from 'lucide-react';
+import { Star, Moon, Sun, Sunset, Smile, Heart, BatteryLow, AlertCircle, PartyPopper, type LucideIcon } from 'lucide-react';
 import { useCountry } from '@/contexts/CountryContext';
 
 interface WelcomeGreetingProps {
@@ -71,7 +71,7 @@ const WelcomeGreeting = ({ userName = "Letícia", onMoodSelect }: WelcomeGreetin
               {greeting.text}
             </h1>
           </div>
-          <Sparkles className="w-5 h-5 text-primary animate-pulse" />
+          <Star className="w-5 h-5 text-primary animate-pulse" />
         </div>
 
         <div className="bg-background/60 rounded-xl p-3 border border-primary/40">

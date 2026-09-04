@@ -3,7 +3,7 @@ import {useNavigate} from'react-router-dom';
 import {supabase} from'@/integrations/supabase/client';
 import {Button} from'@/components/ui/button';
 import {Input} from'@/components/ui/input';
-import {Lock, Eye, EyeOff, Sparkles, ShieldCheck} from'lucide-react';
+import {Lock, Eye, EyeOff, Loader2, ShieldCheck} from'lucide-react';
 import {toast} from'sonner';
 import mamaeZenLogo from'@/assets/mamae-zen-logo.png';
 
@@ -103,7 +103,7 @@ const ResetPassword = () => {
  onClick={handleUpdate}
  disabled={isSubmitting ||!hasSession}
  className="w-full h-14 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl gap-3">
- {isSubmitting? <Sparkles className="w-5 h-5 animate-spin"/>: <ShieldCheck className="w-5 h-5"/>}
+ {isSubmitting? <Loader2 className="w-5 h-5 animate-spin"/>: <ShieldCheck className="w-5 h-5"/>}
  {isSubmitting?'Salvando...':'Salvar nova senha'}
  </Button>
 

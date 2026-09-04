@@ -27,7 +27,7 @@ import TrialBanner from'@/components/TrialBanner';
 import FeatureRing, {type RingItem} from'@/components/FeatureRing';
 import {Tabs, TabsContent} from'@/components/ui/tabs';
 
-import {Baby, Music, Calendar, BookOpen, Moon, Milk, Sparkles, Pill, Brain, MapPin, Instagram, ShoppingBag, Cross, Bell, Heart, Lock, Key, LogOut, Shield} from'lucide-react';
+import {Baby, Music, Calendar, BookOpen, Moon, Milk, Pill, Brain, MapPin, Instagram, ShoppingBag, Cross, Bell, Heart, Lock, Key, LogOut, Shield} from'lucide-react';
 import mamaeZenLogo from'@/assets/mamae-zen-logo.png';
 import mamaeZenBrand from'@/assets/mamae-zen-banner.png.asset.json';
 import {toast} from'sonner';

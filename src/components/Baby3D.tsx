@@ -247,7 +247,7 @@ const AmnioticSac = ({week}: {week: number}) => {
  return (
  <Sphere ref={meshRef} args={[scale, 64, 64]}>
  <meshStandardMaterial
- color="#c084fc"transparent
+ color="#ff2d8a"transparent
  opacity={0.15}
  roughness={0.1}
  metalness={0.4}
@@ -271,7 +271,7 @@ const UterusWall = () => {
  return (
  <Sphere ref={meshRef} args={[2.8, 64, 64]}>
  <meshStandardMaterial
- color="#ec4899"transparent
+ color="#ff2d8a"transparent
  opacity={0.25}
  roughness={0.2}
  metalness={0.3}
@@ -316,7 +316,7 @@ const Particles = () => {
  </bufferGeometry>
  <pointsMaterial
  size={0.04}
- color="#f0abfc"transparent
+ color="#ffd6e7"transparent
  opacity={0.7}
  sizeAttenuation
  />
@@ -330,9 +330,9 @@ const Scene = ({week}: {week: number}) => {
  <>
  {/* Iluminação */}
  <ambientLight intensity={0.6} color="#ffffff"/>
- <pointLight position={[10, 10, 10]} intensity={1.2} color="#ec4899"/>
- <pointLight position={[-10, -10, -10]} intensity={0.8} color="#a855f7"/>
- <pointLight position={[0, 10, 0]} intensity={0.6} color="#f472b6"/>
+ <pointLight position={[10, 10, 10]} intensity={1.2} color="#ff2d8a"/>
+ <pointLight position={[-10, -10, -10]} intensity={0.8} color="#ff2d8a"/>
+ <pointLight position={[0, 10, 0]} intensity={0.6} color="#ff7cb3"/>
  <spotLight
  position={[0, 5, 8]}
  angle={0.6}
@@ -373,7 +373,7 @@ export const Baby3D = ({week}: Baby3DProps) => {
  return (
  <div 
  className="relative w-full h-80 rounded-2xl overflow-hidden border-2 border-primary/50 shadow-2xl"style={{
- background:'linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--primary)/0.15) 30%, hsl(var(--primary)/0.25) 60%, #4c1d95 100%)',
+ background:'linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--primary)/0.15) 30%, hsl(var(--primary)/0.25) 60%, #140008 100%)',
  boxShadow:'0 25px 50px -12px rgba(168, 85, 247, 0.4), inset 0 0 80px rgba(236, 72, 153, 0.1)'}}
  >
  <Canvas
@@ -381,8 +381,8 @@ export const Baby3D = ({week}: Baby3DProps) => {
  gl={{alpha: false, antialias: true}}
  dpr={[1, 2]}
  >
- <color attach="background"args={['#1a0a2e']} />
- <fog attach="fog"args={['#1a0a2e', 5, 15]} />
+ <color attach="background"args={['#080008']} />
+ <fog attach="fog"args={['#080008', 5, 15]} />
  <Scene week={week} />
  </Canvas>
  
@@ -398,7 +398,7 @@ export const Baby3D = ({week}: Baby3DProps) => {
  {/* Indicador de semana */}
  <div 
  className="absolute bottom-4 left-1/2 -translate-x-1/2 text-foreground px-6 py-2 rounded-full text-sm font-bold"style={{
- background:'linear-gradient(90deg, #ec4899 0%, #a855f7 50%, #6366f1 100%)',
+ background:'linear-gradient(90deg, #ff2d8a 0%, #ff7cb3 100%)',
  boxShadow:'0 10px 30px -5px rgba(168, 85, 247, 0.5)'}}
  >
  {week} semanas 
