@@ -5,6 +5,7 @@ import {Button} from'@/components/ui/button';
 import {Card} from'@/components/ui/card';
 import {toast} from'sonner';
 import {Badge} from'@/components/ui/badge';
+import RouteMapDialog from"@/components/RouteMapDialog";
 
 interface Pharmacy {
  id: string;
@@ -21,6 +22,7 @@ const PharmacyMap = () => {
  const [pharmacies, setPharmacies] = useState<Pharmacy[]>([]);
  const [loading, setLoading] = useState(false);
  const [isActivated, setIsActivated] = useState(false);
+ const [selectedPharmacy, setSelectedPharmacy] = useState<Pharmacy | null>(null);
 
  const getCurrentLocation = () => {
  if (!isActivated) {
@@ -158,17 +160,23 @@ const PharmacyMap = () => {
 };
 
  const openInMaps = (pharmacy: Pharmacy) => {
- const url =`https://www.google.com/maps/dir/?api=1&destination=${pharmacy.lat},${pharmacy.lng}`;
- window.open(url,'_blank');
+ setSelectedPharmacy(pharmacy);
 };
 
  return (
+ <>
+ <RouteMapDialog
+   destination={selectedPharmacy}
+   origin={userLocation}
+   open={selectedPharmacy !== null}
+   onOpenChange={(open) => { if (!open) setSelectedPharmacy(null); }}
+ />
  <div className="space-y-4">
  {!isActivated? (
- <Card className="border-0 shadow-lg bg-gradient-to-br from-primary/10 to-secondary/10">
+ <Card className="border-0 shadow-lg bg-card">
  <div className="p-8 text-center space-y-6">
  <div className="flex justify-center">
- <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg">
+ <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center shadow-lg">
  <MapPin className="w-10 h-10 text-foreground"/>
  </div>
  </div>
@@ -185,7 +193,7 @@ const PharmacyMap = () => {
 
  <Button 
  onClick={getCurrentLocation}
- size="lg"className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-primary-foreground font-semibold py-6 shadow-lg">
+ size="lg"className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-6 shadow-lg">
  <MapPin className="w-5 h-5 mr-2"/>
  {isUSA?'Activate Location':'Ativar Localização'}
  </Button>
@@ -197,7 +205,7 @@ const PharmacyMap = () => {
  </div>
  </Card>
 ): (
- <Card className="border-0 shadow-lg bg-gradient-to-br from-primary/10 to-secondary/10">
+ <Card className="border-0 shadow-lg bg-card">
  <div className="p-6 space-y-4">
  <div className="flex items-center justify-between">
  <div className="flex items-center gap-2 text-primary">

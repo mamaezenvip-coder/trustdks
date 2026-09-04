@@ -1,6 +1,6 @@
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from"@/components/ui/card";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from"@/components/ui/accordion";
-import {Heart, Brain, Sparkles, Eye, Ear, Hand} from"lucide-react";
+import {Heart, Brain, Lightbulb, Eye, Ear, Hand} from"lucide-react";
 import {Badge} from"@/components/ui/badge";
 
 const AutismGuide = () => {
@@ -129,7 +129,7 @@ const AutismGuide = () => {
  <Card className="bg-card/50 border-primary/30">
  <CardHeader className="pb-3">
  <div className="flex items-center gap-2">
- <Sparkles className="w-5 h-5 text-primary"/>
+ <Lightbulb className="w-5 h-5 text-primary"/>
  <CardTitle className="text-base text-foreground">Estratégias de Apoio</CardTitle>
  </div>
  <CardDescription className="text-xs text-muted-foreground">

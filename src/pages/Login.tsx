@@ -5,7 +5,7 @@ import {useCountry} from'@/contexts/CountryContext';
 import {supabase} from'@/integrations/supabase/client';
 import {Button} from'@/components/ui/button';
 import {Input} from'@/components/ui/input';
-import {Shield, Star, Key, Sparkles, Mail, Lock, UserPlus, LogIn, Eye, EyeOff} from'lucide-react';
+import {Shield, Star, Key, Loader2, Mail, Lock, UserPlus, LogIn, Eye, EyeOff} from'lucide-react';
 import mamaeZenLogo from'@/assets/mamae-zen-logo.png';
 import previewGuias from'@/assets/preview-guias.png';
 import previewMusicas from'@/assets/preview-musicas.png';
@@ -460,7 +460,7 @@ const Login = () => {
  disabled={isSubmitting}
  className="w-full h-14 bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-base rounded-xl transition-all duration-200 active:scale-[0.98] disabled:opacity-70 gap-3"size="lg">
  {isSubmitting? (
- <Sparkles className="w-5 h-5 animate-spin"/>
+ <Loader2 className="w-5 h-5 animate-spin"/>
 ): mode ==='signup'? (
  <UserPlus className="w-5 h-5"/>
 ): (

@@ -14,7 +14,7 @@ import {
   Lightbulb,
   Utensils,
   Snowflake,
-  Sparkles,
+  Utensils as TasteIcon,
   ListChecks,
 } from 'lucide-react';
 import { guideImages, type GuideChapter } from '@/data/guideContent';
@@ -153,7 +153,7 @@ const ChapterDialog = ({ chapter, open, onOpenChange }: ChapterDialogProps) => {
 
                 <div className="rounded-xl border border-primary/30 bg-primary/5 p-4">
                   <h5 className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-primary mb-2">
-                    <Sparkles className="w-3.5 h-3.5" />
+                    <TasteIcon className="w-3.5 h-3.5" />
                     Degustação
                   </h5>
                   <p className="text-sm text-foreground/85 leading-relaxed">{recipe.tasting}</p>

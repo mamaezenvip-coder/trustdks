@@ -6,7 +6,7 @@ import {ScrollArea} from'@/components/ui/scroll-area';
 import {Button} from'@/components/ui/button';
 import {Input} from'@/components/ui/input';
 import {
- MessageSquare, Send, X, ArrowLeft, Sparkles,
+ MessageSquare, Send, X, ArrowLeft, ShieldCheck,
  Stethoscope, Brain, Heart, Baby, Apple
 } from'lucide-react';
 import {toast} from'sonner';
@@ -251,7 +251,7 @@ const SupportChat = () => {
 ): (
  <div className="flex flex-col">
  <div className="flex items-center gap-2">
- <Sparkles className="w-5 h-5 text-primary"/>
+ <ShieldCheck className="w-5 h-5 text-primary"/>
  <p className="text-base font-bold text-foreground">
  {isUSA?'Private Care':'Atendimento Particular'}
  </p>
