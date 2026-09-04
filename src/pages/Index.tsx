@@ -238,20 +238,6 @@ const Index = () => {
 )}
  </div>
 
- {/* User info & logout */}
- <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground pt-1">
- {isAdmin && (
- <Link to="/admin">
- <Button variant="ghost"size="sm"className="h-7 px-2 text-[11px] rounded-full border border-primary/40 text-primary hover:bg-primary/10">
- <Shield className="w-3 h-3 mr-1"/> Admin
- </Button>
- </Link>
- )}
- <span className="truncate max-w-[180px] text-foreground/80 font-medium tracking-wide">Hemerson Deckson</span>
- <Button variant="ghost"size="icon"onClick={signOut} className="h-7 w-7 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full">
- <LogOut className="w-3.5 h-3.5"/>
- </Button>
- </div>
  </div>
 
  {/* Theme Selector */}
