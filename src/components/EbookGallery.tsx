@@ -5,7 +5,11 @@ import {BookOpen, Download, Eye} from'lucide-react';
 import {Dialog, DialogContent, DialogHeader, DialogTitle} from'@/components/ui/dialog';
 import {useCountry} from'@/contexts/CountryContext';
 
-import defaultCover from'@/assets/ebook-default-cover.png';
+import cover1 from'@/assets/ebook-cover-1.jpg';
+import cover2 from'@/assets/ebook-cover-2.jpg';
+import cover3 from'@/assets/ebook-cover-3.jpg';
+import cover4 from'@/assets/ebook-cover-4.jpg';
+import cover5 from'@/assets/ebook-cover-5.jpg';
 
 interface Ebook {
  id: number;
