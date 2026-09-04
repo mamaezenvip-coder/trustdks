@@ -27,12 +27,13 @@ import TrialBanner from'@/components/TrialBanner';
 import FeatureRing, {type RingItem} from'@/components/FeatureRing';
 import {Tabs, TabsContent} from'@/components/ui/tabs';
 
-import {Baby, Music, Calendar, BookOpen, Moon, Milk, Pill, Brain, MapPin, Instagram, ShoppingBag, Cross, Bell, Heart, Lock, Key, LogOut, Shield} from'lucide-react';
+import {Baby, Music, Calendar, BookOpen, Moon, Milk, Pill, Brain, MapPin, Instagram, ShoppingBag, Cross, Bell, Heart, Lock, Key, LogOut, Shield, MoreVertical} from'lucide-react';
 import mamaeZenLogo from'@/assets/mamae-zen-logo.png';
 import mamaeZenBrand from'@/assets/mamae-zen-banner.png.asset.json';
 import {toast} from'sonner';
 import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} from'@/components/ui/dialog';
 import {Input} from'@/components/ui/input';
+import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger} from'@/components/ui/dropdown-menu';
 
 const LOCKED_TABS = ['sounds','emergency','pregnancy'];
 
