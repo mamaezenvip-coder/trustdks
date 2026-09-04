@@ -246,8 +246,10 @@ const Index = () => {
  <Shield className="w-3 h-3 mr-1"/> Admin
  </Button>
  </Link>
-)}
- <span className="truncate max-w-[180px]">{user?.email}</span>
+ )}
+ <span className="truncate max-w-[220px] text-foreground/80 font-medium tracking-wide">
+ {isUSA ? 'All rights reserved to JULIA BARON MOTHER OF THREE BOYS' : 'Todos os direitos reservados para JULIA BARON MÃE DE TRÊS MENINAS'}
+ </span>
  <Button variant="ghost"size="icon"onClick={signOut} className="h-7 w-7 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full">
  <LogOut className="w-3.5 h-3.5"/>
  </Button>
