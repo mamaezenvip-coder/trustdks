@@ -306,8 +306,9 @@ const PharmacyMap = () => {
  </div>
  </Card>
 )}
- </div>
-);
+  </div>
+ </>
+ );
 };
 
 export default PharmacyMap;
