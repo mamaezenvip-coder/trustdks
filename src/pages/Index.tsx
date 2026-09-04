@@ -204,7 +204,34 @@ const Index = () => {
  </Dialog>
 
  <div className="min-h-screen bg-gradient-to-br from-[hsl(var(--bg-gradient-start))] via-[hsl(var(--bg-gradient-middle))] to-[hsl(var(--bg-gradient-end))] transition-colors duration-500">
- <div className="w-full max-w-md mx-auto p-4 space-y-6">
+ <div className="relative w-full max-w-md mx-auto p-4 space-y-6">
+ {/* Menu superior (3 pontinhos) */}
+ <div className="absolute right-3 top-3 z-30">
+ <DropdownMenu>
+ <DropdownMenuTrigger asChild>
+ <Button
+ variant="ghost"
+ size="icon"
+ aria-label={isUSA?'Menu':'Menu'}
+ className="h-9 w-9 rounded-full bg-background/70 backdrop-blur border border-primary/40 text-primary hover:bg-primary/15 shadow-[0_0_14px_-4px_hsl(var(--primary)/0.6)]">
+ <MoreVertical className="w-4 h-4"/>
+ </Button>
+ </DropdownMenuTrigger>
+ <DropdownMenuContent align="end"className="w-48 bg-background/95 backdrop-blur border-primary/30">
+ {isAdmin && (
+ <>
+ <DropdownMenuItem asChild className="cursor-pointer text-primary focus:text-primary">
+ <Link to="/admin"><Shield className="w-4 h-4 mr-2"/> Admin</Link>
+ </DropdownMenuItem>
+ <DropdownMenuSeparator className="bg-primary/20"/>
+ </>
+ )}
+ <DropdownMenuItem onClick={signOut} className="cursor-pointer text-destructive focus:text-destructive">
+ <LogOut className="w-4 h-4 mr-2"/> {isUSA?'Sign out':'Sair'}
+ </DropdownMenuItem>
+ </DropdownMenuContent>
+ </DropdownMenu>
+ </div>
  {/* Header */}
  <div className="text-center space-y-2 animate-fade-in pt-2">
    <div className="flex items-center justify-center mb-1 -mx-4">
