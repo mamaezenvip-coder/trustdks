@@ -190,12 +190,10 @@ const EbookGallery = () => {
  {readingEbook? (isUSA? readingEbook.titleEN: readingEbook.title):''}
  </DialogTitle>
  </DialogHeader>
- {readingEbook && (
- <iframe
- src={`${readingEbook.file}#toolbar=0&navpanes=0&view=FitH`}
- title={isUSA? readingEbook.titleEN: readingEbook.title}
- className="w-full h-full bg-black border-0"
- />
+  {readingEbook && (
+  <div className="w-full h-full min-h-0">
+  <PdfReader file={readingEbook.file}/>
+  </div>
 )}
  </DialogContent>
  </Dialog>
