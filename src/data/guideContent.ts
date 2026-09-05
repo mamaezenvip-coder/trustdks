@@ -1,3 +1,18 @@
+import recipeImg1 from '@/assets/recipe-1.jpg';
+import recipeImg2 from '@/assets/recipe-2.jpg';
+import recipeImg3 from '@/assets/recipe-3.jpg';
+import recipeImg4 from '@/assets/recipe-4.jpg';
+import recipeImg5 from '@/assets/recipe-5.jpg';
+import recipeImg6 from '@/assets/recipe-6.jpg';
+import recipeImg7 from '@/assets/recipe-7.jpg';
+import recipeImg8 from '@/assets/recipe-8.jpg';
+import recipeImg9 from '@/assets/recipe-9.jpg';
+import recipeImg10 from '@/assets/recipe-10.jpg';
+import recipeImg11 from '@/assets/recipe-11.jpg';
+import recipeImg12 from '@/assets/recipe-12.jpg';
+import recipeImg13 from '@/assets/recipe-13.jpg';
+import recipeImg14 from '@/assets/recipe-14.jpg';
+import recipeImg15 from '@/assets/recipe-15.jpg';
 import guideNutrition from '@/assets/guide-nutrition.jpg';
 import guideHydration from '@/assets/guide-hydration.jpg';
 import guideBreastfeeding from '@/assets/guide-breastfeeding.jpg';
@@ -32,6 +47,24 @@ export const guideImages = {
   focus: guideFocus,
 };
 
+
+export const recipeImages: Record<number, string> = {
+  1: recipeImg1,
+  2: recipeImg2,
+  3: recipeImg3,
+  4: recipeImg4,
+  5: recipeImg5,
+  6: recipeImg6,
+  7: recipeImg7,
+  8: recipeImg8,
+  9: recipeImg9,
+  10: recipeImg10,
+  11: recipeImg11,
+  12: recipeImg12,
+  13: recipeImg13,
+  14: recipeImg14,
+  15: recipeImg15,
+};
 
 export type GuideImageKey = keyof typeof guideImages;
 
