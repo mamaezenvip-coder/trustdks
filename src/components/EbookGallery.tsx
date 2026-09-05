@@ -4,6 +4,7 @@ import {Button} from'@/components/ui/button';
 import {BookOpen, Eye, BookOpenCheck} from'lucide-react';
 import {Dialog, DialogContent, DialogHeader, DialogTitle} from'@/components/ui/dialog';
 import {useCountry} from'@/contexts/CountryContext';
+import PdfReader from'@/components/PdfReader';
 
 import cover1 from'@/assets/ebook-cover-1.jpg';
 import cover2 from'@/assets/ebook-cover-2.jpg';
@@ -183,18 +184,16 @@ const EbookGallery = () => {
 
  {/* Leitor integrado */}
  <Dialog open={!!readingEbook} onOpenChange={() => setReadingEbook(null)}>
- <DialogContent className="max-w-3xl w-[calc(100vw-1rem)] h-[92vh] p-0 gap-0 overflow-hidden bg-background border-primary/40">
+ <DialogContent className="max-w-3xl w-[calc(100vw-1rem)] h-[92vh] p-0 gap-0 overflow-hidden bg-background border-primary/40 flex flex-col">
  <DialogHeader className="px-4 py-3 border-b border-primary/30 bg-card/80 backdrop-blur">
  <DialogTitle className="text-sm font-bold text-foreground pr-8 truncate">
  {readingEbook? (isUSA? readingEbook.titleEN: readingEbook.title):''}
  </DialogTitle>
  </DialogHeader>
- {readingEbook && (
- <iframe
- src={`${readingEbook.file}#toolbar=0&navpanes=0&view=FitH`}
- title={isUSA? readingEbook.titleEN: readingEbook.title}
- className="w-full h-full bg-black border-0"
- />
+  {readingEbook && (
+  <div className="w-full h-full min-h-0">
+  <PdfReader file={readingEbook.file}/>
+  </div>
 )}
  </DialogContent>
  </Dialog>
