@@ -1,7 +1,7 @@
 import {useState} from'react';
 import {Card} from'@/components/ui/card';
 import {Button} from'@/components/ui/button';
-import {BookOpen, Download, Eye} from'lucide-react';
+import {BookOpen, Eye, BookOpenCheck, X} from'lucide-react';
 import {Dialog, DialogContent, DialogHeader, DialogTitle} from'@/components/ui/dialog';
 import {useCountry} from'@/contexts/CountryContext';
 
@@ -84,13 +84,7 @@ const ebooks: Ebook[] = [
 const EbookGallery = () => {
  const {isUSA} = useCountry();
  const [selectedEbook, setSelectedEbook] = useState<Ebook | null>(null);
-
- const handleDownload = (ebook: Ebook) => {
- const link = document.createElement('a');
- link.href = ebook.file;
- link.download = ebook.file.split('/').pop() ||'ebook.pdf';
- link.click();
-};
+ const [readingEbook, setReadingEbook] = useState<Ebook | null>(null);
 
  return (
  <div className="space-y-4">
@@ -103,7 +97,7 @@ const EbookGallery = () => {
  {isUSA?'E-book Gallery':'Galeria de E-books'}
  </h3>
  <p className="text-xs text-muted-foreground">
- {isUSA?'Tap to view and download':'Toque para ver e baixar'}
+ {isUSA?'Tap to read inside the app':'Toque para ler dentro do app'}
  </p>
  </div>
  </div>
@@ -172,14 +166,35 @@ const EbookGallery = () => {
  {isUSA? selectedEbook.descriptionEN: selectedEbook.description}
  </p>
  <Button
- onClick={() => handleDownload(selectedEbook)}
- className="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-primary-foreground font-semibold rounded-xl"size="lg"style={{boxShadow:'0 0 20px hsl(330 85% 60% / 0.3)'}}
+ onClick={() => {
+ setReadingEbook(selectedEbook);
+ setSelectedEbook(null);
+}}
+ className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl"size="lg"style={{boxShadow:'0 0 20px hsl(var(--primary) / 0.35)'}}
  >
- <Download className="w-4 h-4 mr-2"/>
- {isUSA?'Download E-book':'Baixar E-book'}
+ <BookOpenCheck className="w-4 h-4 mr-2"/>
+ {isUSA?'Read in the app':'Ler no aplicativo'}
  </Button>
  </div>
  </>
+)}
+ </DialogContent>
+ </Dialog>
+
+ {/* Leitor integrado */}
+ <Dialog open={!!readingEbook} onOpenChange={() => setReadingEbook(null)}>
+ <DialogContent className="max-w-3xl w-[calc(100vw-1rem)] h-[92vh] p-0 gap-0 overflow-hidden bg-background border-primary/40">
+ <DialogHeader className="px-4 py-3 border-b border-primary/30 bg-card/80 backdrop-blur">
+ <DialogTitle className="text-sm font-bold text-foreground pr-8 truncate">
+ {readingEbook? (isUSA? readingEbook.titleEN: readingEbook.title):''}
+ </DialogTitle>
+ </DialogHeader>
+ {readingEbook && (
+ <iframe
+ src={`${readingEbook.file}#toolbar=0&navpanes=0&view=FitH`}
+ title={isUSA? readingEbook.titleEN: readingEbook.title}
+ className="w-full h-full bg-black border-0"
+ />
 )}
  </DialogContent>
  </Dialog>
