@@ -4,6 +4,7 @@ import {Button} from'@/components/ui/button';
 import {BookOpen, Eye, BookOpenCheck} from'lucide-react';
 import {Dialog, DialogContent, DialogHeader, DialogTitle} from'@/components/ui/dialog';
 import {useCountry} from'@/contexts/CountryContext';
+import PdfReader from'@/components/PdfReader';
 
 import cover1 from'@/assets/ebook-cover-1.jpg';
 import cover2 from'@/assets/ebook-cover-2.jpg';
