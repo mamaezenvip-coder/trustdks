@@ -17,7 +17,7 @@ import {
   Utensils as TasteIcon,
   ListChecks,
 } from 'lucide-react';
-import { guideImages, type GuideChapter } from '@/data/guideContent';
+import { guideImages, recipeImages, type GuideChapter } from '@/data/guideContent';
 
 interface ChapterDialogProps {
   chapter: GuideChapter | null;
@@ -94,6 +94,17 @@ const ChapterDialog = ({ chapter, open, onOpenChange }: ChapterDialogProps) => {
 
             {/* Recipe */}
             <div className="animate-fade-in rounded-2xl border border-primary/40 overflow-hidden">
+              <div className="relative h-40 sm:h-48 overflow-hidden border-b border-primary/30">
+                <img
+                  src={recipeImages[chapter.id]}
+                  alt={recipe.name}
+                  loading="lazy"
+                  width={768}
+                  height={512}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-card via-card/30 to-transparent" />
+              </div>
               <div className="bg-primary/15 px-4 sm:px-5 py-4 border-b border-primary/30">
                 <span className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-primary mb-1">
                   <Utensils className="w-3.5 h-3.5" />
