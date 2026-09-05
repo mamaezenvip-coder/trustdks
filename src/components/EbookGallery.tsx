@@ -184,7 +184,7 @@ const EbookGallery = () => {
 
  {/* Leitor integrado */}
  <Dialog open={!!readingEbook} onOpenChange={() => setReadingEbook(null)}>
- <DialogContent className="max-w-3xl w-[calc(100vw-1rem)] h-[92vh] p-0 gap-0 overflow-hidden bg-background border-primary/40">
+ <DialogContent className="max-w-3xl w-[calc(100vw-1rem)] h-[92vh] p-0 gap-0 overflow-hidden bg-background border-primary/40 flex flex-col">
  <DialogHeader className="px-4 py-3 border-b border-primary/30 bg-card/80 backdrop-blur">
  <DialogTitle className="text-sm font-bold text-foreground pr-8 truncate">
  {readingEbook? (isUSA? readingEbook.titleEN: readingEbook.title):''}
