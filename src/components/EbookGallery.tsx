@@ -1,7 +1,7 @@
 import {useState} from'react';
 import {Card} from'@/components/ui/card';
 import {Button} from'@/components/ui/button';
-import {BookOpen, Eye, BookOpenCheck, X} from'lucide-react';
+import {BookOpen, Eye, BookOpenCheck} from'lucide-react';
 import {Dialog, DialogContent, DialogHeader, DialogTitle} from'@/components/ui/dialog';
 import {useCountry} from'@/contexts/CountryContext';
 
