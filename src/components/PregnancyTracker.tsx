@@ -586,7 +586,7 @@ export const PregnancyTracker = () => {
  <Button
  onClick={handleSubmit}
  disabled={!lastPeriodDate}
- className="w-full py-6 bg-gradient-to-r from-primary to-primary/70 hover:from-primary/90 hover:to-secondary/90 text-primary-foreground font-semibold rounded-xl shadow-lg shadow-primary/40 transition-all">
+ className="w-full py-6 bg-gradient-to-r from-primary to-primary/70 hover:from-primary/90 hover:to-primary/60 text-primary-foreground font-semibold rounded-xl shadow-lg shadow-primary/40 transition-all">
  <Calendar className="w-5 h-5 mr-2"/>
  {isPT?'Calcular Idade Gestacional':'Calculate Gestational Age'}
  </Button>
