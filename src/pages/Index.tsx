@@ -244,7 +244,7 @@ const Index = () => {
      />
    </div>
   <p className="px-4 text-base sm:text-lg font-extrabold tracking-tight leading-snug">
- <span className="text-foreground">{isUSA?'Mamãe Zen system for ':'Sistema Mamãe Zen para '}</span>
+ <span className="text-foreground">{isUSA?'System for ':'Sistema para '}</span>
  <span className="text-primary drop-shadow-[0_0_12px_hsl(var(--primary)/0.55)]">{isUSA?'first-time moms':'mães de primeira viagem'}</span>
  </p>
 
