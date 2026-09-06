@@ -72,7 +72,7 @@ const AutismGuide = () => {
 
  return (
  <div className="space-y-4">
- <Card className="bg-gradient-to-br from-primary/20 via-secondary/20 to-accent/20 border-2 border-primary/30">
+ <Card className="bg-gradient-to-br from-primary/12 to-primary/5 border-2 border-primary/30">
  <CardHeader className="pb-3">
  <div className="flex items-center gap-2">
  <Brain className="w-5 h-5 text-primary animate-pulse"/>
@@ -116,9 +116,9 @@ const AutismGuide = () => {
  </div>
 );
 })}
- <div className="bg-accent/20 p-3 rounded-lg border border-accent/30">
+ <div className="bg-primary/10 p-3 rounded-lg border border-primary/30">
  <p className="text-xs text-foreground/80">
- <strong className="text-accent-foreground"> Importante:</strong> Estes são apenas sinais de alerta. Somente um profissional pode fazer o diagnóstico. 
+ <strong className="text-foreground"> Importante:</strong> Estes são apenas sinais de alerta. Somente um profissional pode fazer o diagnóstico. 
  Se você notar alguns desses sinais, procure um neuropediatra.
  </p>
  </div>
@@ -147,7 +147,7 @@ const AutismGuide = () => {
  </div>
  </AccordionTrigger>
  <AccordionContent className="text-xs pb-3">
- <div className="p-3 rounded-lg border bg-secondary/20 border-secondary/30">
+ <div className="p-3 rounded-lg border bg-primary/10 border-primary/30">
  <ul className="space-y-2">
  {strategy.tips.map((tip, idx) => (
  <li key={idx} className="flex items-start gap-2 text-foreground/80">
@@ -189,7 +189,7 @@ const AutismGuide = () => {
  </CardContent>
  </Card>
 
- <Card className="bg-gradient-to-r from-primary/20 to-secondary/20 border-primary/30">
+ <Card className="bg-gradient-to-r from-primary/12 to-primary/5 border-primary/30">
  <CardContent className="p-4">
  <p className="text-xs text-center leading-relaxed text-foreground/80">
  <strong className="text-primary"> Lembre-se:</strong> Cada criança é única e se desenvolve no seu próprio ritmo. 
