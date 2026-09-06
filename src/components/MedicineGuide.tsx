@@ -12,13 +12,13 @@ const MedicineGuide = () => {
 
  return (
  <div className="space-y-4">
- <Card className="bg-gradient-to-br from-primary/20 to-accent/20 border-2 border-primary/30">
+ <Card className="bg-gradient-to-br from-primary/12 to-primary/5 border-2 border-primary/30">
  <CardHeader className="pb-3">
  <div className="flex items-center gap-2">
  <Pill className="w-5 h-5 text-primary"/>
  <CardTitle className="text-lg text-primary">{isUSA?'Medicine Guide':'Guia de Medicamentos'}</CardTitle>
  </div>
- <CardDescription className="text-sm font-medium bg-destructive/10 text-destructive dark:text-destructive-foreground p-2 rounded-lg border border-destructive/20 mt-2">
+ <CardDescription className="text-sm font-medium bg-primary/10 text-primary p-2 rounded-lg border border-primary/40 mt-2">
  {isUSA?"WARNING: Always consult a pediatrician before giving any medication to your baby":"ATENÇÃO: Sempre consulte um pediatra antes de administrar qualquer medicamento ao seu bebê"}
  </CardDescription>
  </CardHeader>
@@ -40,7 +40,7 @@ const MedicineGuide = () => {
  <div className="flex items-center gap-2">
  <Pill className="w-4 h-4 text-primary"/>
  <span className="font-semibold">{med.name}</span>
- <Badge variant="secondary"className="text-[10px] px-1.5 py-0">{med.age}</Badge>
+ <Badge variant="outline"className="text-[10px] px-1.5 py-0">{med.age}</Badge>
  </div>
  </AccordionTrigger>
  <AccordionContent className="text-xs space-y-2 pb-3">
@@ -52,13 +52,13 @@ const MedicineGuide = () => {
  <p className="font-semibold text-primary">{isUSA?"Dosage:":"Dosagem:"}</p>
  <p>{med.dosage}</p>
  </div>
- <div className="bg-accent/20 p-2 rounded-lg border border-accent/30">
- <p className="font-semibold text-accent-foreground"> {isUSA?"Important:":"Importante:"}</p>
+ <div className="bg-primary/10 p-2 rounded-lg border border-primary/30">
+ <p className="font-semibold text-foreground"> {isUSA?"Important:":"Importante:"}</p>
  <p className="text-foreground/80">{med.warning}</p>
  </div>
  {med.risks && (
- <div className="bg-destructive/10 p-2 rounded-lg border border-destructive/30">
- <p className="font-semibold text-destructive"> {isUSA?"Risks if misused:":"Riscos se usado errado:"}</p>
+ <div className="bg-primary/10 p-2 rounded-lg border border-primary/50">
+ <p className="font-semibold text-primary"> {isUSA?"Risks if misused:":"Riscos se usado errado:"}</p>
  <p className="text-foreground/80">{med.risks}</p>
  </div>
 )}
@@ -91,7 +91,7 @@ const MedicineGuide = () => {
  {med.safe? (
  <Badge className="text-[10px] px-1.5 py-0 bg-primary text-primary-foreground"> {isUSA?"Safe":"Seguro"}</Badge>
 ): (
- <Badge variant="destructive"className="text-[10px] px-1.5 py-0"> {isUSA?"Caution":"Cuidado"}</Badge>
+ <Badge variant="outline"className="text-[10px] px-1.5 py-0"> {isUSA?"Caution":"Cuidado"}</Badge>
 )}
  </div>
  </AccordionTrigger>
@@ -104,8 +104,8 @@ const MedicineGuide = () => {
  <p className="font-semibold text-primary">{isUSA?"Dosage:":"Dosagem:"}</p>
  <p>{med.dosage}</p>
  </div>
- <div className={`p-2 rounded-lg border ${med.safe?'bg-primary/10 border-primary/30':'bg-accent/20 border-accent/30'}`}>
- <p className={`font-semibold ${med.safe?'text-primary':'text-accent-foreground'}`}>
+ <div className={`p-2 rounded-lg border ${med.safe?'bg-primary/10 border-primary/30':'bg-primary/10 border-primary/30'}`}>
+ <p className={`font-semibold ${med.safe?'text-primary':'text-foreground'}`}>
  {med.safe?'':''} {isUSA?"Important:":"Importante:"}
  </p>
  <p className="text-foreground/80">
@@ -113,8 +113,8 @@ const MedicineGuide = () => {
  </p>
  </div>
  {med.risks && (
- <div className="bg-destructive/10 p-2 rounded-lg border border-destructive/30">
- <p className="font-semibold text-destructive"> {isUSA?"Risks if misused:":"Riscos se usado errado:"}</p>
+ <div className="bg-primary/10 p-2 rounded-lg border border-primary/50">
+ <p className="font-semibold text-primary"> {isUSA?"Risks if misused:":"Riscos se usado errado:"}</p>
  <p className="text-foreground/80">{med.risks}</p>
  </div>
 )}
@@ -149,13 +149,13 @@ const MedicineGuide = () => {
  <p className="font-semibold text-primary">{isUSA?"Home treatment:":"Tratamento em casa:"}</p>
  <p>{item.treatment}</p>
  </div>
- <div className="bg-accent/20 p-2 rounded-lg border border-accent/30">
- <p className="font-semibold text-accent-foreground"> {isUSA?"When to see a doctor:":"Quando procurar médico:"}</p>
+ <div className="bg-primary/10 p-2 rounded-lg border border-primary/30">
+ <p className="font-semibold text-foreground"> {isUSA?"When to see a doctor:":"Quando procurar médico:"}</p>
  <p className="text-foreground/80">{item.when}</p>
  </div>
  {item.risks && (
- <div className="bg-destructive/10 p-2 rounded-lg border border-destructive/30">
- <p className="font-semibold text-destructive"> {isUSA?"SERIOUS RISKS:":"RISCOS GRAVES:"}</p>
+ <div className="bg-primary/10 p-2 rounded-lg border border-primary/50">
+ <p className="font-semibold text-primary"> {isUSA?"SERIOUS RISKS:":"RISCOS GRAVES:"}</p>
  <p className="text-foreground/80">{item.risks}</p>
  </div>
 )}

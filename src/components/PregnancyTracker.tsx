@@ -409,8 +409,8 @@ const fetalDevelopmentData: Record<number, WeekData> = {
 
 const trimesterInfo = [
  {name:"1º Trimestre", weeks:"1-12", color:"from-primary to-primary/80"},
- {name:"2º Trimestre", weeks:"13-26", color:"from-secondary to-secondary/80"},
- {name:"3º Trimestre", weeks:"27-40", color:"from-accent to-accent/80"}
+ {name:"2º Trimestre", weeks:"13-26", color:"from-primary to-primary/70"},
+ {name:"3º Trimestre", weeks:"27-40", color:"from-primary to-primary/50"}
 ];
 
 export const PregnancyTracker = () => {
@@ -508,7 +508,7 @@ export const PregnancyTracker = () => {
  const weeks = [8, 12, 16, 20, 24, 28, 32, 36, 40];
  
  return (
- <Card className="p-4 bg-gradient-to-br from-primary/20 to-secondary/20 border-primary/30">
+ <Card className="p-4 bg-gradient-to-br from-primary/12 to-primary/5 border-primary/30">
  <h3 className="text-foreground font-semibold mb-4 flex items-center gap-2">
  <TrendingUp className="w-5 h-5 text-primary"/>
  {isPT?'Gráfico de Crescimento':'Growth Chart'}
@@ -523,7 +523,7 @@ export const PregnancyTracker = () => {
  <div 
  className={`w-full rounded-t-lg transition-all ${
  isCurrentWeek 
-?'bg-gradient-to-t from-primary to-primary/60 shadow-lg shadow-primary/50':'bg-gradient-to-t from-secondary to-secondary/60'}`}
+?'bg-gradient-to-t from-primary to-primary/60 shadow-lg shadow-primary/50':'bg-gradient-to-t from-primary/40 to-primary/20'}`}
  style={{height:`${heightPercent}%`}}
  />
  <span className="text-xs text-muted-foreground mt-1 font-medium">{week}</span>
@@ -541,9 +541,9 @@ export const PregnancyTracker = () => {
  if (showSetup) {
  return (
  <div className="space-y-4">
- <Card className="p-6 bg-gradient-to-br from-primary/20 via-secondary/20 to-accent/20 border-primary/30">
+ <Card className="p-6 bg-gradient-to-br from-primary/12 to-primary/5 border-primary/30">
  <div className="text-center mb-6">
- <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg shadow-primary/40">
+ <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-lg shadow-primary/40">
  <Baby className="w-8 h-8 text-primary-foreground"/>
  </div>
  <h2 className="text-xl font-bold text-foreground mb-2">
@@ -586,7 +586,7 @@ export const PregnancyTracker = () => {
  <Button
  onClick={handleSubmit}
  disabled={!lastPeriodDate}
- className="w-full py-6 bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-primary-foreground font-semibold rounded-xl shadow-lg shadow-primary/40 transition-all">
+ className="w-full py-6 bg-gradient-to-r from-primary to-primary/70 hover:from-primary/90 hover:to-secondary/90 text-primary-foreground font-semibold rounded-xl shadow-lg shadow-primary/40 transition-all">
  <Calendar className="w-5 h-5 mr-2"/>
  {isPT?'Calcular Idade Gestacional':'Calculate Gestational Age'}
  </Button>
@@ -600,7 +600,7 @@ export const PregnancyTracker = () => {
  <ScrollArea className="h-[calc(100vh-200px)]">
  <div className="space-y-4 pb-4">
  {/* Header com informações principais */}
- <Card className="p-4 bg-gradient-to-br from-primary/20 via-secondary/20 to-accent/20 border-primary/30">
+ <Card className="p-4 bg-gradient-to-br from-primary/12 to-primary/5 border-primary/30">
  <div className="flex justify-between items-start mb-4">
  <div>
  <p className="text-muted-foreground text-xs font-medium">
@@ -643,7 +643,7 @@ export const PregnancyTracker = () => {
  </Card>
 
  {/* Ilustração 3D do bebê */}
- <Card className="p-4 border-2 border-primary/30 shadow-xl shadow-primary/20 bg-gradient-to-br from-primary/10 to-secondary/10">
+ <Card className="p-4 border-2 border-primary/30 shadow-xl shadow-primary/20 bg-gradient-to-br from-primary/12 to-primary/5">
  <Suspense fallback={
  <div className="w-full h-72 flex items-center justify-center rounded-2xl bg-card">
  <div className="flex flex-col items-center gap-2">
@@ -727,8 +727,8 @@ export const PregnancyTracker = () => {
  <AccordionItem value="symptoms"className="border border-primary/30 rounded-lg px-3 bg-card">
  <AccordionTrigger className="hover:no-underline py-3">
  <div className="flex items-center gap-2">
- <div className="p-1.5 rounded-full bg-secondary/20">
- <Activity className="w-4 h-4 text-secondary-foreground"/>
+ <div className="p-1.5 rounded-full bg-primary/10">
+ <Activity className="w-4 h-4 text-primary"/>
  </div>
  <span className="font-semibold text-foreground">
  {isPT?'Sintomas Comuns da Mamãe':"Mom's Common Symptoms"}
@@ -775,8 +775,8 @@ export const PregnancyTracker = () => {
  <AccordionItem value="exams"className="border border-primary/30 rounded-lg px-3 bg-card">
  <AccordionTrigger className="hover:no-underline py-3">
  <div className="flex items-center gap-2">
- <div className="p-1.5 rounded-full bg-accent/20">
- <Stethoscope className="w-4 h-4 text-accent-foreground"/>
+ <div className="p-1.5 rounded-full bg-primary/10">
+ <Stethoscope className="w-4 h-4 text-foreground"/>
  </div>
  <span className="font-semibold text-foreground">
  {isPT?'Exames Recomendados':'Recommended Tests'}
@@ -787,7 +787,7 @@ export const PregnancyTracker = () => {
  <div className="space-y-2">
  {weekData.exams.map((exam, index) => (
  <div key={index} className="flex items-start gap-2">
- <span className="text-accent-foreground mt-0.5"></span>
+ <span className="text-foreground mt-0.5"></span>
  <span className="text-foreground/80 text-sm">{exam}</span>
  </div>
 ))}
@@ -820,13 +820,13 @@ export const PregnancyTracker = () => {
  </AccordionItem>
 
  {/* Sinais de Alerta */}
- <AccordionItem value="warnings"className="border border-destructive/30 rounded-lg px-3 bg-destructive/5">
+ <AccordionItem value="warnings"className="border border-primary/50 rounded-lg px-3 bg-primary/5">
  <AccordionTrigger className="hover:no-underline py-3">
  <div className="flex items-center gap-2">
- <div className="p-1.5 rounded-full bg-destructive/20">
- <AlertTriangle className="w-4 h-4 text-destructive"/>
+ <div className="p-1.5 rounded-full bg-primary/15">
+ <AlertTriangle className="w-4 h-4 text-primary"/>
  </div>
- <span className="font-semibold text-destructive">
+ <span className="font-semibold text-primary">
  {isPT?'Sinais de Alerta - Procure o Médico':'Warning Signs - See Doctor'}
  </span>
  </div>
@@ -835,12 +835,12 @@ export const PregnancyTracker = () => {
  <div className="space-y-2">
  {weekData.warnings.map((warning, index) => (
  <div key={index} className="flex items-start gap-2">
- <span className="text-destructive mt-0.5"></span>
+ <span className="text-primary mt-0.5"></span>
  <span className="text-foreground/80 text-sm">{warning}</span>
  </div>
 ))}
- <div className="mt-3 p-2 bg-destructive/10 rounded-lg border border-destructive/30">
- <p className="text-xs text-destructive font-medium">
+ <div className="mt-3 p-2 bg-primary/10 rounded-lg border border-primary/50">
+ <p className="text-xs text-primary font-medium">
  {isPT 
 ?'Em caso de qualquer sinal acima, procure atendimento médico imediatamente!':'If you experience any of the above, seek medical attention immediately!'}
  </p>
