@@ -40,7 +40,7 @@ const MedicineGuide = () => {
  <div className="flex items-center gap-2">
  <Pill className="w-4 h-4 text-primary"/>
  <span className="font-semibold">{med.name}</span>
- <Badge variant="outline"className="text-[10px] px-1.5 py-0">{med.age}</Badge>
+ <Badge variant="outline"className="text-[10px] px-1.5 py-0 border-primary/40 text-primary">{med.age}</Badge>
  </div>
  </AccordionTrigger>
  <AccordionContent className="text-xs space-y-2 pb-3">
@@ -91,7 +91,7 @@ const MedicineGuide = () => {
  {med.safe? (
  <Badge className="text-[10px] px-1.5 py-0 bg-primary text-primary-foreground"> {isUSA?"Safe":"Seguro"}</Badge>
 ): (
- <Badge variant="outline"className="text-[10px] px-1.5 py-0"> {isUSA?"Caution":"Cuidado"}</Badge>
+ <Badge variant="outline"className="text-[10px] px-1.5 py-0 border-primary/60 text-primary bg-primary/10"> {isUSA?"Caution":"Cuidado"}</Badge>
 )}
  </div>
  </AccordionTrigger>
