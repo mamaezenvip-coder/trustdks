@@ -87,6 +87,7 @@ export const useYouTubeEmbed = () => {
   const hiddenContainerRef = useRef<HTMLDivElement | null>(null);
   const volumeRef = useRef(state.volume);
   const userPausedRef = useRef(false);
+  const playTokenRef = useRef(0);
   volumeRef.current = state.volume;
 
 
