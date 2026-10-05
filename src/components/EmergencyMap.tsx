@@ -45,7 +45,7 @@ interface Emergency {
 
  const reverseGeocode = async (lat: number, lng: number): Promise<{city: string; region: string}> => {
  try {
- const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=10&addressdetails=1`);
+ const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=10&addressdetails=1`, { signal: AbortSignal.timeout(4000) });
  const data = await response.json();
  const city = data.address?.city || data.address?.town || data.address?.municipality || data.address?.village ||"";
  const region = data.address?.state || data.address?.region ||"";
@@ -59,7 +59,7 @@ interface Emergency {
  const searchNearbyHospitals = async (lat: number, lng: number, city: string, region: string) => {
  try {
  const radius = 15000; // 15km para cobrir toda a região metropolitana
-  const query =`[out:json][timeout:30];
+  const query =`[out:json][timeout:12];
  (
  node["amenity"="hospital"](around:${radius},${lat},${lng});
  way["amenity"="hospital"](around:${radius},${lat},${lng});
@@ -84,23 +84,24 @@ interface Emergency {
   'https://overpass.kumi.systems/api/interpreter',
   'https://overpass.openstreetmap.ru/api/interpreter'
  ];
+  // Consulta todos os servidores em paralelo: o primeiro que responder vence.
+  const controllers = endpoints.map(() => new AbortController());
+  const abortId = window.setTimeout(() => controllers.forEach((c) => c.abort()), 12000);
   let data: any = null;
-  let lastError: unknown = null;
-  for (const endpoint of endpoints) {
-  const controller = new AbortController();
-  const abortId = window.setTimeout(() => controller.abort(), 20000);
   try {
-  const response = await fetch(endpoint, {method:'POST', body: query, headers:{'Content-Type':'text/plain;charset=UTF-8'}, signal: controller.signal});
-  if (!response.ok) throw new Error(`Overpass ${response.status}`);
-  data = await response.json();
-  if (Array.isArray(data?.elements)) break;
- } catch (error) {
-  lastError = error;
- } finally {
-  window.clearTimeout(abortId);
- }
- }
-  if (!Array.isArray(data?.elements)) throw lastError || new Error('Overpass indisponível');
+   data = await (Promise as unknown as { any: <T>(p: Promise<T>[]) => Promise<T> }).any(endpoints.map(async (endpoint, i) => {
+    const response = await fetch(endpoint, {method:'POST', body: query, headers:{'Content-Type':'text/plain;charset=UTF-8'}, signal: controllers[i].signal});
+    if (!response.ok) throw new Error(`Overpass ${response.status}`);
+    const json = await response.json();
+    if (!Array.isArray(json?.elements)) throw new Error('Resposta inválida');
+    return json;
+   }));
+  } catch {
+   throw new Error('Overpass indisponível');
+  } finally {
+   window.clearTimeout(abortId);
+   controllers.forEach((c) => c.abort());
+  }
  
  const seen = new Set<string>();
  const healthUnits: Emergency[] = data.elements
@@ -235,19 +236,32 @@ interface Emergency {
 };
  setUserLocation(location);
  
- // Obter nome da cidade via reverse geocoding
- const {city, region} = await reverseGeocode(location.lat, location.lng);
+ // Cache de 10 min por área (~1 km) para abrir instantaneamente em novos cliques
+ const cacheKey = `mz-emerg-${location.lat.toFixed(2)}-${location.lng.toFixed(2)}`;
+ let cached: { t: number; name: string; list: Emergency[] } | null = null;
+ try { cached = JSON.parse(sessionStorage.getItem(cacheKey) || 'null'); } catch { cached = null; }
+ if (cached && Date.now() - cached.t < 600000 && cached.list?.length) {
+ setLocationCity(cached.name);
+ setNearbyPlaces(cached.list);
+ toast.success(isUSA ? `Found ${cached.list.length} health facilities nearby!` : `Encontradas ${cached.list.length} unidades de saúde!`);
+ return;
+ }
+
+ // Cidade e hospitais buscados em paralelo (a cidade nunca trava a busca)
+ const geoPromise = reverseGeocode(location.lat, location.lng);
+ const hospitalsPromise = searchNearbyHospitals(location.lat, location.lng, "", "");
+ const {city, region} = await geoPromise;
  const locationName = city && region?`${city} - ${region}`: (city || region || (isUSA?"Your location":"Sua localização"));
  setLocationCity(locationName);
  
- toast.info(`${isUSA?"Location":"Localização"}: ${locationName}`);
- 
- const hospitals = await searchNearbyHospitals(
- location.lat, 
- location.lng,
- city,
- region
-);
+ const suffix = city && region ? `${city} - ${region}` : (city || region);
+ const hospitals = (await hospitalsPromise).map((h) => ({
+ ...h,
+ address: (h.address || "").replace(/,\s*-\s*$/, "").replace(/[,\s-]+$/, "") + (suffix ? `, ${suffix}` : ""),
+ }));
+ if (hospitals.length > 0) {
+ try { sessionStorage.setItem(cacheKey, JSON.stringify({ t: Date.now(), name: locationName, list: hospitals })); } catch { /* storage cheio */ }
+ }
  
  if (hospitals.length > 0) {
  setNearbyPlaces(hospitals);

@@ -87,6 +87,7 @@ export const useYouTubeEmbed = () => {
   const hiddenContainerRef = useRef<HTMLDivElement | null>(null);
   const volumeRef = useRef(state.volume);
   const userPausedRef = useRef(false);
+  const playTokenRef = useRef(0);
   volumeRef.current = state.volume;
 
 
@@ -181,6 +182,7 @@ export const useYouTubeEmbed = () => {
 
   const play = useCallback(
     async (videoId: string, _showVisible: boolean = true, metadata?: YouTubeMetadata) => {
+      const token = ++playTokenRef.current; // "última ação vence"
       userPausedRef.current = false;
       setState((prev) => ({ ...prev, isLoading: true, currentVideoId: videoId }));
       getHost();
@@ -188,12 +190,17 @@ export const useYouTubeEmbed = () => {
 
 
       const YT = await loadYouTubeApi();
+      if (token !== playTokenRef.current) return; // usuário parou/trocou enquanto carregava
       if (!YT?.Player) {
         setState((prev) => ({ ...prev, isLoading: false }));
         return;
       }
 
       const finishStart = () => {
+        if (token !== playTokenRef.current) {
+          try { ytPlayer?.stopVideo?.(); } catch { /* noop */ }
+          return;
+        }
         setState((prev) => ({ ...prev, isLoading: false, isPlaying: true }));
         attachControlHandlers();
         backgroundAudioService.startAudio(videoId, metadata);
@@ -308,12 +315,20 @@ export const useYouTubeEmbed = () => {
 
   const stop = useCallback(() => {
     userPausedRef.current = true;
+    playTokenRef.current += 1; // cancela qualquer play() ainda carregando
     try {
-
-      ytPlayer?.stopVideo?.();
+      ytPlayer?.pauseVideo?.();
     } catch {
       /* noop */
     }
+    try {
+      ytPlayer?.stopVideo?.();
+    } catch {
+      // Player em estado inválido: destrói para garantir que o áudio pare.
+      try { ytPlayer?.destroy?.(); } catch { /* noop */ }
+      ytPlayer = null;
+    }
+    hideHost();
     backgroundAudioService.stopAudio();
     setState((prev) => ({
       isPlaying: false,
@@ -322,7 +337,7 @@ export const useYouTubeEmbed = () => {
       isLoading: false,
     }));
     syncHostPosition();
-  }, [syncHostPosition]);
+  }, [syncHostPosition, hideHost]);
 
   const resetPlayer = useCallback(() => {
     try {
