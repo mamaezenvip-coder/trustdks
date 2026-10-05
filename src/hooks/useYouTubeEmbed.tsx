@@ -337,7 +337,7 @@ export const useYouTubeEmbed = () => {
       isLoading: false,
     }));
     syncHostPosition();
-  }, [syncHostPosition]);
+  }, [syncHostPosition, hideHost]);
 
   const resetPlayer = useCallback(() => {
     try {
