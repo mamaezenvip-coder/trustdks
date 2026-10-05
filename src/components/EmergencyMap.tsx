@@ -254,7 +254,11 @@ interface Emergency {
  const locationName = city && region?`${city} - ${region}`: (city || region || (isUSA?"Your location":"Sua localização"));
  setLocationCity(locationName);
  
- const hospitals = await hospitalsPromise;
+ const suffix = city && region ? `${city} - ${region}` : (city || region);
+ const hospitals = (await hospitalsPromise).map((h) => ({
+ ...h,
+ address: (h.address || "").replace(/,\s*-\s*$/, "").replace(/[,\s-]+$/, "") + (suffix ? `, ${suffix}` : ""),
+ }));
  if (hospitals.length > 0) {
  try { sessionStorage.setItem(cacheKey, JSON.stringify({ t: Date.now(), name: locationName, list: hospitals })); } catch { /* storage cheio */ }
  }
