@@ -236,19 +236,28 @@ interface Emergency {
 };
  setUserLocation(location);
  
- // Obter nome da cidade via reverse geocoding
- const {city, region} = await reverseGeocode(location.lat, location.lng);
+ // Cache de 10 min por área (~1 km) para abrir instantaneamente em novos cliques
+ const cacheKey = `mz-emerg-${location.lat.toFixed(2)}-${location.lng.toFixed(2)}`;
+ let cached: { t: number; name: string; list: Emergency[] } | null = null;
+ try { cached = JSON.parse(sessionStorage.getItem(cacheKey) || 'null'); } catch { cached = null; }
+ if (cached && Date.now() - cached.t < 600000 && cached.list?.length) {
+ setLocationCity(cached.name);
+ setNearbyPlaces(cached.list);
+ toast.success(isUSA ? `Found ${cached.list.length} health facilities nearby!` : `Encontradas ${cached.list.length} unidades de saúde!`);
+ return;
+ }
+
+ // Cidade e hospitais buscados em paralelo (a cidade nunca trava a busca)
+ const geoPromise = reverseGeocode(location.lat, location.lng);
+ const hospitalsPromise = searchNearbyHospitals(location.lat, location.lng, "", "");
+ const {city, region} = await geoPromise;
  const locationName = city && region?`${city} - ${region}`: (city || region || (isUSA?"Your location":"Sua localização"));
  setLocationCity(locationName);
  
- toast.info(`${isUSA?"Location":"Localização"}: ${locationName}`);
- 
- const hospitals = await searchNearbyHospitals(
- location.lat, 
- location.lng,
- city,
- region
-);
+ const hospitals = await hospitalsPromise;
+ if (hospitals.length > 0) {
+ try { sessionStorage.setItem(cacheKey, JSON.stringify({ t: Date.now(), name: locationName, list: hospitals })); } catch { /* storage cheio */ }
+ }
  
  if (hospitals.length > 0) {
  setNearbyPlaces(hospitals);
