@@ -89,7 +89,7 @@ interface Emergency {
   const abortId = window.setTimeout(() => controllers.forEach((c) => c.abort()), 12000);
   let data: any = null;
   try {
-   data = await Promise.any(endpoints.map(async (endpoint, i) => {
+   data = await (Promise as unknown as { any: <T>(p: Promise<T>[]) => Promise<T> }).any(endpoints.map(async (endpoint, i) => {
     const response = await fetch(endpoint, {method:'POST', body: query, headers:{'Content-Type':'text/plain;charset=UTF-8'}, signal: controllers[i].signal});
     if (!response.ok) throw new Error(`Overpass ${response.status}`);
     const json = await response.json();
