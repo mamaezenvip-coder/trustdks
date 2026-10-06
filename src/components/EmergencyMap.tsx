@@ -56,121 +56,52 @@ interface Emergency {
 }
 };
 
- const searchNearbyHospitals = async (lat: number, lng: number, city: string, region: string) => {
- try {
- const radius = 15000; // 15km para cobrir toda a região metropolitana
-  const query =`[out:json][timeout:12];
- (
- node["amenity"="hospital"](around:${radius},${lat},${lng});
- way["amenity"="hospital"](around:${radius},${lat},${lng});
-  relation["amenity"="hospital"](around:${radius},${lat},${lng});
- node["amenity"="clinic"](around:${radius},${lat},${lng});
- way["amenity"="clinic"](around:${radius},${lat},${lng});
-  relation["amenity"="clinic"](around:${radius},${lat},${lng});
- node["amenity"="doctors"](around:${radius},${lat},${lng});
- way["amenity"="doctors"](around:${radius},${lat},${lng});
- node["amenity"="nursing_home"](around:${radius},${lat},${lng});
- node["healthcare"](around:${radius},${lat},${lng});
- way["healthcare"](around:${radius},${lat},${lng});
-  relation["healthcare"](around:${radius},${lat},${lng});
- node["emergency"="yes"](around:${radius},${lat},${lng});
- way["emergency"="yes"](around:${radius},${lat},${lng});
- node["social_facility"="healthcare"](around:${radius},${lat},${lng});
- );
- out center;`;
- 
-  const endpoints = [
-  'https://overpass-api.de/api/interpreter',
-  'https://overpass.kumi.systems/api/interpreter',
-  'https://overpass.openstreetmap.ru/api/interpreter'
- ];
-  // Consulta todos os servidores em paralelo: o primeiro que responder vence.
-  const controllers = endpoints.map(() => new AbortController());
-  const abortId = window.setTimeout(() => controllers.forEach((c) => c.abort()), 12000);
-  let data: any = null;
-  try {
-   data = await (Promise as unknown as { any: <T>(p: Promise<T>[]) => Promise<T> }).any(endpoints.map(async (endpoint, i) => {
-    const response = await fetch(endpoint, {method:'POST', body: query, headers:{'Content-Type':'text/plain;charset=UTF-8'}, signal: controllers[i].signal});
-    if (!response.ok) throw new Error(`Overpass ${response.status}`);
-    const json = await response.json();
-    if (!Array.isArray(json?.elements)) throw new Error('Resposta inválida');
-    return json;
-   }));
-  } catch {
-   throw new Error('Overpass indisponível');
-  } finally {
-   window.clearTimeout(abortId);
-   controllers.forEach((c) => c.abort());
-  }
- 
+ const searchNearbyHospitals = async (lat: number, lng: number, city: string, region: string): Promise<Emergency[]> => {
+ const terms = isUSA ? ["hospital","emergency room","urgent care","clinic"] : ["hospital","pronto socorro","upa","maternidade","clinica","posto de saude"];
+ const d = 0.15;
+ const viewbox = `${lng - d},${lat + d},${lng + d},${lat - d}`;
+ const results = await Promise.allSettled(terms.map(async (term) => {
+  const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&extratags=1&q=${encodeURIComponent(term)}&limit=25&bounded=1&viewbox=${viewbox}`;
+  const r = await fetch(url, { signal: AbortSignal.timeout(10000) });
+  if (!r.ok) throw new Error(`Nominatim ${r.status}`);
+  return (await r.json()) as any[];
+ }));
  const seen = new Set<string>();
- const healthUnits: Emergency[] = data.elements
-.map((element: any) => {
- const elementLat = element.lat || element.center?.lat;
- const elementLng = element.lon || element.center?.lon;
- if (!elementLat ||!elementLng) return null;
- 
- const distance = calculateDistance(lat, lng, elementLat, elementLng);
- const tags = element.tags || {};
- const name = tags.name || tags["name:en"] || tags["name:pt"] ||"";
- const lowerName = name.toLowerCase();
- const lowerOp = (tags.operator ||"").toLowerCase();
- 
- // Classificação detalhada (UPA / UBS / posto / hospital / pronto-socorro / clínica)
- let type: Emergency["type"] ="clinica";
- let typeLabel ="";
- 
- if (lowerName.includes("upa") || tags.emergency ==="yes"|| 
- tags.healthcare ==="emergency"|| lowerName.includes("pronto socorro") ||
- lowerName.includes("pronto-socorro") || lowerName.includes("emergência")) {
- type ="pronto-socorro";
- typeLabel = lowerName.includes("upa") ?"UPA":(isUSA?"ER":"Pronto-Socorro");
-} else if (tags.amenity ==="hospital"|| tags.healthcare ==="hospital") {
- type ="hospital";
- typeLabel ="Hospital";
-} else if (lowerName.includes("ubs") || lowerName.includes("posto de saúde") ||
- lowerName.includes("unidade básica") || tags.healthcare ==="centre") {
- type ="pronto-socorro";
- typeLabel ="UBS / "+(isUSA?"Health Post":"Posto");
-} else if (tags.amenity ==="clinic"|| tags.healthcare ==="clinic"||
- tags.amenity ==="doctors"|| tags.healthcare ==="doctor") {
- type ="clinica";
- typeLabel = isUSA?"Clinic":"Clínica";
-} else {
- typeLabel = isUSA?"Health unit":"Unidade de saúde";
-}
- 
- const finalName = name || typeLabel || (isUSA?"Health facility":"Unidade de saúde");
- const key =`${elementLat.toFixed(5)}-${elementLng.toFixed(5)}-${finalName}`;
- if (seen.has(key)) return null;
- seen.add(key);
- 
- return {
- name: finalName,
- type,
- phone: tags.phone || tags["contact:phone"] || (isUSA?"Not available":"Não disponível"),
- address:`${tags["addr:street"] ||""} ${tags["addr:housenumber"] ||""}${tags["addr:suburb"] ?", "+ tags["addr:suburb"]:""}, ${city} - ${region}`.replace(/^[,\s]+/,"").trim(),
- lat: elementLat,
- lng: elementLng,
- distance,
- isPublic: tags["healthcare:funding"] ==="public"|| 
- lowerOp.includes("sus") || lowerOp.includes("público") ||
- lowerOp.includes("municipal") || lowerOp.includes("estadual") ||
- lowerOp.includes("ubs") || lowerName.includes("ubs") ||
- lowerName.includes("upa") || lowerName.includes("posto de saúde") ||
- lowerName.includes("municipal")
-};
-})
-.filter((h: Emergency | null): h is Emergency => h!== null);
-
- return healthUnits.sort((a, b) => (a.distance || 0) - (b.distance || 0)).slice(0, 50);
-} catch (error) {
- if (import.meta.env.DEV) {
- console.error("Erro ao buscar unidades de saúde:", error);
-}
- toast.error(isUSA?"Error searching nearby facilities":"Erro ao buscar unidades próximas");
- return [];
-}
+ const list: Emergency[] = [];
+ results.forEach((res) => {
+  if (res.status !== "fulfilled" || !Array.isArray(res.value)) return;
+  res.value.forEach((place: any) => {
+   const pLat = parseFloat(place.lat), pLng = parseFloat(place.lon);
+   if (!isFinite(pLat) || !isFinite(pLng)) return;
+   const key = String(place.place_id);
+   if (seen.has(key)) return;
+   const name = (place.name || place.display_name?.split(",")[0] || "").trim();
+   const lower = `${name} ${place.type || ""} ${place.class || ""}`.toLowerCase();
+   const isHealth = place.class === "amenity" && ["hospital","clinic","doctors"].includes(place.type) || place.class === "healthcare" || /hospital|upa|pronto|socorro|cl[ií]nica|maternidade|ubs|posto|sa[uú]de|emergency|urgent|clinic|medical/.test(lower);
+   if (!isHealth) return;
+   seen.add(key);
+   let type: Emergency["type"] = "clinica";
+   if (/upa|pronto|socorro|emerg|urgent|ubs|posto/.test(lower)) type = "pronto-socorro";
+   else if (/hospital|maternidade/.test(lower)) type = "hospital";
+   const tags = place.extratags || {};
+   const a = place.address || {};
+   const address = [a.road && `${a.road}${a.house_number ? " " + a.house_number : ""}`, a.suburb].filter(Boolean).join(", ") || place.display_name?.split(",").slice(1, 3).join(",").trim() || "";
+   list.push({
+    name: name || (isUSA ? "Health facility" : "Unidade de saúde"),
+    type,
+    phone: tags.phone || tags["contact:phone"] || (isUSA ? "Not available" : "Não disponível"),
+    address,
+    lat: pLat, lng: pLng,
+    distance: calculateDistance(lat, lng, pLat, pLng),
+    isPublic: /upa|ubs|posto|municipal|estadual|sus|regional/.test(lower) || tags["healthcare:funding"] === "public" || undefined,
+   });
+  });
+ });
+ if (list.length === 0 && results.every((r) => r.status === "rejected")) {
+  toast.error(isUSA ? "Error searching nearby facilities" : "Erro ao buscar unidades próximas");
+ }
+ void city; void region;
+ return list.sort((x, y) => (x.distance || 0) - (y.distance || 0)).slice(0, 40);
 };
 
  // Limpeza leve de storage antes de buscas pesadas (evita tela preta por storage cheio).
@@ -296,8 +227,8 @@ interface Emergency {
 },
  {
  enableHighAccuracy: true,
- timeout: 18000,
- maximumAge: 0
+ timeout: 15000,
+ maximumAge: 30000
 }
 );
 };
