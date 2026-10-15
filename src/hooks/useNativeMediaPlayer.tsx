@@ -87,7 +87,9 @@ export const useNativeMediaPlayer = () => {
       setCurrentTrackId(track.id);
       try {
         const [audioUrl, coverUrl] = await Promise.all([
-          getSignedUrl(track.audio_path),
+          track.audio_path.startsWith('/') || track.audio_path.startsWith('http')
+            ? Promise.resolve(new URL(track.audio_path, window.location.origin).href)
+            : getSignedUrl(track.audio_path),
           getPublicOrSignedCover(track.cover_path),
         ]);
         if (el.src !== audioUrl) {

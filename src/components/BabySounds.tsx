@@ -41,7 +41,11 @@ export default function BabySounds() {
         .eq('category', 'ambient')
         .eq('is_active', true)
         .order('sort_order', { ascending: true });
-      if (!error) setTracks((data as DbTrack[]) || []);
+      const builtIn: DbTrack[] = [
+        { id: 'builtin-chuva', title: isUSA ? 'Rain' : 'Chuva para dormir', subtitle: 'Mamãe Zen', audio_path: '/sounds/chuva.mp3', cover_path: null, category: 'ambient', duration_label: isUSA ? 'Loop' : 'Sem parar', is_active: true },
+        { id: 'builtin-marrom', title: isUSA ? 'Brown noise' : 'Ruído suave', subtitle: 'Mamãe Zen', audio_path: '/sounds/ruido-marrom.mp3', cover_path: null, category: 'ambient', duration_label: isUSA ? 'Loop' : 'Sem parar', is_active: true },
+      ];
+      setTracks([...builtIn, ...(!error ? ((data as DbTrack[]) || []) : [])]);
       setLoadingList(false);
     })();
   }, []);
