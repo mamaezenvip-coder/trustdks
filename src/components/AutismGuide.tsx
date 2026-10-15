@@ -84,9 +84,12 @@ const AutismGuide = () => {
  <CardDescription className="text-xs leading-relaxed text-muted-foreground">
  Informações e estratégias para apoiar o desenvolvimento de crianças no espectro autista. 
  Cada criança é única e especial! 
- </CardDescription>
- </CardHeader>
- </Card>
+  </CardDescription>
+  </CardHeader>
+  <CardContent className="p-3 pt-0">
+  <img src={autismSigns} alt="Mãe em contato visual carinhoso com o bebê" loading="lazy" width={1024} height={1024} className="w-full h-44 object-cover rounded-lg border border-primary/30"/>
+  </CardContent>
+  </Card>
 
  {/* Sinais Precoces */}
  <Card className="bg-card/50 border-primary/30">
