@@ -139,9 +139,10 @@ const AutismGuide = () => {
  <CardTitle className="text-base text-foreground">Estratégias de Apoio</CardTitle>
  </div>
  <CardDescription className="text-xs text-muted-foreground">
- Como ajudar seu bebê a se desenvolver e se sentir seguro
- </CardDescription>
- </CardHeader>
+  Como ajudar seu bebê a se desenvolver e se sentir seguro
+  </CardDescription>
+  <img src={autismStrategies} alt="Cantinho calmo e rotina visual para o bebê" loading="lazy" width={1024} height={1024} className="mx-3 mt-1 w-[calc(100%-1.5rem)] h-40 object-cover rounded-lg border border-primary/30"/>
+  </CardHeader>
  <CardContent className="p-3 pt-0">
  <Accordion type="single"collapsible className="w-full">
  {strategies.map((strategy, index) => (
@@ -175,9 +176,10 @@ const AutismGuide = () => {
  <CardHeader className="pb-3">
  <div className="flex items-center gap-2">
  <Heart className="w-5 h-5 text-primary"/>
- <CardTitle className="text-base text-foreground">Recursos e Suporte</CardTitle>
- </div>
- </CardHeader>
+  <CardTitle className="text-base text-foreground">Recursos e Suporte</CardTitle>
+  </div>
+  <img src={autismSupport} alt="Especialista apoiando mãe e bebê" loading="lazy" width={1024} height={1024} className="mx-3 mt-1 w-[calc(100%-1.5rem)] h-40 object-cover rounded-lg border border-primary/30"/>
+  </CardHeader>
  <CardContent className="p-3 pt-0 space-y-3">
  {resources.map((resource, index) => (
  <div key={index} className="bg-card p-3 rounded-lg border border-primary/30">
