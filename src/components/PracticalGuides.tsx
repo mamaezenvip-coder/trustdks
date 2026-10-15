@@ -1,10 +1,19 @@
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from"@/components/ui/card";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from"@/components/ui/accordion";
+import pg_burping from '@/assets/pg-burping.jpg';
+import pg_calming from '@/assets/pg-calming.jpg';
+import pg_sleep from '@/assets/pg-sleep.jpg';
+import pg_colic from '@/assets/pg-colic.jpg';
+import pg_feeding from '@/assets/pg-feeding.jpg';
+import pg_development from '@/assets/pg-development.jpg';
+import pg_hygiene from '@/assets/pg-hygiene.jpg';
+import pg_safety from '@/assets/pg-safety.jpg';
 import {Baby, Heart, Moon, Droplets, Wind, Smile, AlertCircle, Clock} from"lucide-react";
 
 const guides = [
  {
  id:"burping",
+ image: pg_burping,
  icon: Wind,
  title:"Como Fazer o Bebê Arrotar",
  description:"Técnicas eficazes para ajudar seu bebê a arrotar",
@@ -35,6 +44,7 @@ const guides = [
  </div>`},
  {
  id:"calming",
+ image: pg_calming,
  icon: Heart,
  title:"Como Acalmar o Bebê",
  description:"Métodos comprovados para acalmar seu bebê chorando",
@@ -72,6 +82,7 @@ const guides = [
  </div>`},
  {
  id:"sleep",
+ image: pg_sleep,
  icon: Moon,
  title:"Rotina de Sono do Bebê",
  description:"Estabeleça uma rotina de sono saudável",
@@ -111,6 +122,7 @@ const guides = [
  </div>`},
  {
  id:"colic",
+ image: pg_colic,
  icon: AlertCircle,
  title:"Cólicas: Prevenção e Alívio",
  description:"Como lidar com as temidas cólicas do bebê",
@@ -152,6 +164,7 @@ const guides = [
  </div>`},
  {
  id:"feeding",
+ image: pg_feeding,
  icon: Droplets,
  title:"Guia de Amamentação",
  description:"Tudo sobre amamentação bem-sucedida",
@@ -192,6 +205,7 @@ const guides = [
  </div>`},
  {
  id:"development",
+ image: pg_development,
  icon: Smile,
  title:"Marcos do Desenvolvimento",
  description:"O que esperar em cada fase",
@@ -248,6 +262,7 @@ const guides = [
  </div>`},
  {
  id:"hygiene",
+ image: pg_hygiene,
  icon: Droplets,
  title:"Higiene e Cuidados Diários",
  description:"Rotina de higiene completa para o bebê",
@@ -286,6 +301,7 @@ const guides = [
  </div>`},
  {
  id:"safety",
+ image: pg_safety,
  icon: AlertCircle,
  title:"Segurança do Bebê",
  description:"Dicas essenciais de segurança",
@@ -346,7 +362,7 @@ const guides = [
 export default function PracticalGuides() {
  return (
  <Card className="border-primary/30 shadow-lg bg-card/50">
- <CardHeader className="bg-gradient-to-r from-primary/20 to-secondary/20 pb-3">
+ <CardHeader className="bg-gradient-to-r from-primary/20 to-transparent pb-3">
  <div className="flex items-center gap-2">
  <Baby className="w-6 h-6 text-primary"/>
  <div>
@@ -364,20 +380,26 @@ export default function PracticalGuides() {
  key={guide.id} 
  value={guide.id}
  className="border border-primary/30 rounded-lg px-3 bg-card/80 hover:bg-card transition-colors">
- <AccordionTrigger className="hover:no-underline py-3">
- <div className="flex items-center gap-2 text-left">
- <div className="p-1.5 rounded-full bg-primary/20 flex-shrink-0">
- <Icon className="w-4 h-4 text-primary"/>
+ <AccordionTrigger className="hover:no-underline py-3 [&>svg]:text-primary">
+ <div className="flex items-center gap-3 text-left w-full">
+ <div className="relative w-20 h-16 sm:w-24 sm:h-[72px] rounded-lg overflow-hidden flex-shrink-0 border border-primary/40">
+ <img src={guide.image} alt={guide.title} loading="lazy" width={1088} height={608} className="w-full h-full object-cover"/>
+ <div className="absolute bottom-1 left-1 p-1 rounded-full bg-background/80"><Icon className="w-3 h-3 text-primary"/></div>
  </div>
  <div className="min-w-0">
- <h3 className="font-semibold text-sm text-foreground">{guide.title}</h3>
- <p className="text-xs text-muted-foreground line-clamp-1">{guide.description}</p>
+ <h3 className="font-semibold text-base text-foreground">{guide.title}</h3>
+ <p className="text-xs text-foreground/70 line-clamp-2">{guide.description}</p>
  </div>
  </div>
  </AccordionTrigger>
  <AccordionContent className="pt-2 pb-3">
+ <div className="relative rounded-xl overflow-hidden mb-4 border border-primary/30 animate-fade-in">
+ <img src={guide.image} alt={guide.title} loading="lazy" width={1088} height={608} className="w-full h-44 sm:h-56 object-cover"/>
+ <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent"/>
+ <h4 className="absolute bottom-3 left-3 right-3 text-lg font-bold text-foreground">{guide.title}</h4>
+ </div>
  <div 
- className="prose prose-sm max-w-none text-xs"dangerouslySetInnerHTML={{__html: guide.content}}
+ className="prose prose-sm max-w-none text-sm"dangerouslySetInnerHTML={{__html: guide.content}}
  />
  </AccordionContent>
  </AccordionItem>
