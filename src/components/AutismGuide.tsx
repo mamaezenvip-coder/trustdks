@@ -2,6 +2,9 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from"@/compon
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from"@/components/ui/accordion";
 import {Heart, Brain, Lightbulb, Eye, Ear, Hand} from"lucide-react";
 import {Badge} from"@/components/ui/badge";
+import autismSigns from"@/assets/autism-signs.jpg";
+import autismStrategies from"@/assets/autism-strategies.jpg";
+import autismSupport from"@/assets/autism-support.jpg";
 
 const AutismGuide = () => {
  const earlySigns = [
