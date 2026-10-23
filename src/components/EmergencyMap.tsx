@@ -60,12 +60,21 @@ interface Emergency {
  const terms = isUSA ? ["hospital","emergency room","urgent care","clinic"] : ["hospital","pronto socorro","upa","maternidade","clinica","posto de saude"];
  const d = 0.15;
  const viewbox = `${lng - d},${lat + d},${lng + d},${lat - d}`;
- const results = await Promise.allSettled(terms.map(async (term) => {
-  const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&extratags=1&q=${encodeURIComponent(term)}&limit=25&bounded=1&viewbox=${viewbox}`;
-  const r = await fetch(url, { signal: AbortSignal.timeout(10000) });
-  if (!r.ok) throw new Error(`Nominatim ${r.status}`);
-  return (await r.json()) as any[];
- }));
+ // O serviço de mapas bloqueia muitas consultas simultâneas (429): busca em sequência, rápida.
+ const results: PromiseSettledResult<any[]>[] = [];
+ for (const term of terms) {
+  try {
+   const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&extratags=1&q=${encodeURIComponent(term)}&limit=25&bounded=1&viewbox=${viewbox}`;
+   const r = await fetch(url, { signal: AbortSignal.timeout(8000) });
+   if (!r.ok) throw new Error(`Nominatim ${r.status}`);
+   results.push({ status: "fulfilled", value: (await r.json()) as any[] });
+  } catch (reason) {
+   results.push({ status: "rejected", reason });
+  }
+  const found = results.reduce((n, x) => n + (x.status === "fulfilled" ? x.value.length : 0), 0);
+  if (found >= 15) break;
+  await new Promise((res) => setTimeout(res, 350));
+ }
  const seen = new Set<string>();
  const list: Emergency[] = [];
  results.forEach((res) => {
