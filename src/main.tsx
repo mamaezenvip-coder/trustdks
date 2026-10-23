@@ -8,7 +8,7 @@ const isLovablePreview = host.startsWith('id-preview--') || host.startsWith('pre
 const isEmbeddedPreview = window.self !== window.top;
 
 // Register service worker only outside Lovable previews to avoid stale cache during development.
-if ('serviceWorker'in navigator && !isLovablePreview && !isEmbeddedPreview) {
+if (import.meta.env.PROD && 'serviceWorker'in navigator && !isLovablePreview && !isEmbeddedPreview) {
  window.addEventListener('load', () => {
  navigator.serviceWorker.register('/sw.js').catch(() => {
  // Service worker registration failed, app will still work without offline support
