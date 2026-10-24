@@ -1,18 +1,20 @@
-# Vídeos ilustrativos nos Guias Práticos
+# App mais rápido + teste geral no celular
 
-## O que muda para a usuária
-- Cada um dos 8 guias (arrotar, acalmar, sono, cólica, amamentação/mamadeira, desenvolvimento, higiene, segurança) ganha um vídeo curto feito pela IA (cerca de 8 segundos), no estilo do app: fundo escuro e luz rosa neon.
-- O vídeo mostra o gesto principal do guia, por exemplo a mãe com o bebê no ombro dando tapinhas nas costas, ou embalando o bebê devagar para acalmar.
-- Ao abrir o guia, o vídeo aparece no lugar da foto grande. Ele toca sozinho, sem som, repete sem parar e não abre em tela cheia. A foto fica como capa enquanto o vídeo carrega.
-- O texto continua igual, logo abaixo do vídeo.
+## 1. App mais rápido
+- Carregar cada função (bebê 3D, leitor de ebooks, mapas, admin, guias) só quando a mãe abrir ela, em vez de baixar tudo ao abrir o app.
+- Diminuir o peso das fotos (guias, receitas, remédios, especialistas) convertendo para um formato mais leve, sem perder qualidade visível.
+- Mostrar uma tela de carregamento rosa/preta enquanto cada função abre.
 
-## Custo e limites
-- São 8 vídeos gerados, o que gasta créditos.
-- Vídeos feitos por IA são ilustrativos e podem ter pequenas imperfeições. Por isso o aviso "consulte o pediatra" continua visível.
-- Se algum vídeo sair estranho (mãos ou bebê deformados), refaço só aquele.
+## 2. Teste geral no celular
+- Abrir o app em tamanho de celular (Android e iPhone), logado, e passar por todas as 13 funções do anel.
+- Tirar fotos de cada tela e corrigir: textos cortados, botões pequenos demais, cores fora do preto/rosa/branco, telas que travam ou ficam pretas.
+- Conferir player, sons para dormir, emergência, farmácia, ebooks e chat.
+
+## Fora do plano
+- Configuração do player do YouTube não será alterada.
 
 ## Detalhes técnicos
-- Gerar cada vídeo a partir da foto que o guia já usa (pg-*.jpg) como primeiro quadro, assim o visual continua o mesmo. Formato 16:9, 480p para carregar rápido no celular, câmera estável e sem áudio.
-- Salvar os vídeos como assets na CDN (ponteiros `.asset.json` em src/assets/videos/) e não colocar os MP4 no repositório.
-- PracticalGuides.tsx: incluir o campo `video` nos dados de cada guia e, no conteúdo aberto, trocar a foto por `<video autoPlay muted loop playsInline poster={image} preload="metadata">`. O vídeo não interfere no player de música nem no áudio em segundo plano, porque é mudo.
-- Seguir a paleta preto, rosa e branco, sem emojis.
+- React.lazy + Suspense para componentes pesados em Index.tsx (Baby3D, PdfReader, EmergencyMap, PharmacyMap, RouteMapDialog, Admin).
+- manualChunks no vite.config para separar three/pdfjs/leaflet.
+- Converter src/assets/*.jpg para WebP com sharp e atualizar imports.
+- Playwright em viewport 390x844 com sessão injetada, screenshot por função.
