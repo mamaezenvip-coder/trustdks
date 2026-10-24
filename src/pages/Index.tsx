@@ -10,19 +10,20 @@ import LicenseActivation from'@/components/LicenseActivation';
 import {Button} from'@/components/ui/button';
 import {Card} from'@/components/ui/card';
 import MusicPlayer from'@/components/MusicPlayer';
-import RoutineCalendar from'@/components/RoutineCalendar';
-import GuideLibrary from'@/components/GuideLibrary';
-import PracticalGuides from'@/components/PracticalGuides';
-import SleepTracker from'@/components/SleepTracker';
-import FeedingTracker from'@/components/FeedingTracker';
-import MedicineGuide from'@/components/MedicineGuide';
-import AutismGuide from'@/components/AutismGuide';
-import EmergencyMap from'@/components/EmergencyMap';
-import PharmacyMap from'@/components/PharmacyMap';
+import {lazy, Suspense} from'react';
 import NotificationCenter from'@/components/NotificationCenter';
 import AntiInspect from'@/components/AntiInspect';
-import {PregnancyTracker} from'@/components/PregnancyTracker';
-import ProductShowcase from'@/components/ProductShowcase';
+const RoutineCalendar = lazy(() => import('@/components/RoutineCalendar'));
+const GuideLibrary = lazy(() => import('@/components/GuideLibrary'));
+const PracticalGuides = lazy(() => import('@/components/PracticalGuides'));
+const SleepTracker = lazy(() => import('@/components/SleepTracker'));
+const FeedingTracker = lazy(() => import('@/components/FeedingTracker'));
+const MedicineGuide = lazy(() => import('@/components/MedicineGuide'));
+const AutismGuide = lazy(() => import('@/components/AutismGuide'));
+const EmergencyMap = lazy(() => import('@/components/EmergencyMap'));
+const PharmacyMap = lazy(() => import('@/components/PharmacyMap'));
+const PregnancyTracker = lazy(() => import('@/components/PregnancyTracker').then(m => ({default: m.PregnancyTracker})));
+const ProductShowcase = lazy(() => import('@/components/ProductShowcase'));
 import TrialBanner from'@/components/TrialBanner';
 import FeatureRing, {type RingItem} from'@/components/FeatureRing';
 import {Tabs, TabsContent} from'@/components/ui/tabs';
@@ -287,6 +288,7 @@ const Index = () => {
  </div>
 
  <div className="mt-4">
+ <Suspense fallback={<div className="flex items-center justify-center py-16"><div className="w-10 h-10 rounded-full border-4 border-primary/30 border-t-primary animate-spin" /></div>}>
  <TabsContent value="guides"className="mt-0 animate-fade-in"><PracticalGuides /></TabsContent>
   <TabsContent value="sounds" className="mt-0 animate-fade-in">{wrapWithLock('sounds', <MusicPlayer />)}</TabsContent>
  <TabsContent value="medicine"className="mt-0 animate-fade-in"><MedicineGuide /></TabsContent>
@@ -302,6 +304,7 @@ const Index = () => {
  <TabsContent value="autism"className="mt-0 animate-fade-in"><AutismGuide /></TabsContent>
  <TabsContent value="routine"className="mt-0 animate-fade-in"><RoutineCalendar /></TabsContent>
  <TabsContent value="ebook"className="mt-0 animate-fade-in"><GuideLibrary /></TabsContent>
+ </Suspense>
  </div>
  </Tabs>
 
