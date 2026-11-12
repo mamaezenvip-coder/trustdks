@@ -34,7 +34,7 @@ const AppContent = () => {
  <>
  <Toaster />
  <Sonner />
- <BrowserRouter>
+ <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
  <Routes>
  <Route path="/login" element={<><PageMeta path="/login" title="Entrar ou criar conta | Mamãe Zen Premium" description="Acesse o Mamãe Zen Premium com e-mail, Google ou chave de licença e libere guias, trackers e sons calmantes para o seu bebê." /><Login /></>} />
  <Route path="/reset-password" element={<><PageMeta path="/reset-password" title="Redefinir senha | Mamãe Zen Premium" description="Crie uma nova senha para a sua conta Mamãe Zen Premium com segurança e volte a acompanhar a rotina do seu bebê." noindex /><ResetPassword /></>} />
