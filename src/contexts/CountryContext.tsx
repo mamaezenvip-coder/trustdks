@@ -12,17 +12,14 @@ interface CountryContextType {
 const CountryContext = createContext<CountryContextType | undefined>(undefined);
 
 export const CountryProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
- const [country, setCountryState] = useState<Country>(() => {
- const saved = localStorage.getItem('selectedCountry');
- return (saved as Country) ||'brazil';
-});
+ // App fixo em português: nunca troca de idioma
+ const [country, setCountryState] = useState<Country>('brazil');
 
  useEffect(() => {
  // Detectar país apenas se não houver seleção salva
  const saved = localStorage.getItem('selectedCountry');
- if (!saved) {
- detectCountryByIP();
-}
+ localStorage.setItem('selectedCountry','brazil');
+ void saved;
 }, []);
 
  const detectCountryByIP = async () => {
@@ -45,9 +42,9 @@ export const CountryProvider: React.FC<{children: React.ReactNode}> = ({children
 }
 };
 
- const setCountry = (newCountry: Country) => {
- setCountryState(newCountry);
- localStorage.setItem('selectedCountry', newCountry);
+ const setCountry = (_newCountry: Country) => {
+ setCountryState('brazil');
+ localStorage.setItem('selectedCountry','brazil');
 };
 
  const isUSA = country ==='usa';

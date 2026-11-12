@@ -15,7 +15,7 @@ import previewEmergencia from'@/assets/preview-emergencia.png';
 import previewLojinha from'@/assets/preview-lojinha.png';
 import previewPlayer from'@/assets/preview-player.png';
 import {toast} from'sonner';
-import CountrySelector from'@/components/CountrySelector';
+
 import {checkRateLimit} from'@/utils/rateLimiter';
 import HumanCheck from'@/components/HumanCheck';
 import {lovable} from'@/integrations/lovable';
@@ -547,7 +547,7 @@ const Login = () => {
  <span>{isUSA?'Secure login':'Login seguro'}</span>
  </div>
  <div className="rounded-xl bg-card/20 backdrop-blur-sm border border-border/10 px-2 py-0.5">
- <CountrySelector />
+ 
  </div>
  </div>
  </div>
