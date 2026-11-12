@@ -15,20 +15,25 @@ export default defineConfig(({ mode }) => ({
     mode === "development" && componentTagger(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["mamae-zen-og.png"],
+      includeAssets: ["favicon.png", "icon-192.png", "icon-512.png", "mamae-zen-og.png"],
       manifest: {
         name: "Mamãe Zen Premium",
         short_name: "Mamãe Zen",
         description: "App premium com guias práticos, trackers de sono e amamentação, sons calmantes e e-book completo para mães no pós-parto",
         theme_color: "#D946A6",
-        background_color: "#ffffff",
+        background_color: "#000000",
         display: "standalone",
         orientation: "portrait",
         scope: "/",
         start_url: "/",
         icons: [
           {
-            src: "/mamae-zen-og.png",
+            src: "/icon-192.png",
+            sizes: "192x192",
+            type: "image/png"
+          },
+          {
+            src: "/icon-512.png",
             sizes: "512x512",
             type: "image/png",
             purpose: "any maskable"
