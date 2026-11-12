@@ -1,3 +1,4 @@
+import {openInApp} from"@/lib/inAppBrowser";
 import {useState} from'react';
 import {useAuth} from'@/contexts/AuthContext';
 import {useCountry} from'@/contexts/CountryContext';
@@ -107,7 +108,7 @@ const LicenseActivation = ({open, onOpenChange}: LicenseActivationProps) => {
  asChild
  size="lg"className="w-full bg-background/40 border border-primary/50 hover:bg-primary/10 text-primary font-bold shadow-[0_0_22px_-6px_hsl(var(--primary)/0.8)]">
  <a
- href="https://pay.cakto.com.br/c88zju2_683076"target="_blank"rel="noopener noreferrer">
+ href="https://pay.cakto.com.br/c88zju2_683076" onClick={(e) => {e.preventDefault(); openInApp("https://pay.cakto.com.br/c88zju2_683076","Pagamento Mamãe Zen");}}>
  <Key className="w-4 h-4 mr-2"/>
  {isUSA?'Buy Premium License':'Comprar Licença Premium'}
  </a>

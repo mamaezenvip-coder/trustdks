@@ -1,3 +1,4 @@
+import {openInApp} from"@/lib/inAppBrowser";
 import {useCountry} from'@/contexts/CountryContext';
 import {Card} from'@/components/ui/card';
 import {Button} from'@/components/ui/button';
@@ -61,7 +62,7 @@ const ProductShowcase = () => {
  const {isUSA} = useCountry();
 
  const handleBuyProduct = () => {
- window.open(STORE_URL,'_blank','noopener,noreferrer');
+ openInApp(STORE_URL,'Lojinha da Mamãe');
 };
 
  return (
@@ -125,7 +126,7 @@ const ProductShowcase = () => {
  handleBuyProduct();
 }}
  >
- <ExternalLink className="w-3 h-3 mr-1"/>
+ <ShoppingBag className="w-3 h-3 mr-1"/>
  {isUSA?'Buy now':'Comprar'}
  </Button>
  </div>
@@ -137,7 +138,7 @@ const ProductShowcase = () => {
  <Button
  onClick={handleBuyProduct}
  variant="outline"className="w-full border-primary/30 text-primary hover:bg-primary/10 font-semibold">
- <ExternalLink className="w-4 h-4 mr-2"/>
+ <ShoppingBag className="w-4 h-4 mr-2"/>
  {isUSA?'See all products in store':'Ver todos os produtos na loja'}
  </Button>
  </div>

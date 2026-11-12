@@ -1,3 +1,4 @@
+import {openInApp} from"@/lib/inAppBrowser";
 import {useState} from'react';
 import {useAuth} from'@/contexts/AuthContext';
 import {Button} from'@/components/ui/button';
@@ -39,7 +40,7 @@ const TrialBanner = () => {
  <Button
  asChild
  size="sm"className="h-8 px-3 text-xs bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90 text-foreground font-bold shadow-[0_0_15px_hsl(330_100%_60%/0.5)]">
- <a href={PAYMENT_URL} target="_blank"rel="noopener noreferrer">
+ <a href={PAYMENT_URL} onClick={(e) => {e.preventDefault(); openInApp(PAYMENT_URL,"Pagamento Mamãe Zen");}}>
  Comprar Premium
  </a>
  </Button>
@@ -82,7 +83,7 @@ const TrialBanner = () => {
  <Button
  asChild
  size="sm"className="h-8 px-3 text-xs bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90 text-foreground font-bold shadow-[0_0_15px_hsl(330_100%_60%/0.5)]">
- <a href={PAYMENT_URL} target="_blank"rel="noopener noreferrer">
+ <a href={PAYMENT_URL} onClick={(e) => {e.preventDefault(); openInApp(PAYMENT_URL,"Pagamento Mamãe Zen");}}>
  Comprar Premium
  </a>
  </Button>
