@@ -6,7 +6,7 @@ import {useCountry} from'@/contexts/CountryContext';
 import {supabase} from'@/integrations/supabase/client';
 import {Button} from'@/components/ui/button';
 import {Input} from'@/components/ui/input';
-import {Shield, Star, Key, Loader2, Mail, Lock, UserPlus, LogIn, Eye, EyeOff} from'lucide-react';
+import {Shield, Star, Key, Loader2, Mail, Lock, UserPlus, LogIn, Eye, EyeOff, Siren, Pill, Music, ShoppingBag, BadgeCheck, Check} from'lucide-react';
 import mamaeZenLogo from'@/assets/mamae-zen-logo.png';
 import previewGuias from'@/assets/preview-guias.png';
 import previewMusicas from'@/assets/preview-musicas.png';
@@ -27,6 +27,13 @@ const features = [
  {image: previewEmergencia, labelPt:'Emergência', labelEn:'Emergency'},
  {image: previewLojinha, labelPt:'Lojinha', labelEn:'Shop'},
  {image: previewPlayer, labelPt:'Player', labelEn:'Player'},
+];
+
+const benefits = [
+ {icon: Siren, title:'Emergência com 1 clique', text:'Na praia, no interior, na estrada ou perdida: sem digitar nada, o app acha o hospital mais perto e traça a rota pelo Uber, 99 ou seu próprio carro.'},
+ {icon: Pill, title:'Manual de medicamentos', text:'Saiba o que fazer com febre, cólica, dores e doenças comuns do bebê e da mãe.'},
+ {icon: Music, title:'Músicas e desenhos sem anúncios', text:'Cantigas de roda, músicas e sons de chuva para dormir, tocando até com a tela apagada.'},
+ {icon: ShoppingBag, title:'Guia do Autismo, Lojinha e muito mais', text:'Guias práticos, acompanhamento da gravidez, lembretes e especialistas 24h.'},
 ];
 
 const normalizeLicenseKey = (key: string) =>
@@ -254,85 +261,52 @@ const Login = () => {
  {/* Main content */}
  <div className="flex-1 flex flex-col items-center justify-center px-5 py-8 relative z-10">
  
- {/* Logo & Brand */}
- <div className="text-center mb-6 space-y-3">
- <div className="relative inline-flex group">
- <div className="absolute -inset-2 rounded-[2rem] bg-gradient-to-br from-primary/30 to-secondary/30 blur-xl opacity-70 group-hover:opacity-100 transition-opacity"/>
- <div className="relative w-24 h-24 rounded-[1.5rem] overflow-hidden shadow-2xl shadow-primary/50 ring-2 ring-primary/20">
- <img src={mamaeZenLogo} alt="Mamãe Zen"className="w-full h-full object-cover"/>
+ {/* Hero */}
+ <div className="w-full max-w-sm text-center mb-6 space-y-4">
+ <div className="relative inline-flex">
+ <div className="absolute -inset-2 rounded-[2rem] bg-primary/30 blur-xl"/>
+ <div className="relative w-20 h-20 rounded-[1.5rem] overflow-hidden ring-2 ring-primary/40">
+ <img src={mamaeZenLogo} alt="Mamãe Zen" className="w-full h-full object-cover"/>
  </div>
  </div>
- 
- <div className="space-y-1.5">
- <h1 className="text-3xl font-extrabold tracking-tight">
- <span className="bg-gradient-to-r from-primary via-secondary to-primary bg-[length:200%_auto] bg-clip-text text-transparent animate-[shimmer_3s_ease-in-out_infinite]">
- Mamãe Zen
- </span>
+ <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/15 border border-primary/40">
+ <BadgeCheck className="w-3.5 h-3.5 text-primary"/>
+ <span className="text-[10px] font-bold text-primary tracking-wider uppercase">100% grátis para começar • Sem cartão</span>
+ </div>
+ <h1 className="text-[26px] leading-tight font-extrabold text-foreground">
+ O app que toda <span className="text-primary">mãe de primeira viagem</span> precisa ter no bolso
  </h1>
- <p className="text-muted-foreground text-sm max-w-[280px] mx-auto leading-relaxed">
- {isUSA 
-?'The complete premium app for confident moms':'O app premium completo para mamães confiantes'}
+ <p className="text-sm text-muted-foreground leading-relaxed">
+ Emergência, medicamentos, músicas e guias do bebê em um só lugar. <span className="text-foreground font-semibold">Grátis e sem anúncios.</span>
  </p>
+ <Button onClick={handleGoogleLogin} disabled={isSubmitting} className="w-full h-14 rounded-xl font-bold text-base gap-2 shadow-[0_0_30px_hsl(var(--primary)/0.5)]">
+ {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin"/> : <LogIn className="w-5 h-5"/>}
+ Entrar grátis com 1 toque
+ </Button>
+ <p className="text-[11px] text-muted-foreground">Entre com sua conta Google ou crie com e-mail abaixo</p>
  </div>
 
- <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/20">
- <Star className="w-3 h-3 text-primary fill-primary"/>
- <span className="text-[10px] font-bold text-primary tracking-widest uppercase">Premium</span>
- <Star className="w-3 h-3 text-primary fill-primary"/>
+ {/* Benefits */}
+ <div className="w-full max-w-sm mb-6 space-y-3">
+ <h2 className="text-center text-xs font-bold tracking-widest uppercase text-primary">O que você vai encontrar</h2>
+ {benefits.map(({icon: Icon, title, text}) => (
+ <div key={title} className="flex gap-3 p-4 rounded-2xl bg-card/60 border border-primary/20">
+ <div className="shrink-0 w-11 h-11 rounded-xl bg-primary/15 flex items-center justify-center">
+ <Icon className="w-5 h-5 text-primary"/>
+ </div>
+ <div className="space-y-1">
+ <p className="text-sm font-bold text-foreground">{title}</p>
+ <p className="text-xs text-muted-foreground leading-relaxed">{text}</p>
  </div>
  </div>
-
- {/* Feature showcase */}
- <div className="w-full max-w-sm mb-6">
- <div className="relative h-[300px] flex items-center justify-center">
- {features.map((feat, i) => {
- const diff = (i - activeSlide + features.length) % features.length;
- const position = diff <= features.length / 2? diff: diff - features.length;
- const isActive = position === 0;
- const isVisible = Math.abs(position) <= 1;
-
- if (!isVisible) return null;
-
- return (
- <div
- key={i}
- onClick={() => setActiveSlide(i)}
- className="absolute transition-all duration-500 ease-out cursor-pointer"style={{
- transform:`translateX(${position * 110}px) scale(${isActive? 1: 0.78}) translateZ(0)`,
- zIndex: isActive? 10: 5,
- opacity: isActive? 1: 0.5,
- filter: isActive?'none':'brightness(0.6)',
-}}
- >
- <div className={`relative w-[160px] rounded-2xl overflow-hidden transition-shadow duration-500 ${
- isActive 
-?'shadow-[0_8px_40px_-8px_hsl(var(--primary)/0.5)] ring-2 ring-primary/40':'shadow-xl ring-1 ring-border/20'}`}>
- <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-[6px] bg-background/80 rounded-b-lg z-20"/>
- <img 
- src={feat.image} 
- alt={isUSA? feat.labelEn: feat.labelPt}
- className="w-full h-[240px] object-cover object-top"/>
+ ))}
+ <div className="grid grid-cols-3 gap-2 pt-1">
+ {['Sem anúncios','Sem cartão','Acesso imediato'].map(t => (
+ <div key={t} className="flex flex-col items-center gap-1 py-2 rounded-xl bg-card/40 border border-border/20">
+ <Check className="w-4 h-4 text-primary"/>
+ <span className="text-[10px] font-semibold text-foreground">{t}</span>
  </div>
- {isActive && (
- <p className="mt-3 text-center text-sm font-bold text-foreground animate-in fade-in duration-300">
- {isUSA? feat.labelEn: feat.labelPt}
- </p>
-)}
- </div>
-);
-})}
- </div>
-
- <div className="flex justify-center gap-1.5 -mt-2">
- {features.map((_, i) => (
- <button
- key={i}
- onClick={() => setActiveSlide(i)}
- className={`h-1.5 rounded-full transition-all duration-300 ${
- activeSlide === i 
-?'w-6 bg-primary':'w-1.5 bg-muted-foreground/30 hover:bg-muted-foreground/50'}`}
- />
-))}
+ ))}
  </div>
  </div>
 
@@ -562,8 +536,9 @@ const Login = () => {
  </Link>
  </p>
  <p className="text-[9px] text-muted-foreground/40 font-medium">
- © {new Date().getFullYear()} Mamãe Zen Premium
+ © {new Date().getFullYear()} Mamãe Zen
  </p>
+ <Link to="/admin" className="block text-[10px] text-muted-foreground/50 underline underline-offset-2">Acesso do Administrador</Link>
  </div>
  </div>
 );
