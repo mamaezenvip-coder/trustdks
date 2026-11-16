@@ -17,10 +17,10 @@ export default defineConfig(({ mode }) => ({
       registerType: "autoUpdate",
       includeAssets: ["favicon.png", "icon-192.png", "icon-512.png", "mamae-zen-og.png"],
       manifest: {
-        name: "Mamãe Zen Premium",
+        name: "Mamãe Zen",
         short_name: "Mamãe Zen",
         description: "App premium com guias práticos, trackers de sono e amamentação, sons calmantes e e-book completo para mães no pós-parto",
-        theme_color: "#D946A6",
+        theme_color: "#000000",
         background_color: "#000000",
         display: "standalone",
         orientation: "portrait",
