@@ -6,7 +6,7 @@ import {useCountry} from'@/contexts/CountryContext';
 import {supabase} from'@/integrations/supabase/client';
 import {Button} from'@/components/ui/button';
 import {Input} from'@/components/ui/input';
-import {Shield, Star, Key, Loader2, Mail, Lock, UserPlus, LogIn, Eye, EyeOff, Siren, Pill, Music, ShoppingBag, BadgeCheck, Check} from'lucide-react';
+import {Shield, Star, Key, Loader2, Mail, Lock, UserPlus, LogIn, Eye, EyeOff, Siren, Pill, Music, ShoppingBag, BadgeCheck, Check, X, ArrowDown} from'lucide-react';
 import mamaeZenLogo from'@/assets/mamae-zen-logo.png';
 import previewGuias from'@/assets/preview-guias.png';
 import previewMusicas from'@/assets/preview-musicas.png';
@@ -14,7 +14,22 @@ import previewGravidez from'@/assets/preview-gravidez.png';
 import previewEmergencia from'@/assets/preview-emergencia.png';
 import previewLojinha from'@/assets/preview-lojinha.png';
 import previewPlayer from'@/assets/preview-player.png';
+import semEmergencia from '@/assets/sem-emergencia.jpg';
+import comEmergencia from '@/assets/com-emergencia.jpg';
+import semRemedio from '@/assets/sem-remedio.jpg';
+import comRemedio from '@/assets/com-remedio.jpg';
 import {toast} from'sonner';
+
+const stories = [
+ {tag:'Emergência', semImg:semEmergencia, semAlt:'Mãe perdida na estrada com o bebê chorando', comImg:comEmergencia, comAlt:'Mãe aliviada com a rota do hospital no celular',
+  semText:'Sozinha, perdida e precisando de um médico, sem saber onde encontrar. Pesquisar feito louca até achar uma unidade pode colocar a vida do seu bebê em risco.',
+  comText:'Com 1 clique, sem digitar nada, você vê todos os hospitais mais próximos de onde estiver: praia, interior ou estrada.',
+  points:['Abre o Uber ou 99 já pronto para chamar o carro','Tem transporte? Abre o mapa com a rota mais próxima e segura','Mostra o telefone de cada hospital e clínica']},
+ {tag:'Medicamentos', semImg:semRemedio, semAlt:'Mãe de madrugada confusa entre vários remédios', comImg:comRemedio, comAlt:'Mãe tranquila consultando o manual no celular',
+  semText:'Febre de madrugada e você sem saber qual remédio dar. Um medicamento ou dose errada pode trazer complicações graves para o seu bebê.',
+  comText:'Com o manual de remédios do Mamãe Zen você fica preparada para febre, cólica e outros sintomas.',
+  points:['Ajuda a perceber o que o bebê está sentindo','Explica o medicamento correto para o bebê e para a mãe','Músicas, sons para dormir e guias, tudo sem anúncios']},
+];
 
 import {checkRateLimit} from'@/utils/rateLimiter';
 import HumanCheck from'@/components/HumanCheck';
@@ -262,7 +277,7 @@ const Login = () => {
  <div className="flex-1 flex flex-col items-center justify-center px-5 py-8 relative z-10">
  
  {/* Hero */}
- <div className="w-full max-w-sm text-center mb-6 space-y-4">
+ <div className="w-full max-w-sm text-center mb-8 space-y-4">
  <div className="relative inline-flex">
  <div className="absolute -inset-2 rounded-[2rem] bg-primary/30 blur-xl"/>
  <div className="relative w-20 h-20 rounded-[1.5rem] overflow-hidden ring-2 ring-primary/40">
@@ -271,36 +286,46 @@ const Login = () => {
  </div>
  <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/15 border border-primary/40">
  <BadgeCheck className="w-3.5 h-3.5 text-primary"/>
- <span className="text-[10px] font-bold text-primary tracking-wider uppercase">100% grátis para começar • Sem cartão</span>
+ <span className="text-[10px] font-bold text-primary tracking-wider uppercase">Grátis • Sem anúncios • Sem cartão</span>
  </div>
  <h1 className="text-[26px] leading-tight font-extrabold text-foreground">
- O app que toda <span className="text-primary">mãe de primeira viagem</span> precisa ter no bolso
+ Na hora do aperto, <span className="text-primary">você não pode ficar perdida</span>
  </h1>
- <p className="text-sm text-muted-foreground leading-relaxed">
- Emergência, medicamentos, músicas e guias do bebê em um só lugar. <span className="text-foreground font-semibold">Grátis e sem anúncios.</span>
- </p>
- <Button onClick={handleGoogleLogin} disabled={isSubmitting} className="w-full h-14 rounded-xl font-bold text-base gap-2 shadow-[0_0_30px_hsl(var(--primary)/0.5)]">
- {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin"/> : <LogIn className="w-5 h-5"/>}
- Entrar grátis com 1 toque
- </Button>
- <p className="text-[11px] text-muted-foreground">Entre com sua conta Google ou crie com e-mail abaixo</p>
+ <p className="text-sm text-muted-foreground leading-relaxed">Veja a diferença entre enfrentar tudo sozinha e ter o Mamãe Zen no seu bolso.</p>
  </div>
 
- {/* Benefits */}
- <div className="w-full max-w-sm mb-6 space-y-3">
- <h2 className="text-center text-xs font-bold tracking-widest uppercase text-primary">O que você vai encontrar</h2>
- {benefits.map(({icon: Icon, title, text}) => (
- <div key={title} className="flex gap-3 p-4 rounded-2xl bg-card/60 border border-primary/20">
- <div className="shrink-0 w-11 h-11 rounded-xl bg-primary/15 flex items-center justify-center">
- <Icon className="w-5 h-5 text-primary"/>
+ {/* Sem vs Com */}
+ <div className="w-full max-w-sm mb-8 space-y-10">
+ {stories.map((st) => (
+ <section key={st.tag} className="space-y-3">
+ <p className="text-center text-xs font-bold tracking-widest uppercase text-primary">{st.tag}</p>
+ <div className="rounded-2xl overflow-hidden border border-border/30 bg-card/40">
+ <div className="relative">
+ <img src={st.semImg} alt={st.semAlt} loading="lazy" width={1024} height={768} className="w-full aspect-[4/3] object-cover grayscale-[40%]"/>
+ <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent"/>
+ <span className="absolute top-3 left-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-background/80 border border-border/40 text-[10px] font-bold uppercase tracking-wider text-foreground"><X className="w-3 h-3"/>Sem o Mamãe Zen</span>
  </div>
- <div className="space-y-1">
- <p className="text-sm font-bold text-foreground">{title}</p>
- <p className="text-xs text-muted-foreground leading-relaxed">{text}</p>
+ <p className="p-4 -mt-10 relative text-sm text-foreground/85 leading-relaxed">{st.semText}</p>
  </div>
+ <div className="flex justify-center"><ArrowDown className="w-6 h-6 text-primary animate-bounce"/></div>
+ <div className="rounded-2xl overflow-hidden border border-primary/50 bg-card/60 shadow-[0_0_40px_-10px_hsl(var(--primary)/0.6)]">
+ <div className="relative">
+ <img src={st.comImg} alt={st.comAlt} loading="lazy" width={1024} height={768} className="w-full aspect-[4/3] object-cover"/>
+ <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent"/>
+ <span className="absolute top-3 left-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-wider"><Check className="w-3 h-3"/>Com o Mamãe Zen</span>
  </div>
+ <div className="p-4 -mt-10 relative space-y-3">
+ <p className="text-sm text-foreground leading-relaxed">{st.comText}</p>
+ <ul className="space-y-1.5">
+ {st.points.map(pt => (
+ <li key={pt} className="flex gap-2 text-xs text-foreground"><Check className="w-4 h-4 text-primary shrink-0"/>{pt}</li>
  ))}
- <div className="grid grid-cols-3 gap-2 pt-1">
+ </ul>
+ </div>
+ </div>
+ </section>
+ ))}
+ <div className="grid grid-cols-3 gap-2">
  {['Sem anúncios','Sem cartão','Acesso imediato'].map(t => (
  <div key={t} className="flex flex-col items-center gap-1 py-2 rounded-xl bg-card/40 border border-border/20">
  <Check className="w-4 h-4 text-primary"/>
@@ -308,6 +333,7 @@ const Login = () => {
  </div>
  ))}
  </div>
+ <p className="text-center text-sm font-bold text-foreground">Entre agora e fique preparada <span className="text-primary">para qualquer situação</span></p>
  </div>
 
  {/* Auth card */}
@@ -538,7 +564,6 @@ const Login = () => {
  <p className="text-[9px] text-muted-foreground/40 font-medium">
  © {new Date().getFullYear()} Mamãe Zen
  </p>
- <Link to="/admin" className="block text-[10px] text-muted-foreground/50 underline underline-offset-2">Acesso do Administrador</Link>
  </div>
  </div>
 );
