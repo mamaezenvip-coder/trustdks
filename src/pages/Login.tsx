@@ -24,10 +24,12 @@ const stories = [
  {tag:'Emergência', semImg:semEmergencia, semAlt:'Mãe perdida na estrada com o bebê chorando', comImg:comEmergencia, comAlt:'Mãe aliviada com a rota do hospital no celular',
   semText:'Sozinha, perdida e precisando de um médico, sem saber onde encontrar. Pesquisar feito louca até achar uma unidade pode colocar a vida do seu bebê em risco.',
   comText:'Com 1 clique, sem digitar nada, você vê todos os hospitais mais próximos de onde estiver: praia, interior ou estrada.',
+  semShort:'Pesquisar feito louca, sozinha e perdida.', comShort:'1 toque e o hospital mais perto aparece.',
   points:['Abre o Uber ou 99 já pronto para chamar o carro','Tem transporte? Abre o mapa com a rota mais próxima e segura','Mostra o telefone de cada hospital e clínica']},
  {tag:'Medicamentos', semImg:semRemedio, semAlt:'Mãe de madrugada confusa entre vários remédios', comImg:comRemedio, comAlt:'Mãe tranquila consultando o manual no celular',
   semText:'Febre de madrugada e você sem saber qual remédio dar. Um medicamento ou dose errada pode trazer complicações graves para o seu bebê.',
   comText:'Com o manual de remédios do Mamãe Zen você fica preparada para febre, cólica e outros sintomas.',
+  semShort:'Dose errada de madrugada, sem orientação.', comShort:'Sintoma, remédio e cuidado certo na mão.',
   points:['Ajuda a perceber o que o bebê está sentindo','Explica o medicamento correto para o bebê e para a mãe','Músicas, sons para dormir e guias, tudo sem anúncios']},
 ];
 
@@ -61,6 +63,7 @@ const Login = () => {
  const {isUSA} = useCountry();
  const navigate = useNavigate();
  const [mode, setMode] = useState<AuthMode>('login');
+ const [tab, setTab] = useState(0);
  const [email, setEmail] = useState('');
  const [password, setPassword] = useState('');
  const [confirmPassword, setConfirmPassword] = useState('');
@@ -277,64 +280,57 @@ const Login = () => {
  <div className="flex-1 flex flex-col items-center justify-center px-5 py-8 relative z-10">
  
  {/* Hero */}
- <div className="w-full max-w-sm text-center mb-8 space-y-4">
- <div className="relative inline-flex">
- <div className="absolute -inset-2 rounded-[2rem] bg-primary/30 blur-xl"/>
- <div className="relative w-20 h-20 rounded-[1.5rem] overflow-hidden ring-2 ring-primary/40">
- <img src={mamaeZenLogo} alt="Mamãe Zen" className="w-full h-full object-cover"/>
+ <header className="w-full max-w-sm flex flex-col items-center text-center mb-7">
+ <div className="relative mb-5">
+ <div className="absolute -inset-3 rounded-[2rem] bg-primary/25 blur-2xl"/>
+ <img src={mamaeZenLogo} alt="Mamãe Zen" className="relative w-[72px] h-[72px] rounded-[1.4rem] object-cover ring-1 ring-primary/50"/>
  </div>
- </div>
- <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/15 border border-primary/40">
- <BadgeCheck className="w-3.5 h-3.5 text-primary"/>
- <span className="text-[10px] font-bold text-primary tracking-wider uppercase">Grátis • Sem anúncios • Sem cartão</span>
- </div>
- <h1 className="text-[26px] leading-tight font-extrabold text-foreground">
- Na hora do aperto, <span className="text-primary">você não pode ficar perdida</span>
+ <p className="text-[10px] font-semibold tracking-[0.22em] uppercase text-muted-foreground mb-3">Proteção materna • 100% gratuito</p>
+ <h1 className="text-[28px] leading-[1.15] font-extrabold tracking-tight text-foreground">
+ Na hora do aperto,<br/><span className="text-primary">você não fica perdida.</span>
  </h1>
- <p className="text-sm text-muted-foreground leading-relaxed">Veja a diferença entre enfrentar tudo sozinha e ter o Mamãe Zen no seu bolso.</p>
- </div>
+ <p className="mt-3 text-sm text-muted-foreground leading-relaxed max-w-[300px]">Emergência, remédios e sono do bebê resolvidos em um só app.</p>
+ </header>
 
- {/* Sem vs Com */}
- <div className="w-full max-w-sm mb-8 space-y-10">
- {stories.map((st) => (
- <section key={st.tag} className="space-y-3">
- <p className="text-center text-xs font-bold tracking-widest uppercase text-primary">{st.tag}</p>
- <div className="rounded-2xl overflow-hidden border border-border/30 bg-card/40">
+ {/* Seletor nativo */}
+ <section className="w-full max-w-sm mb-8">
+ <div role="tablist" className="grid grid-cols-2 p-1 rounded-full bg-card/60 border border-border/30 mb-4">
+ {stories.map((st, i) => (
+ <button key={st.tag} role="tab" aria-selected={tab===i} onClick={()=>setTab(i)}
+ className={`py-2 rounded-full text-xs font-semibold transition-colors ${tab===i ? 'bg-primary text-primary-foreground' : 'text-muted-foreground'}`}>{st.tag}</button>
+ ))}
+ </div>
+ {(() => { const st = stories[tab]; return (
+ <article key={st.tag} className="rounded-3xl overflow-hidden border border-border/30 bg-card/50 backdrop-blur-xl animate-fade-in">
  <div className="relative">
- <img src={st.semImg} alt={st.semAlt} loading="lazy" width={1024} height={768} className="w-full aspect-[4/3] object-cover grayscale-[40%]"/>
- <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent"/>
- <span className="absolute top-3 left-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-background/80 border border-border/40 text-[10px] font-bold uppercase tracking-wider text-foreground"><X className="w-3 h-3"/>Sem o Mamãe Zen</span>
+ <img src={st.comImg} alt={st.comAlt} width={1024} height={768} className="w-full aspect-[16/10] object-cover"/>
+ <div className="absolute inset-0 bg-gradient-to-t from-card via-card/10 to-transparent"/>
  </div>
- <p className="p-4 -mt-10 relative text-sm text-foreground/85 leading-relaxed">{st.semText}</p>
+ <div className="p-5 -mt-6 relative space-y-4">
+ <div className="grid grid-cols-2 gap-px rounded-2xl overflow-hidden bg-border/30">
+ <div className="bg-background/80 p-3">
+ <p className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5"><X className="w-3 h-3"/>Sem o app</p>
+ <p className="text-[11px] leading-snug text-muted-foreground">{st.semShort}</p>
  </div>
- <div className="flex justify-center"><ArrowDown className="w-6 h-6 text-primary animate-bounce"/></div>
- <div className="rounded-2xl overflow-hidden border border-primary/50 bg-card/60 shadow-[0_0_40px_-10px_hsl(var(--primary)/0.6)]">
- <div className="relative">
- <img src={st.comImg} alt={st.comAlt} loading="lazy" width={1024} height={768} className="w-full aspect-[4/3] object-cover"/>
- <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent"/>
- <span className="absolute top-3 left-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-wider"><Check className="w-3 h-3"/>Com o Mamãe Zen</span>
+ <div className="bg-primary/10 p-3">
+ <p className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-primary mb-1.5"><Check className="w-3 h-3"/>Com Mamãe Zen</p>
+ <p className="text-[11px] leading-snug text-foreground">{st.comShort}</p>
  </div>
- <div className="p-4 -mt-10 relative space-y-3">
- <p className="text-sm text-foreground leading-relaxed">{st.comText}</p>
- <ul className="space-y-1.5">
+ </div>
+ <ul className="space-y-2">
  {st.points.map(pt => (
- <li key={pt} className="flex gap-2 text-xs text-foreground"><Check className="w-4 h-4 text-primary shrink-0"/>{pt}</li>
+ <li key={pt} className="flex gap-2.5 text-[13px] text-foreground/90"><Check className="w-4 h-4 text-primary shrink-0 mt-0.5"/>{pt}</li>
  ))}
  </ul>
  </div>
+ </article>
+ ); })()}
+ <div className="mt-5 flex items-center justify-center gap-4 text-[11px] text-muted-foreground">
+ {['Sem anúncios','Sem cartão','Acesso imediato'].map(t => (
+ <span key={t} className="flex items-center gap-1"><Check className="w-3 h-3 text-primary"/>{t}</span>
+ ))}
  </div>
  </section>
- ))}
- <div className="grid grid-cols-3 gap-2">
- {['Sem anúncios','Sem cartão','Acesso imediato'].map(t => (
- <div key={t} className="flex flex-col items-center gap-1 py-2 rounded-xl bg-card/40 border border-border/20">
- <Check className="w-4 h-4 text-primary"/>
- <span className="text-[10px] font-semibold text-foreground">{t}</span>
- </div>
- ))}
- </div>
- <p className="text-center text-sm font-bold text-foreground">Entre agora e fique preparada <span className="text-primary">para qualquer situação</span></p>
- </div>
 
  {/* Auth card */}
  <div className="w-full max-w-sm">
