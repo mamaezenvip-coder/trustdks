@@ -503,7 +503,7 @@ const Login = () => {
  <div className="relative">
  <Key className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"/>
  <Input
-  placeholder="MZ-AB3C-D7F8-H2J9-K1LM"value={licenseKey}
+  placeholder={isUSA ? "Enter your license key" : "Digite sua chave de licença"}value={licenseKey}
   onChange={e => setLicenseKey(normalizeLicenseKey(e.target.value))}
  maxLength={50}
  className="h-13 rounded-xl bg-muted/20 border-border/40 pl-12 font-mono tracking-wider text-sm focus:border-primary/50"/>

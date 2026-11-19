@@ -78,7 +78,7 @@ const LicenseActivation = ({open, onOpenChange}: LicenseActivationProps) => {
 ?'Enter your license key to unlock all premium features for 360 days.':'Digite sua chave de licença para liberar todas as funções premium por 360 dias.'}
  </p>
  <Input
- placeholder="MZ-AB3C-D7F8-H2J9-K1LM"value={keyInput}
+ placeholder={isUSA ? "Enter your license key" : "Digite sua chave de licença"}value={keyInput}
  onChange={(e) => setKeyInput(normalizeLicenseKey(e.target.value))}
  onKeyDown={(e) => e.key ==='Enter'&& handleActivate()}
  className="text-center font-mono text-base tracking-wider bg-background/60 border-primary/30 text-foreground focus-visible:ring-primary/60 focus-visible:border-primary"maxLength={26}
