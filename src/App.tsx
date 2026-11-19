@@ -17,12 +17,14 @@ import {lazy, Suspense} from "react";
 const Admin = lazy(() => import("./pages/Admin"));
 import SupportChat from"./components/SupportChat";
 import PageMeta from"./components/PageMeta";
+import AppLoading from"./components/AppLoading";
+import AppErrorBoundary from"./components/AppErrorBoundary";
 
 const queryClient = new QueryClient();
 
 const ProtectedRoute = ({children}: {children: React.ReactNode}) => {
  const {user, loading} = useAuth();
- if (loading) return null;
+ if (loading) return <AppLoading />;
  if (!user) return <Navigate to="/login"replace />;
  return <>{children}</>;
 };
@@ -42,7 +44,7 @@ const AppContent = () => {
  <Route path="/reset-password" element={<><PageMeta path="/reset-password" title="Redefinir senha | Mamãe Zen Premium" description="Crie uma nova senha para a sua conta Mamãe Zen Premium com segurança e volte a acompanhar a rotina do seu bebê." noindex /><ResetPassword /></>} />
  <Route path="/privacy" element={<><PageMeta path="/privacy" title="Política de Privacidade | Mamãe Zen Premium" description="Saiba como o Mamãe Zen trata seus dados: armazenamento local, uso da localização em emergências, cookies e segurança." /><Privacy /></>} />
  <Route path="/privacidade" element={<><PageMeta path="/privacy" title="Política de Privacidade | Mamãe Zen Premium" description="Saiba como o Mamãe Zen trata seus dados: armazenamento local, uso da localização em emergências, cookies e segurança." /><Privacy /></>} />
- <Route path="/admin" element={<><PageMeta path="/admin" title="Painel administrativo | Mamãe Zen Premium" description="Área restrita de gestão do Mamãe Zen: clientes, chaves de licença, mídias e suporte." noindex /><ProtectedRoute><Suspense fallback={null}><Admin /></Suspense></ProtectedRoute></>} />
+ <Route path="/admin" element={<><PageMeta path="/admin" title="Painel administrativo | Mamãe Zen Premium" description="Área restrita de gestão do Mamãe Zen: clientes, chaves de licença, mídias e suporte." noindex /><ProtectedRoute><Suspense fallback={<AppLoading />}><Admin /></Suspense></ProtectedRoute></>} />
  <Route path="/" element={<><PageMeta path="/" title="Mamãe Zen Premium - Sistema para mães de primeira viagem" description="Guias práticos, trackers de sono e amamentação, mapa de emergência, sons calmantes e e-books para mães de primeira viagem." /><ProtectedRoute><Index /></ProtectedRoute></>} />
  <Route path="*" element={<><PageMeta path="/404" title="Página não encontrada | Mamãe Zen Premium" description="A página que você procura não existe no Mamãe Zen. Volte para o início e continue acompanhando a rotina do seu bebê." noindex /><NotFound /></>} />
  </Routes>
@@ -53,6 +55,7 @@ const AppContent = () => {
 };
 
 const App = () => (
+ <AppErrorBoundary>
  <QueryClientProvider client={queryClient}>
  <ThemeProvider>
  <CountryProvider>
@@ -64,6 +67,7 @@ const App = () => (
  </CountryProvider>
  </ThemeProvider>
  </QueryClientProvider>
+ </AppErrorBoundary>
 );
 
 export default App;

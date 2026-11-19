@@ -144,7 +144,8 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
 }
 });
 
- supabase.auth.getSession().then(({data: {session}}) => {
+ const safety = setTimeout(() => setLoading(false), 6000);
+ supabase.auth.getSession().catch(() => ({data: {session: null}})).then(({data: {session}}) => {
  setSession(session);
  setUser(session?.user?? null);
  setLoading(false);
@@ -155,7 +156,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
 }
 });
 
- return () => subscription.unsubscribe();
+ return () => {clearTimeout(safety); subscription.unsubscribe();};
 }, []);
 
  return (

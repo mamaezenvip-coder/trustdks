@@ -3,17 +3,15 @@ import App from"./App.tsx";
 import {HelmetProvider} from"react-helmet-async";
 import"./index.css";
 
-const host = window.location.hostname;
-const isLovablePreview = host.startsWith('id-preview--') || host.startsWith('preview--') || host.includes('lovableproject.com') || host.includes('lovableproject-dev.com');
-const isEmbeddedPreview = window.self !== window.top;
-
-// Register service worker only outside Lovable previews to avoid stale cache during development.
-if (import.meta.env.PROD && 'serviceWorker'in navigator && !isLovablePreview && !isEmbeddedPreview) {
- window.addEventListener('load', () => {
- navigator.serviceWorker.register('/sw.js').catch(() => {
- // Service worker registration failed, app will still work without offline support
+// Se um arquivo antigo do app falhar ao carregar (versão nova publicada), recarrega uma vez.
+window.addEventListener('vite:preloadError', (event) => {
+ event.preventDefault();
+ const key = 'mz_chunk_reload';
+ const last = Number(sessionStorage.getItem(key) || 0);
+ if (Date.now() - last > 30000) {
+ sessionStorage.setItem(key, String(Date.now()));
+ window.location.reload();
+ }
 });
-});
-}
 
 createRoot(document.getElementById("root")!).render(<HelmetProvider><App /></HelmetProvider>);
