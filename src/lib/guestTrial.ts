@@ -9,6 +9,7 @@ export const getGuestStart = (): number | null => {
 // Só inicia uma vez por aparelho: reabrir não reinicia o tempo.
 export const startGuestTrial = () => {
   if (getGuestStart() === null) localStorage.setItem(KEY, String(Date.now()));
+  window.dispatchEvent(new Event('mz-guest-change'));
 };
 export const guestRemainingMs = (start: number | null, now = Date.now()) =>
   start === null ? 0 : Math.max(0, start + GUEST_TRIAL_MINUTES * 60_000 - now);

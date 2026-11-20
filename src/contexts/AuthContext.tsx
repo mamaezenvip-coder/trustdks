@@ -160,6 +160,13 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
  return () => {clearTimeout(safety); subscription.unsubscribe();};
 }, []);
 
+ const [, setGuestTick] = useState(0);
+ useEffect(() => {
+ const bump = () => setGuestTick(t => t + 1);
+ window.addEventListener('mz-guest-change', bump);
+ const iv = setInterval(bump, 5000);
+ return () => { window.removeEventListener('mz-guest-change', bump); clearInterval(iv); };
+ }, []);
  const guestLeft = !user ? guestRemainingMs(getGuestStart()) : 0;
  const effectiveLicense: LicenseInfo = !user && guestLeft > 0
  ? {isActive: true, expiresAt: new Date(Date.now()+guestLeft).toISOString(), isTrial: true, daysRemaining: 1}

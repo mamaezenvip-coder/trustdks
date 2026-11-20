@@ -29,7 +29,7 @@ import GuestGate from'@/components/GuestGate';
 import FeatureRing, {type RingItem} from'@/components/FeatureRing';
 import {Tabs, TabsContent} from'@/components/ui/tabs';
 
-import {Baby, Music, Calendar, BookOpen, Moon, Milk, Pill, Brain, MapPin, Instagram, ShoppingBag, Cross, Bell, Heart, Lock, Key, LogOut, Shield, MoreVertical} from'lucide-react';
+import {Baby, Music, Calendar, BookOpen, Moon, Milk, Pill, Brain, MapPin, Instagram, ShoppingBag, Cross, Bell, Heart, Lock, Key, LogOut, Shield, MoreVertical, UserPlus, LogIn} from'lucide-react';
 import mamaeZenLogo from'@/assets/mamae-zen-logo.png';
 import mamaeZenBrand from'@/assets/mamae-zen-banner.png.asset.json';
 import {toast} from'sonner';
@@ -229,9 +229,20 @@ const Index = () => {
  <DropdownMenuSeparator className="bg-primary/20"/>
  </>
  )}
+ {user ? (
  <DropdownMenuItem onClick={signOut} className="cursor-pointer text-destructive focus:text-destructive">
  <LogOut className="w-4 h-4 mr-2"/> {isUSA?'Sign out':'Sair'}
  </DropdownMenuItem>
+ ) : (
+ <>
+ <DropdownMenuItem asChild className="cursor-pointer text-primary focus:text-primary">
+ <Link to="/login"><UserPlus className="w-4 h-4 mr-2"/> {isUSA?'Create account':'Criar cadastro'}</Link>
+ </DropdownMenuItem>
+ <DropdownMenuItem asChild className="cursor-pointer">
+ <Link to="/login"><LogIn className="w-4 h-4 mr-2"/> {isUSA?'Log in':'Fazer login'}</Link>
+ </DropdownMenuItem>
+ </>
+ )}
  </DropdownMenuContent>
  </DropdownMenu>
  </div>
