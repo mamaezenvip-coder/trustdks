@@ -2,6 +2,7 @@ import {createContext, useContext, useEffect, useState, ReactNode} from'react';
 import {supabase} from'@/integrations/supabase/client';
 import type {User, Session} from'@supabase/supabase-js';
 import {checkRateLimit} from'@/utils/rateLimiter';
+import {getGuestStart, guestRemainingMs} from'@/lib/guestTrial';
 
 interface LicenseInfo {
  isActive: boolean;
@@ -159,8 +160,12 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
  return () => {clearTimeout(safety); subscription.unsubscribe();};
 }, []);
 
+ const guestLeft = !user ? guestRemainingMs(getGuestStart()) : 0;
+ const effectiveLicense: LicenseInfo = !user && guestLeft > 0
+ ? {isActive: true, expiresAt: new Date(Date.now()+guestLeft).toISOString(), isTrial: true, daysRemaining: 1}
+ : license;
  return (
- <AuthContext.Provider value={{user, session, loading, license, licenseLoading, signOut, activateKey, refreshLicense}}>
+ <AuthContext.Provider value={{user, session, loading, license: effectiveLicense, licenseLoading, signOut, activateKey, refreshLicense}}>
  {children}
  </AuthContext.Provider>
 );

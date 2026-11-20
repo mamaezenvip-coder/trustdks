@@ -25,6 +25,7 @@ const PharmacyMap = lazy(() => import('@/components/PharmacyMap'));
 const PregnancyTracker = lazy(() => import('@/components/PregnancyTracker').then(m => ({default: m.PregnancyTracker})));
 const ProductShowcase = lazy(() => import('@/components/ProductShowcase'));
 import TrialBanner from'@/components/TrialBanner';
+import GuestGate from'@/components/GuestGate';
 import FeatureRing, {type RingItem} from'@/components/FeatureRing';
 import {Tabs, TabsContent} from'@/components/ui/tabs';
 
@@ -172,7 +173,7 @@ const Index = () => {
  <>
  <AntiInspect />
  <LicenseActivation open={showLicenseDialog} onOpenChange={setShowLicenseDialog} />
- <TrialBanner />
+ {user ? <TrialBanner /> : <GuestGate />}
 
  {/* Name Dialog */}
  <Dialog open={showNameDialog} onOpenChange={setShowNameDialog}>

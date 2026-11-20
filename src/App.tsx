@@ -18,6 +18,7 @@ const Admin = lazy(() => import("./pages/Admin"));
 import SupportChat from"./components/SupportChat";
 import PageMeta from"./components/PageMeta";
 import AppLoading from"./components/AppLoading";
+import {getGuestStart} from"./lib/guestTrial";
 import AppErrorBoundary from"./components/AppErrorBoundary";
 
 const queryClient = new QueryClient();
@@ -25,7 +26,7 @@ const queryClient = new QueryClient();
 const ProtectedRoute = ({children}: {children: React.ReactNode}) => {
  const {user, loading} = useAuth();
  if (loading) return <AppLoading />;
- if (!user) return <Navigate to="/login"replace />;
+ if (!user && getGuestStart() === null) return <Navigate to="/login"replace />;
  return <>{children}</>;
 };
 

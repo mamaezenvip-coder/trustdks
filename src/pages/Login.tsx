@@ -1,6 +1,7 @@
 import {openInApp} from"@/lib/inAppBrowser";
 import {useEffect, useState} from'react';
 import {useNavigate, Link} from'react-router-dom';
+import {startGuestTrial} from'@/lib/guestTrial';
 import {useAuth} from'@/contexts/AuthContext';
 import {useCountry} from'@/contexts/CountryContext';
 import {supabase} from'@/integrations/supabase/client';
@@ -290,6 +291,8 @@ const Login = () => {
  Na hora do aperto,<br/><span className="text-primary">você não fica perdida.</span>
  </h1>
  <p className="mt-3 text-sm text-muted-foreground leading-relaxed max-w-[300px]">Emergência, remédios e sono do bebê resolvidos em um só app.</p>
+ <button type="button" onClick={()=>{startGuestTrial(); navigate('/');}} className="mt-5 w-full h-12 rounded-xl border border-primary/60 bg-primary/10 text-primary font-bold text-sm">Testar 30 minutos grátis, sem cadastro</button>
+ <p className="mt-2 text-[11px] text-muted-foreground">Ainda com dúvida? Experimente todas as funções antes de qualquer pagamento.</p>
  </header>
 
  {/* Seletor nativo */}
